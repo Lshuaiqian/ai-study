@@ -1,0 +1,190 @@
+{
+  "note": "由 placement_py9.py 从 placement-west2.json + bridge/_index.json 派生，请勿手改。老课的知识点若在西二那里有对应点，就继承它的判定；没有对应点的记为 unknown——不知道就是不知道，不能当成已具备。",
+  "source": "placement-west2.json",
+  "knowledge_status": {
+    "py-agent-01:K1": {
+      "status": "unknown",
+      "evidence": "无产物",
+      "from": "py.comprehension"
+    },
+    "py-agent-01:K10": {
+      "status": "met",
+      "evidence": "能自行运行脚本、使用 git 与终端",
+      "from": "cli.basic"
+    },
+    "py-agent-01:K3": {
+      "status": "unknown",
+      "evidence": "无产物",
+      "from": "py.magic"
+    },
+    "py-agent-01:K5": {
+      "status": "met",
+      "evidence": "lesson2_http.py 的 if __name__ == '__main__' 保护 + from ... import",
+      "from": "py.module"
+    },
+    "py-agent-01:K6": {
+      "status": "met",
+      "evidence": "lesson2_http.py 的 get_info()/main()，含返回值类型提示",
+      "from": "py.func"
+    },
+    "py-agent-01:K7": {
+      "status": "unknown",
+      "evidence": "无产物",
+      "from": "py.decorator"
+    },
+    "py-agent-01:K8": {
+      "status": "unknown",
+      "evidence": "无产物",
+      "from": "py.regex"
+    },
+    "py-agent-01:K9": {
+      "status": "partial",
+      "evidence": "用了 json 序列化，但没有 open() 读写文件的产物",
+      "from": "py.fileio"
+    },
+    "py-agent-02:K1": {
+      "status": "met",
+      "evidence": "lesson2_http.py 与 lesson3_request.py 都正确处理了状态码与请求头（但见 weak_points 第 1 条）",
+      "from": "net.http"
+    },
+    "py-agent-02:K2": {
+      "status": "met",
+      "evidence": "lesson2_http.py 与 lesson3_request.py 都正确处理了状态码与请求头（但见 weak_points 第 1 条）",
+      "from": "net.http"
+    },
+    "py-agent-02:K3": {
+      "status": "met",
+      "evidence": "lesson2_http.py 与 lesson3_request.py 都正确处理了状态码与请求头（但见 weak_points 第 1 条）",
+      "from": "net.http"
+    },
+    "py-agent-02:K4": {
+      "status": "met",
+      "evidence": "lesson2_http.py 与 lesson3_request.py 都正确处理了状态码与请求头（但见 weak_points 第 1 条）",
+      "from": "net.http"
+    },
+    "py-agent-02:K5": {
+      "status": "met",
+      "evidence": "lesson2_http.py 与 lesson3_request.py 都正确处理了状态码与请求头（但见 weak_points 第 1 条）",
+      "from": "net.http"
+    },
+    "py-agent-03:K2": {
+      "status": "not_started",
+      "evidence": "无任何 HTML 解析产物；且 bs4 未安装",
+      "from": "spider.parse"
+    },
+    "py-agent-03:K3": {
+      "status": "partial",
+      "evidence": "自定义 User-Agent 已做；robots.txt 与限速 sleep 无产物",
+      "from": "spider.polite"
+    },
+    "py-agent-03:K4": {
+      "status": "met",
+      "evidence": "lesson3_request.py 的 403 配额诊断与 raise_for_status 处理，超出基础要求",
+      "from": "spider.anti"
+    },
+    "py-agent-03:K6": {
+      "status": "met",
+      "evidence": "lesson3_request.py：requests.get + headers + timeout + .json()",
+      "from": "spider.requests"
+    },
+    "py-agent-03:K7": {
+      "status": "not_started",
+      "evidence": "无 Selenium / 抓接口产物",
+      "from": "spider.dynamic"
+    },
+    "py-agent-04:K1": {
+      "status": "not_started",
+      "evidence": "无产物",
+      "from": "data.matrix"
+    },
+    "py-agent-04:K2": {
+      "status": "not_started",
+      "evidence": "无产物",
+      "from": "data.pandas"
+    },
+    "py-agent-05:K1": {
+      "status": "not_started",
+      "evidence": "无产物",
+      "from": "data.plot"
+    }
+  },
+  "weak_points": [
+    {
+      "knowledge": "py-agent-02:K1",
+      "issue": "口头解释时说反：把「连接不上」答成不抛异常（实际 TCP 连接失败同样抛 URLError）",
+      "evidence": "history.json 中导师点评『Q4 又说反了——这正是你反复错的同一个点』",
+      "action": "进复习队列；下次用「写代码验证」而不是「背结论」的方式过一遍",
+      "from": "net.http"
+    },
+    {
+      "knowledge": "py-agent-02:K2",
+      "issue": "口头解释时说反：把「连接不上」答成不抛异常（实际 TCP 连接失败同样抛 URLError）",
+      "evidence": "history.json 中导师点评『Q4 又说反了——这正是你反复错的同一个点』",
+      "action": "进复习队列；下次用「写代码验证」而不是「背结论」的方式过一遍",
+      "from": "net.http"
+    },
+    {
+      "knowledge": "py-agent-02:K3",
+      "issue": "口头解释时说反：把「连接不上」答成不抛异常（实际 TCP 连接失败同样抛 URLError）",
+      "evidence": "history.json 中导师点评『Q4 又说反了——这正是你反复错的同一个点』",
+      "action": "进复习队列；下次用「写代码验证」而不是「背结论」的方式过一遍",
+      "from": "net.http"
+    },
+    {
+      "knowledge": "py-agent-02:K4",
+      "issue": "口头解释时说反：把「连接不上」答成不抛异常（实际 TCP 连接失败同样抛 URLError）",
+      "evidence": "history.json 中导师点评『Q4 又说反了——这正是你反复错的同一个点』",
+      "action": "进复习队列；下次用「写代码验证」而不是「背结论」的方式过一遍",
+      "from": "net.http"
+    },
+    {
+      "knowledge": "py-agent-02:K5",
+      "issue": "口头解释时说反：把「连接不上」答成不抛异常（实际 TCP 连接失败同样抛 URLError）",
+      "evidence": "history.json 中导师点评『Q4 又说反了——这正是你反复错的同一个点』",
+      "action": "进复习队列；下次用「写代码验证」而不是「背结论」的方式过一遍",
+      "from": "net.http"
+    },
+    {
+      "knowledge": "py-agent-03:K2",
+      "issue": "导师第 4 课要求用 BeautifulSoup，但本机 **bs4 未安装**，照着做会直接 ModuleNotFoundError",
+      "evidence": "pip 依赖探测：requests 已装、bs4 缺失",
+      "action": "先装 bs4，或按 west2 原文改用标准库 html.parser（课程里两条路都要会）",
+      "from": "spider.parse"
+    }
+  ],
+  "decisions": [
+    {
+      "course_id": "py-agent-01",
+      "decision": "fast_pass",
+      "reason": "有扎实 C/C++ 基础，tutor 第 1 课已判定通过；且练习代码已体现函数/模块/类型提示。缺的主要是没有产物佐证的部分。（原决策针对西二课表；迁移到老课后只按知识点生效，不整门放行——老课含有西二没有对应的知识点，那些点没有证据）",
+      "carried_over": [
+        "py-agent-01:K1",
+        "py-agent-01:K3",
+        "py-agent-01:K7",
+        "py-agent-01:K8",
+        "py-agent-01:K9"
+      ],
+      "recheck_at": "F2 的爬虫/数据分析里会自然用到推导式与文件读写；用到了就地补",
+      "from_course": "west2-f1"
+    }
+  ],
+  "dropped": {
+    "knowledge": [
+      "algo.basic",
+      "code.style",
+      "env.ide",
+      "env.setup",
+      "env.tool",
+      "git.basic",
+      "git.spec",
+      "md.apple",
+      "md.syntax"
+    ],
+    "why": "这些西二知识点按用户决定不并入老 9 课（见 bridge/_index.json 的 excluded），它们的判定在老体系里没有归宿。"
+  },
+  "stats": {
+    "west2_status": 28,
+    "migrated": 21,
+    "dropped": 9
+  }
+}

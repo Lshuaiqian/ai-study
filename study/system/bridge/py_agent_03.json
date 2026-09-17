@@ -1,0 +1,50 @@
+{
+  "course_id": "py-agent-03",
+  "mode": "append",
+  "sources": [
+    "west2-f2"
+  ],
+  "note": "老 3 已覆盖 f2 的 spider.parse/polite/anti/requests（K2/K3/K4/K6）。f2 里只剩 spider.dynamic 没有归宿，按「只追加不改号」补成 K7——老 3 的 K1–K6 一个都不许动，mastery.json 里的 py-agent-03:K* 原子全指着它们。",
+  "knowledge": [
+    {
+      "local": "K7",
+      "from": "spider.dynamic",
+      "requires": [
+        {
+          "course_id": "py-agent-03",
+          "knowledge_id": "K2",
+          "why": "要先能判断『拿到的 HTML 里到底有没有目标数据』，才谈得上它是不是动态渲染"
+        },
+        {
+          "course_id": "py-agent-02",
+          "knowledge_id": "K4",
+          "why": "找后端接口这条路的本质是自己再造一个同样的请求，得会发请求与设请求头"
+        }
+      ],
+      "contrast": [
+        {
+          "course_id": "py-agent-03",
+          "knowledge_id": "K2",
+          "why": "静态页解析 HTML，动态页要么直接打接口（跳过 HTML），要么用无头浏览器把页面渲染出来再解析——三条路的取舍就是本知识点的核心"
+        }
+      ],
+      "applies_to": [
+        {
+          "course_id": "py-agent-06",
+          "why": "项目里要抓的数据源经常是动态页，接口抓取是让脚本可重复运行的关键"
+        }
+      ]
+    }
+  ],
+  "materials": {
+    "note": "种子资料，待真实资料替换",
+    "atoms": [
+      {
+        "id": "M1",
+        "type": "concept",
+        "knowledge_id": "K7",
+        "text": "判断页面是否动态渲染：**直接发起 HTTP 请求**拿到的 HTML 里若没有目标数据、而浏览器里能看到，就说明数据是 JavaScript 异步加载的。三条应对路各有代价：① 打开开发者工具的 Network 面板找 XHR/fetch 接口直接请求（最快最稳，但接口可能有签名/加密）；② 用无头浏览器 Selenium / Playwright 渲染完再解析（最通用，但慢、依赖浏览器驱动、更容易被识别为自动化）；③ 换一个静态数据源。"
+      }
+    ]
+  }
+}

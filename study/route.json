@@ -1,0 +1,21 @@
+{
+  "route_id": "west2-learn-ai",
+  "title": "西二在线 learn-AI 考核路线 · 导师强化版（C/C++ 起点）",
+  "source": "https://github.com/west2-online/learn-AI",
+  "entry": {
+    "name": "C/C++ 基础",
+    "note": "用户已有：指针、模板、STL、RAII、多线程。本路线以此为起点，不做入门科普。"
+  },
+  "note": "requires 是硬前置（不通过不许开）。unlocks 由图自动反推，此处不手写，避免不一致。",
+  "courses": [
+    { "course_id": "py-agent-01", "title": "第 1 课：Python 语法速览 + 面向对象（C/C++ 对照）", "requires": [] },
+    { "course_id": "py-agent-02", "title": "第 2 课：网络基础与 HTTP/JSON", "requires": ["py-agent-01"] },
+    { "course_id": "py-agent-03", "title": "第 3 课：网络爬虫（对标 west2 Task2）", "requires": ["py-agent-02"] },
+    { "course_id": "py-agent-04", "title": "第 4 课：数据分析与统计描述（对标 west2 Task3）", "requires": ["py-agent-01", "py-agent-02"] },
+    { "course_id": "py-agent-05", "title": "第 5 课：可视化与报告", "requires": ["py-agent-04"] },
+    { "course_id": "py-agent-06", "title": "第 6 课：项目整合（对标四个考核案例之一）", "requires": ["py-agent-03", "py-agent-04", "py-agent-05"] },
+    { "course_id": "py-agent-07", "title": "第 7 课：顶层 AI 应用 - LLM API 与提示工程", "requires": ["py-agent-02"] },
+    { "course_id": "py-agent-08", "title": "第 8 课：Agent 与 Function Calling", "requires": ["py-agent-07"] },
+    { "course_id": "py-agent-09", "title": "第 9 课：模拟考核与答辩冲刺", "requires": ["py-agent-06", "py-agent-08"] }
+  ]
+}

@@ -1,0 +1,22 @@
+# 行尾统一。这是个要给别人协作的 Python 项目：
+# 不加这个，Windows 提交会把整个文件标成改动（LF 与 CRLF 全文不同），
+# code review 就没法看了。仓库里一律存 LF，检出时按平台转换。
+* text=auto eol=lf
+
+# 明确按文本处理（这些文件必须能用 diff 读懂）
+*.py    text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.js    text eol=lf
+*.rs    text eol=lf
+*.toml  text eol=lf
+*.bat   text eol=crlf
+
+# 二进制，别做任何转换
+*.png   binary
+*.jpg   binary
+*.ico   binary
+*.exe   binary
+*.pdf   binary

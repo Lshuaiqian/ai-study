@@ -1,0 +1,8 @@
+[package]
+name = "huajian-scan-probe"
+version = "0.1.0"
+edition = "2021"
+description = "Standalone verification of the multi-level folder (category) patch for floral-notepaper. Zero dependencies on purpose: no build scripts, so Windows Smart App Control cannot block it."
+
+[lib]
+path = "src/lib.rs"

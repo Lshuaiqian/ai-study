@@ -1,0 +1,87 @@
+{
+  "route_id": "west2-ai-2026",
+  "title": "西二在线 AI 方向 · 2026 考核知识体系",
+  "source": "https://github.com/west2-online/learn-AI",
+  "entry": {
+    "name": "前置：C/C++ 基础",
+    "note": "本路线从 Python 环境搭建开始；有编程基础可直接跳过语法细节"
+  },
+  "note": "本文件由 system/split.py 从体系文件派生，请勿手改。",
+  "courses": [
+    {
+      "course_id": "west2-f0",
+      "title": "Foundation Task 0 · 环境搭建",
+      "requires": []
+    },
+    {
+      "course_id": "west2-f1",
+      "title": "Foundation Task 1 · 语法基础与简单面向对象",
+      "requires": [
+        "west2-f0"
+      ]
+    },
+    {
+      "course_id": "west2-f2",
+      "title": "Foundation Task 2 · 网络爬虫与数据分析",
+      "requires": [
+        "west2-f1"
+      ]
+    },
+    {
+      "course_id": "west2-f3",
+      "title": "Foundation Task 3 · 简单 AI 认识",
+      "requires": [
+        "west2-f2"
+      ]
+    },
+    {
+      "course_id": "west2-f4",
+      "title": "Foundation Task 4 · 方向导引与分流决策",
+      "requires": [
+        "west2-f3"
+      ]
+    },
+    {
+      "course_id": "west2-a0",
+      "title": "Application 0 · Tiktok-Demo（门槛任务）",
+      "requires": [
+        "west2-f4"
+      ]
+    },
+    {
+      "course_id": "west2-a1",
+      "title": "Application 1 · AI 应用认知",
+      "requires": [
+        "west2-a0"
+      ]
+    },
+    {
+      "course_id": "west2-r1",
+      "title": "Research 1 · 从机器学习到深度学习",
+      "requires": [
+        "west2-f4"
+      ]
+    },
+    {
+      "course_id": "west2-be",
+      "title": "Backend Routine · Python 后端日常训练",
+      "requires": [
+        "west2-f4"
+      ]
+    },
+    {
+      "course_id": "west2-fe",
+      "title": "Frontend Routine · Gradio / Streamlit",
+      "requires": [
+        "west2-a1"
+      ]
+    },
+    {
+      "course_id": "west2-st",
+      "title": "Statistic Routine · 统计与竞赛",
+      "requires": [
+        "west2-f4"
+      ]
+    }
+  ]
+}

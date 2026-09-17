@@ -1,0 +1,141 @@
+{
+  "course_id": "west2-a1",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Application 1 · AI 应用认知",
+  "goal": "Application 路线｜本课直接依赖：Application 0 · Tiktok-Demo（门槛任务）",
+  "stage": "application",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "Application 路线｜维度：AI 应用工程、AI 认知与原理",
+    "prerequisites": [
+      {
+        "course_id": "west2-a0",
+        "name": "Application 0 · Tiktok-Demo（门槛任务）"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "west2-fe",
+        "name": "Frontend Routine · Gradio / Streamlit"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "机器学习与深度学习的区别",
+        "level": "must",
+        "keywords": [
+          [
+            "机器学习",
+            "深度学习",
+            "区别"
+          ],
+          [
+            "监督",
+            "无监督",
+            "神经网络"
+          ]
+        ],
+        "dimension": "D5",
+        "dimension_name": "AI 认知与原理",
+        "source_knowledge": "ai.mldl"
+      },
+      {
+        "id": "K2",
+        "name": "YOLO 基本使用（目标检测）",
+        "level": "must",
+        "keywords": [
+          [
+            "YOLO"
+          ],
+          [
+            "目标检测",
+            "检测",
+            "标注框"
+          ]
+        ],
+        "dimension": "D6",
+        "dimension_name": "AI 应用工程",
+        "source_knowledge": "ai.yolo"
+      },
+      {
+        "id": "K3",
+        "name": "现代 LLM 思想（Transformer、自回归、对齐）",
+        "level": "must",
+        "keywords": [
+          [
+            "Transformer",
+            "注意力",
+            "attention"
+          ],
+          [
+            "自回归",
+            "对齐",
+            "RLHF",
+            "LLM 思想"
+          ]
+        ],
+        "dimension": "D5",
+        "dimension_name": "AI 认知与原理",
+        "source_knowledge": "ai.llm.think"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "a1-1",
+      "type": "note",
+      "title": "作业 1 · 机器学习与深度学习",
+      "brief": "讲清两者区别与各自适用场景",
+      "deliverable": "笔记",
+      "acceptance": [
+        "覆盖本课全部必会知识点",
+        "用你自己的话写",
+        "无事实错误"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "a1-2",
+      "type": "code",
+      "title": "作业 2 · YOLO 的基本使用",
+      "brief": "跑通目标检测并解释输出含义",
+      "deliverable": "yolo/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "a1-3",
+      "type": "note",
+      "title": "作业 3 · 现代 LLM 思想",
+      "brief": "Transformer、自回归、对齐三件事讲明白",
+      "deliverable": "笔记",
+      "acceptance": [
+        "覆盖本课全部必会知识点",
+        "用你自己的话写",
+        "无事实错误"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

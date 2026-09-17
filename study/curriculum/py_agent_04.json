@@ -1,0 +1,368 @@
+{
+  "course_id": "py-agent-04",
+  "route": "西二在线 learn-AI 考核路线 · 导师强化版（C/C++ 起点）",
+  "title": "第 4 课：数据分析与统计描述（对标 west2 Task3）",
+  "goal": "把爬到的原始数据读成 DataFrame，做清洗与统计描述，并走通「特征工程→交叉验证评估→建模论文表达」的完整链条",
+  "declares": {
+    "system_position": "网络层 →【数据分析层】→ 可视化",
+    "prerequisites": [
+      {
+        "course_id": "py-agent-01",
+        "name": "第 1 课：Python 语法速览 + 面向对象（C/C++ 对照）",
+        "status_hint": "由图反推的课程级硬前置"
+      },
+      {
+        "course_id": "py-agent-02",
+        "name": "第 2 课：网络基础与 HTTP/JSON",
+        "status_hint": "由图反推的课程级硬前置"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "py-agent-05",
+        "name": "第 5 课：可视化与报告"
+      },
+      {
+        "course_id": "py-agent-06",
+        "name": "第 6 课：项目整合（对标四个考核案例之一）"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "矩阵操作（NumPy / 原生实现）",
+        "level": "must",
+        "keywords": [
+          [
+            "矩阵",
+            "matrix"
+          ],
+          [
+            "numpy",
+            "转置",
+            "乘法"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-01",
+            "knowledge_id": "K1",
+            "why": "写原生矩阵实现要用嵌套列表与推导式，向量化与循环的对照也建立在容器操作之上"
+          },
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K5",
+            "why": "矩阵这一课的数据入口是第 3 课落盘的 json/csv，不先有结构化数据就没有可算的矩阵"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K2",
+            "why": "同样是「表格数据」，ndarray 走无标签的数值批量计算，DataFrame 走带列名与索引的表格操作，选错工具会把代码写得又长又慢"
+          }
+        ],
+        "applies_to": [
+          {
+            "course_id": "py-agent-05",
+            "why": "绘图函数的 x/y 参数实际就是 ndarray，缺失值做掩码也要靠数组运算"
+          }
+        ],
+        "source_knowledge": "data.matrix"
+      },
+      {
+        "id": "K2",
+        "name": "Pandas 基础（读取、清洗、分组、聚合）",
+        "level": "must",
+        "keywords": [
+          [
+            "pandas",
+            "DataFrame"
+          ],
+          [
+            "清洗",
+            "分组",
+            "groupby",
+            "聚合"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K1",
+            "why": "DataFrame 的各列本质上就是 ndarray，groupby 聚合与向量化运算都返回数组式结果，不先理解数组/广播就只会在 pandas 里堆 for 循环"
+          },
+          {
+            "course_id": "py-agent-01",
+            "knowledge_id": "K9",
+            "why": "read_csv / to_csv 是文件读写的具体应用，编码与 with 关闭文件的习惯直接决定读数据这一步会不会翻车"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K1",
+            "why": "NumPy 数组适合纯数值与线性代数，DataFrame 适合带列名、混合类型与缺失值的表格，两者不是替代关系而是分工"
+          }
+        ],
+        "applies_to": [
+          {
+            "course_id": "py-agent-04",
+            "why": "本课 K3 的特征工程全部建立在 DataFrame 的筛选、变形与聚合之上"
+          },
+          {
+            "course_id": "py-agent-05",
+            "why": "要画统计图得先用 pandas 把数据汇总成绘图需要的那几列"
+          },
+          {
+            "course_id": "py-agent-05",
+            "why": "Kaggle 的读取 CSV、构造提交文件这两个动作都是 pandas 操作"
+          }
+        ],
+        "source_knowledge": "data.pandas"
+      },
+      {
+        "id": "K3",
+        "name": "特征工程与模型评估",
+        "level": "must",
+        "keywords": [
+          [
+            "特征工程"
+          ],
+          [
+            "评估",
+            "交叉验证",
+            "准确率",
+            "AUC"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K2",
+            "why": "缺失值填充、类别编码、派生列都是 DataFrame 上的列级变换，不会 pandas 的筛选与赋值就做不了特征工程"
+          },
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K1",
+            "why": "评估指标（准确率、AUC、RMSE）是对预测数组与真值数组的批量计算，而且概率输出与阈值截断本身就是数组运算"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K4",
+            "why": "Kaggle 与建模比赛看排行榜分数，建模论文看逻辑与可解释性；同一次建模，两边的『做好』标准不一样"
+          }
+        ],
+        "applies_to": [
+          {
+            "course_id": "py-agent-05",
+            "why": "交互式 Demo 要展示的『模型效果』就是这里算出的评估指标，指标口径不一致会让展示自相矛盾"
+          }
+        ],
+        "source_knowledge": "st.feature"
+      },
+      {
+        "id": "K4",
+        "name": "数学建模流程与论文表达",
+        "level": "must",
+        "keywords": [
+          [
+            "数学建模",
+            "建模"
+          ],
+          [
+            "论文",
+            "摘要",
+            "模型假设"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K1",
+            "why": "描述统计里的均值、方差、相关性是对数据矩阵的批量运算，这是论文里数据描述一节的数字来源"
+          },
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K2",
+            "why": "把原始数据整理成可直接写进论文的统计量表，靠的是 pandas 的分组与聚合"
+          },
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K5",
+            "why": "论文结论挂靠的数据必须是可复现、可追溯的落盘文件，而不是某次交互式会话里临时算出的数字"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-04",
+            "knowledge_id": "K3",
+            "why": "评测视角（比分数、追排行榜）与表达视角（讲清模型假设与推导）是同一建模过程的两种输出，混淆会把论文写成 Kaggle 提交说明"
+          }
+        ],
+        "applies_to": [
+          {
+            "course_id": "py-agent-05",
+            "why": "报告与 Demo 里出现的每条数字和每张图都要能追到代码与数据来源，否则整份报告不可信"
+          }
+        ],
+        "source_knowledge": "st.model"
+      }
+    ]
+  },
+  "theory": [
+    {
+      "atom_id": "M1",
+      "brief": "向量化与广播：Python 逐元素循环慢在哪里，数组运算替掉了什么"
+    },
+    {
+      "atom_id": "M3",
+      "brief": "一次划分不可信：交叉验证为什么比单次留出更能反映真实泛化"
+    },
+    {
+      "atom_id": "M4",
+      "brief": "建模论文的标准骨架与最常被扣分的地方"
+    }
+  ],
+  "self_check": [
+    {
+      "id": "Q1",
+      "question": "用原生 Python 实现矩阵乘法要怎么写？为什么同样的计算用 NumPy 会快很多？",
+      "points": [
+        "P1 说清算法：结果矩阵第 i 行第 j 列是 A 的第 i 行与 B 的第 j 列逐元素相乘再求和，A 的列数必须等于 B 的行数",
+        "P2 说清写法：用嵌套列表推导式或三重循环直接实现，并指出不应该对每个元素都调用一次库函数或反复重建临时列表",
+        "P3 说清向量化的收益：NumPy 把整块同构数据交给 C 层循环并连续访问内存，省掉了 Python 层逐元素的解释器开销与对象装箱；同时点出维度不匹配要显式报错而不是静默算错"
+      ]
+    },
+    {
+      "id": "Q2",
+      "question": "pandas 里 `df[df.a > 0]['b'] = 1` 经常改了却没有任何效果，为什么？正确写法是什么？",
+      "points": [
+        "P1 说明这是链式赋值：布尔索引先产出一个新对象，对它的赋值落在临时副本上，原 DataFrame 不变；pandas 只会给出 SettingWithCopyWarning 而不报错",
+        "P2 给出正确写法：用单个 `.loc[行条件, 列名]` 一次定位后赋值，例如 `df.loc[df['a'] > 0, 'b'] = 1`",
+        "P3 区分三种索引：`[]` 按列名选列，`loc` 按标签选区，`iloc` 按整数位置选区；并说明确实需要副本时应显式 `.copy()` 而不是靠链式赋值"
+      ]
+    },
+    {
+      "id": "Q3",
+      "question": "类别不平衡时准确率为什么不可信？要换成什么，怎么得到不虚高的分数？",
+      "points": [
+        "P1 指出不平衡数据下把所有样本预测为多数类就能拿到很高的准确率，而少数类一条都没识别出来，这个数字本质上是无信息的",
+        "P2 给出替代：看少数类的精确率/召回率/F1、混淆矩阵与 ROC-AUC（或 PR-AUC）这类不随类别比例虚高的指标；若指标只认准确率，也要说明基线是多少",
+        "P3 给出获取可信分数的方法：用分层 K 折交叉验证；阈值与超参数只能在训练/验证集上调，不能反复看测试集，否则就是数据泄漏，会得到一个上线就崩的分数"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "t_py04_1",
+      "type": "code",
+      "title": "矩阵运算：原生实现与 NumPy 对照",
+      "brief": "写 work/matrix.py：用原生 Python（嵌套列表推导式或循环）实现矩阵转置与矩阵乘法，再用 NumPy 实现同样两个运算，对同一组测试数据断言两者结果一致。必须包含一个 2×3 与一个 3×2 的输入，以及一个维度不匹配的用例；用列表推导式而不是显式的下标累加来写原生版本",
+      "deliverable": "work/matrix.py",
+      "acceptance": [
+        "原生实现没有依赖 NumPy 也不需要任何一个第三方库",
+        "断言通过：原生结果与 NumPy 结果逐元素相等（用 assert 或 pytest 均可）",
+        "维度不匹配时抛出明确异常或打印可读的错误信息，而不是静默给出错误结果",
+        "脚本能直接运行并以 0 退出码结束，无残留调试打印"
+      ],
+      "atoms": [
+        "K1"
+      ],
+      "est_minutes": 60
+    },
+    {
+      "task_id": "t_py04_2",
+      "type": "code",
+      "title": "Pandas 清洗与分组聚合",
+      "brief": "写 work/notice_stats.py：读取第 3 课爬到的 JSON/CSV（没有就用自造的等价数据并说明），完成去重、缺失值处理、类型转换，然后按某个类别字段 groupby 聚合，回答两个具体问题（例如每月通知条数、各栏目平均标题长度）。必须打印清洗前后各有多少行、每种清洗策略处理掉多少条",
+      "deliverable": "work/notice_stats.py",
+      "acceptance": [
+        "有去重与缺失值处理，并说明每种策略的理由（为什么删而不是填）",
+        "groupby 聚合结果正确，并回答了两个明确的问题",
+        "打印清洗前后的行数对比",
+        "不使用 for 循环逐行遍历 DataFrame（可用 apply 或向量化操作）"
+      ],
+      "atoms": [
+        "K2",
+        "K1"
+      ],
+      "est_minutes": 75
+    },
+    {
+      "task_id": "t_py04_3",
+      "type": "transfer",
+      "title": "换一个数据集走完整建模流程",
+      "brief": "另选一个数据集（Kaggle 入门题、sklearn 自带数据集或你自己的数据均可），走完「先划分数据 → 特征工程 → 基线模型 → 分层 K 折交叉验证 → 换模型或加特征再评估」的流程。必须与一个明确的基线对比（多数类预测、均值预测或最简模型），并写出结论",
+      "acceptance": [
+        "真的换了数据集（不是把课上练习原样改个名字提交）",
+        "有分层 K 折交叉验证，报告折内均值和波动而不是只报一个数",
+        "有明确的基线与改进后对比，且指标口径一致；不平衡数据不得只报准确率",
+        "work/t_py04_3.md 写清相对基线改了什么、为什么有效或无效"
+      ],
+      "atoms": [
+        "K3",
+        "K2"
+      ],
+      "est_minutes": 90,
+      "deliverable": "work/t_py04_3.md"
+    },
+    {
+      "task_id": "t_py04_4",
+      "type": "note",
+      "title": "写第 4 课笔记",
+      "brief": "覆盖本课全部 must 知识点，内容按你的理解组织：K1 必须写清向量化为什么快以及广播规则；K2 必须写清 loc/iloc 与链式赋值的坑；K3 必须写清为什么单次划分不可信、交叉验证怎么用；K4 必须给出建模论文的标准骨架。全部用自己的话写",
+      "deliverable": "notes/py-agent-04.md",
+      "atoms": [
+        "K1",
+        "K2",
+        "K3",
+        "K4"
+      ],
+      "est_minutes": 40,
+      "acceptance": [
+        "覆盖本课全部必会知识点（矩阵/NumPy、Pandas 清洗与分组聚合、特征工程与评估、建模流程）",
+        "必须包含「为什么」而不只是「是什么」：至少对 2 个知识点写出你的理解与适用边界",
+        "有一条自己的踩坑记录（报错原文 + 怎么定位 + 最后怎么解决）",
+        "用你自己的话写，不要整段抄资料；代码块标明语言"
+      ]
+    }
+  ],
+  "materials": {
+    "note": "种子资料，待真实资料替换",
+    "atoms": [
+      {
+        "id": "M1",
+        "type": "concept",
+        "knowledge_id": "K1",
+        "text": "向量化指把逐元素循环交给数组库在 C 层一次性完成，广播则是让形状不同的数组按规则对齐后参与运算：先逐维比较形状，相等或其中一维为 1 就能广播，否则报错。NumPy 因此比纯 Python 循环快一到两个数量级，代码也更短。注意 * 是逐元素乘，矩阵乘法要用 @ 或 np.dot。"
+      },
+      {
+        "id": "M2",
+        "type": "pitfall",
+        "knowledge_id": "K2",
+        "text": "对布尔筛选结果再赋值（如 df[df.a>0]['b']=1）属于链式赋值，赋到的是临时副本，原 DataFrame 不会改变，pandas 只给 SettingWithCopyWarning。正确写法是用单个 .loc[行条件, 列名] 完成定位与赋值；需要独立副本时显式调用 .copy()。常见清洗动作：drop_duplicates 去重、dropna/fillna 处理缺失、astype 统一类型。"
+      },
+      {
+        "id": "M3",
+        "type": "pitfall",
+        "knowledge_id": "K3",
+        "text": "类别不平衡时准确率会撒谎：全预测多数类也能得到很高的准确率。更合适的指标是少数类的精确率、召回率、F1、混淆矩阵以及 ROC-AUC（极度不平衡时优先看 PR-AUC）。单次训练/测试划分的分数波动很大，应该用分层 K 折交叉验证报告折内均值与波动，并且只在训练集上调参，反复看测试集就是数据泄漏。"
+      },
+      {
+        "id": "M4",
+        "type": "concept",
+        "knowledge_id": "K4",
+        "text": "数学建模论文的常规结构是：摘要与关键词、问题重述、模型假设、符号说明、模型建立与求解、结果分析与检验（敏感性/误差分析）、优缺点与推广、参考文献与附录代码。最常见的失分点是没有模型假设、符号前后不一致、结论的数字找不到对应的数据与代码。Kaggle 的『好』由排行榜分数定义，建模论文的『好』由逻辑与可解释性定义，两者验收标准不同。"
+      }
+    ]
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": true,
+    "min_practice_lines": 120
+  }
+}

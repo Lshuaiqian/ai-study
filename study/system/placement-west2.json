@@ -1,0 +1,105 @@
+{
+  "placement_id": "west2-ai-2026@lshuaiqian",
+  "system_id": "west2-ai-2026",
+  "assessed_at": "2026-09-16",
+  "method": "从既有产物反推，不靠自述。每条状态都带证据；没有证据的一律 unknown，不假装知道。",
+
+  "evidence": [
+    { "source": "E:\\Agents\\python-tutor\\progress.json",
+      "says": "lessons_done = {1: Python语法+OOP, 2: 网络基础与HTTP/JSON}；current_lesson = 3" },
+    { "source": "E:\\Agents\\python-tutor\\practice\\lesson2_http.py",
+      "says": "urllib 发请求；正确区分 HTTPError(.code) 与 URLError(.reason)；自定义 User-Agent；返回值类型提示；main() + __main__ 保护" },
+    { "source": "E:\\Agents\\python-tutor\\practice\\lesson3_request.py",
+      "says": "requests.get(timeout=20)；status_code 分支；403 读 X-RateLimit-Remaining/Reset 做配额诊断；raise_for_status 捕获 HTTPError" },
+    { "source": "E:\\Agents\\python-tutor\\practice\\lesson1cpp_to_py.py",
+      "says": "列表求和与打印（环境验证级别）" },
+    { "source": "E:\\Agents\\python-tutor\\history.json",
+      "says": "22 条对话；曾把「连接失败是否抛异常」说反，导师标注『这正是你反复错的同一个点』；json 与 text 的关系先说反后纠正" },
+    { "source": "本机环境探测",
+      "says": "Python 3.11.8 在 E:\\Develop\\Python；Git 在 E:\\Develop\\Git；Java 后端项目 Draw 在 C:\\Users\\Lshuaiqian\\IdeaProjects\\Draw" },
+    { "source": "pip 依赖探测",
+      "says": "requests 已装；**bs4 未安装** —— 而导师第 4 课让用 BeautifulSoup，会直接卡住" }
+  ],
+
+  "knowledge_status": {
+    "env.setup": { "status": "met", "evidence": "有可用的 Python 3.11.8 环境，且 tutor / study 都在此环境上跑通" },
+    "env.ide": { "status": "partial", "evidence": "装了 PyCharm / IntelliJ（有 IdeaProjects），但没看到格式化与类型检查配置的痕迹" },
+    "env.tool": { "status": "met", "evidence": "会用截图工具（本会话用真实终端截图验证过视觉识别）；会自行找镜像源" },
+    "git.basic": { "status": "met", "evidence": "本机装有 Git；能正常 clone 与查看 diff" },
+    "git.spec": { "status": "unknown", "evidence": "没有 .gitignore、commit 信息规范的产物可查" },
+    "md.syntax": { "status": "met", "evidence": "花笺笔记、study/docs 全部是 Markdown 产物" },
+    "md.apple": { "status": "partial", "evidence": "产出的 Markdown 中英文空格基本规范，但没有跑过 markdownlint 的记录" },
+    "code.style": { "status": "met", "evidence": "lesson2_http.py 有类型提示、main() 封装、命名与缩进规范" },
+    "algo.basic": { "status": "unknown", "evidence": "只有列表求和级别的小练习，没有 OI 题目的产物" },
+
+    "py.syntax": { "status": "met", "evidence": "lesson1cpp_to_py.py；且 tutor 第 1 课已判定通过" },
+    "py.func": { "status": "met", "evidence": "lesson2_http.py 的 get_info()/main()，含返回值类型提示" },
+    "py.module": { "status": "met", "evidence": "lesson2_http.py 的 if __name__ == '__main__' 保护 + from ... import" },
+    "py.oop": { "status": "partial", "evidence": "有扎实 C/C++ 基础且 tutor 判定第 1 课通过，但练习区里看不到 class 产物" },
+    "py.magic": { "status": "unknown", "evidence": "无产物" },
+    "py.decorator": { "status": "unknown", "evidence": "无产物" },
+    "py.comprehension": { "status": "unknown", "evidence": "无产物" },
+    "py.regex": { "status": "unknown", "evidence": "无产物" },
+    "py.fileio": { "status": "partial", "evidence": "用了 json 序列化，但没有 open() 读写文件的产物" },
+    "cli.basic": { "status": "met", "evidence": "能自行运行脚本、使用 git 与终端" },
+
+    "net.http": { "status": "met", "evidence": "lesson2_http.py 与 lesson3_request.py 都正确处理了状态码与请求头（但见 weak_points 第 1 条）" },
+    "spider.requests": { "status": "met", "evidence": "lesson3_request.py：requests.get + headers + timeout + .json()" },
+    "spider.parse": { "status": "not_started", "evidence": "无任何 HTML 解析产物；且 bs4 未安装" },
+    "spider.dynamic": { "status": "not_started", "evidence": "无 Selenium / 抓接口产物" },
+    "spider.polite": { "status": "partial", "evidence": "自定义 User-Agent 已做；robots.txt 与限速 sleep 无产物" },
+    "spider.anti": { "status": "met", "evidence": "lesson3_request.py 的 403 配额诊断与 raise_for_status 处理，超出基础要求" },
+    "data.pandas": { "status": "not_started", "evidence": "无产物" },
+    "data.plot": { "status": "not_started", "evidence": "无产物" },
+    "data.matrix": { "status": "not_started", "evidence": "无产物" }
+  },
+
+  "decisions": [
+    {
+      "course_id": "west2-f0",
+      "decision": "fast_pass",
+      "decided_at": "2026-09-16",
+      "decided_by": "学习者",
+      "reason": "决定直接进 F2。F0 剩下的都是工具配置类（IDE 格式化、markdownlint、OI 题），可以边做爬虫边补。",
+      "carried_over": ["env.ide", "git.spec", "md.apple", "algo.basic"],
+      "recheck_at": "F2 结束前"
+    },
+    {
+      "course_id": "west2-f1",
+      "decision": "fast_pass",
+      "decided_at": "2026-09-16",
+      "decided_by": "学习者",
+      "reason": "有扎实 C/C++ 基础，tutor 第 1 课已判定通过；且练习代码已体现函数/模块/类型提示。缺的主要是没有产物佐证的部分。",
+      "carried_over": ["py.oop", "py.magic", "py.decorator", "py.comprehension",
+                       "py.regex", "py.fileio"],
+      "recheck_at": "F2 的爬虫/数据分析里会自然用到推导式与文件读写；用到了就地补",
+      "warning": "west2 Task 1 的「宝可梦对战」作业要用继承与魔术方法；如果做 F2 时发现类写不顺，说明这里欠账了"
+    }
+  ],
+
+  "weak_points": [
+    {
+      "knowledge": "net.http",
+      "issue": "口头解释时说反：把「连接不上」答成不抛异常（实际 TCP 连接失败同样抛 URLError）",
+      "evidence": "history.json 中导师点评『Q4 又说反了——这正是你反复错的同一个点』",
+      "action": "进复习队列；下次用「写代码验证」而不是「背结论」的方式过一遍"
+    },
+    {
+      "knowledge": "spider.parse",
+      "issue": "导师第 4 课要求用 BeautifulSoup，但本机 **bs4 未安装**，照着做会直接 ModuleNotFoundError",
+      "evidence": "pip 依赖探测：requests 已装、bs4 缺失",
+      "action": "先装 bs4，或按 west2 原文改用标准库 html.parser（课程里两条路都要会）"
+    },
+    {
+      "knowledge": "env.ide",
+      "issue": "没有配置保存时自动格式化与类型检查，代码风格全靠自觉",
+      "evidence": "无 .vscode/settings.json 或 PyCharm 配置产物",
+      "action": "装 Pylance/basedpyright + Ruff，打开保存时格式化（west2 Task 0 明确要求）"
+    }
+  ],
+
+  "notes": [
+    "导师的进度文件（current_lesson=3）与对话历史（说『进入第 4 课』）不一致，且 history 里的第 4 课讲的是爬虫，而 python-tutor 的 lessons.json 里第 4 课是数据分析 —— 导师偏离了自己的课程表。",
+    "本文件只记录『判断』，不改课程内容本身；课程如何调整由 system/split.py 应用本文件后决定。"
+  ]
+}

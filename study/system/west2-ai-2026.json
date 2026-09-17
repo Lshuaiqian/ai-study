@@ -1,0 +1,1638 @@
+{
+  "system_id": "west2-ai-2026",
+  "title": "西二在线 AI 方向 · 2026 考核知识体系",
+  "source": {
+    "repo": "https://github.com/west2-online/learn-AI",
+    "license": "GPL-3.0",
+    "described_as": "福州大学西二在线 AI 学习路线（考核指南）",
+    "fetched_at": "2026-09-16",
+    "note": "内容依据仓库 tasks(2026)/ 下的 foundation / application / scientific-research / others / commit-task。本文件是【自上而下】流程的源头：先建体系，再由 system/split.py 拆成课。"
+  },
+  "doc_convention": {
+    "structure": [
+      "学习目的",
+      "学习内容",
+      "学习要求（可能没有）",
+      "作业",
+      "推荐教程与参考资料"
+    ],
+    "note": "west2 每份任务文档都按这个结构写。课程笔记模板沿用同一结构，便于对照。"
+  },
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "计算机基础素养",
+      "desc": "环境配置、终端、Git、Markdown 规范、提问方式"
+    },
+    {
+      "id": "D2",
+      "name": "Python 语言能力",
+      "desc": "语法、函数、模块、OOP、魔术方法、装饰器、正则、文件"
+    },
+    {
+      "id": "D3",
+      "name": "数据获取",
+      "desc": "HTTP、requests、HTML 解析、动态页面、接口抓取、礼貌爬取"
+    },
+    {
+      "id": "D4",
+      "name": "数据分析与可视化",
+      "desc": "Pandas、Matplotlib、矩阵与统计描述"
+    },
+    {
+      "id": "D5",
+      "name": "AI 认知与原理",
+      "desc": "ML/DL 区别、训练流程、Transformer 思想、零样本与指令模型"
+    },
+    {
+      "id": "D6",
+      "name": "AI 应用工程",
+      "desc": "LLM 调用、Prompt 工程、YOLO、Vibe Coding、前后端集成"
+    },
+    {
+      "id": "D7",
+      "name": "工程规范与表达",
+      "desc": "PEP 8、代码风格、提交规范、文档、答辩表达"
+    }
+  ],
+  "stages": [
+    {
+      "id": "foundation",
+      "name": "Foundation（共通路线）",
+      "requires": [],
+      "desc": "所有人都要走完，Task 0 → Task 4"
+    },
+    {
+      "id": "branch",
+      "name": "分流决策",
+      "requires": [
+        "foundation"
+      ],
+      "desc": "保研进实验室选 Scientific Research；找工作选 Application"
+    },
+    {
+      "id": "research",
+      "name": "Scientific Research 路线",
+      "requires": [
+        "branch"
+      ]
+    },
+    {
+      "id": "application",
+      "name": "Application 路线",
+      "requires": [
+        "branch"
+      ],
+      "desc": "必须通过 Application 0 门槛任务才能继续"
+    },
+    {
+      "id": "routine",
+      "name": "方向日常训练",
+      "requires": [
+        "foundation"
+      ]
+    }
+  ],
+  "knowledge": [
+    {
+      "id": "env.setup",
+      "name": "Python 环境安装与虚拟环境（venv / uv / conda）",
+      "dim": "D1",
+      "level": "must",
+      "keywords": [
+        [
+          "环境",
+          "安装",
+          "Python 3.12"
+        ],
+        [
+          "虚拟环境",
+          "venv",
+          "uv",
+          "conda"
+        ]
+      ]
+    },
+    {
+      "id": "env.ide",
+      "name": "IDE 与编辑器配置（VS Code / PyCharm、插件、格式化）",
+      "dim": "D1",
+      "level": "should",
+      "keywords": [
+        [
+          "IDE",
+          "VS Code",
+          "PyCharm"
+        ],
+        [
+          "插件",
+          "Pylance",
+          "格式化",
+          "black",
+          "ruff"
+        ]
+      ]
+    },
+    {
+      "id": "env.tool",
+      "name": "基本工具与镜像源（浏览器、截图、文件管理、清华源）",
+      "dim": "D1",
+      "level": "must",
+      "keywords": [
+        [
+          "截图"
+        ],
+        [
+          "镜像",
+          "清华源",
+          "pip install -i"
+        ],
+        [
+          "文件管理",
+          "浏览器"
+        ]
+      ]
+    },
+    {
+      "id": "git.basic",
+      "name": "Git 基础与 GitHub 仓库（add / commit / push）",
+      "dim": "D1",
+      "level": "must",
+      "keywords": [
+        [
+          "git"
+        ],
+        [
+          "GitHub",
+          "仓库",
+          "commit",
+          "push"
+        ]
+      ]
+    },
+    {
+      "id": "git.spec",
+      "name": "Git 规范：.gitignore、大文件、commit 信息",
+      "dim": "D7",
+      "level": "must",
+      "keywords": [
+        [
+          "gitignore",
+          ".gitignore"
+        ],
+        [
+          "commit 信息",
+          "提交规范",
+          "大文件"
+        ]
+      ]
+    },
+    {
+      "id": "md.syntax",
+      "name": "Markdown 语法（多级标题 / 图片 / 链接 / 代码块 / 表格）",
+      "dim": "D1",
+      "level": "must",
+      "keywords": [
+        [
+          "Markdown"
+        ],
+        [
+          "标题",
+          "图片",
+          "链接",
+          "代码块",
+          "表格"
+        ]
+      ]
+    },
+    {
+      "id": "md.apple",
+      "name": "Apple 中文排版规范（中英文空格、中文数字空格、数字单位、全角标点）",
+      "dim": "D7",
+      "level": "must",
+      "keywords": [
+        [
+          "中英文",
+          "空格"
+        ],
+        [
+          "全角",
+          "半角",
+          "标点"
+        ],
+        [
+          "markdownlint",
+          "Lint",
+          "规范检查"
+        ]
+      ]
+    },
+    {
+      "id": "code.style",
+      "name": "代码风格：PEP 8、main 函数封装、类型检查",
+      "dim": "D7",
+      "level": "should",
+      "keywords": [
+        [
+          "PEP 8",
+          "PEP8"
+        ],
+        [
+          "main 函数",
+          "__main__"
+        ],
+        [
+          "类型",
+          "类型提示"
+        ]
+      ]
+    },
+    {
+      "id": "algo.basic",
+      "name": "基础算法题能力（输入输出、模拟、字符串处理）",
+      "dim": "D2",
+      "level": "must",
+      "keywords": [
+        [
+          "洛谷",
+          "AtCoder",
+          "OI"
+        ],
+        [
+          "算法",
+          "模拟",
+          "字符串"
+        ]
+      ]
+    },
+    {
+      "id": "py.syntax",
+      "name": "Python 基础语法（类型、流程控制、常用容器）",
+      "dim": "D2",
+      "level": "must",
+      "keywords": [
+        [
+          "语法",
+          "变量",
+          "类型"
+        ],
+        [
+          "循环",
+          "条件",
+          "判断"
+        ],
+        [
+          "list",
+          "dict",
+          "tuple",
+          "set"
+        ]
+      ]
+    },
+    {
+      "id": "py.func",
+      "name": "函数与参数（默认值、可变参数、作用域）",
+      "dim": "D2",
+      "level": "must",
+      "keywords": [
+        [
+          "函数",
+          "def"
+        ],
+        [
+          "参数",
+          "作用域"
+        ]
+      ]
+    },
+    {
+      "id": "py.module",
+      "name": "模块与包（import、__main__ 保护）",
+      "dim": "D2",
+      "level": "must",
+      "keywords": [
+        [
+          "import",
+          "模块",
+          "包"
+        ],
+        [
+          "__main__"
+        ]
+      ]
+    },
+    {
+      "id": "py.oop",
+      "name": "类与对象（构造函数、实例属性与方法）",
+      "dim": "D2",
+      "level": "must",
+      "keywords": [
+        [
+          "class",
+          "类",
+          "对象"
+        ],
+        [
+          "__init__",
+          "构造函数",
+          "self"
+        ]
+      ]
+    },
+    {
+      "id": "py.magic",
+      "name": "魔术方法（__str__ / __eq__ / __len__ 等）",
+      "dim": "D2",
+      "level": "must",
+      "keywords": [
+        [
+          "魔术方法",
+          "magic method",
+          "dunder"
+        ],
+        [
+          "__str__",
+          "__eq__",
+          "__len__",
+          "__add__"
+        ]
+      ]
+    },
+    {
+      "id": "py.decorator",
+      "name": "装饰器（函数装饰、计时与日志）",
+      "dim": "D2",
+      "level": "should",
+      "keywords": [
+        [
+          "装饰器",
+          "decorator"
+        ],
+        [
+          "functools",
+          "wraps"
+        ]
+      ]
+    },
+    {
+      "id": "py.comprehension",
+      "name": "推导式（含嵌套推导式做矩阵转置）",
+      "dim": "D2",
+      "level": "must",
+      "keywords": [
+        [
+          "推导式",
+          "comprehension"
+        ],
+        [
+          "嵌套",
+          "矩阵",
+          "转置"
+        ]
+      ]
+    },
+    {
+      "id": "py.regex",
+      "name": "正则表达式基础",
+      "dim": "D2",
+      "level": "should",
+      "keywords": [
+        [
+          "正则",
+          "re",
+          "regex"
+        ],
+        [
+          "匹配",
+          "pattern"
+        ]
+      ]
+    },
+    {
+      "id": "py.fileio",
+      "name": "文件读写与编码",
+      "dim": "D2",
+      "level": "must",
+      "keywords": [
+        [
+          "文件",
+          "open"
+        ],
+        [
+          "encoding",
+          "utf-8",
+          "编码"
+        ]
+      ]
+    },
+    {
+      "id": "cli.basic",
+      "name": "终端基本使用（路径、管道、运行脚本）",
+      "dim": "D1",
+      "level": "must",
+      "keywords": [
+        [
+          "终端",
+          "命令行",
+          "shell"
+        ],
+        [
+          "路径",
+          "cd",
+          "管道"
+        ]
+      ]
+    },
+    {
+      "id": "net.http",
+      "name": "HTTP 方法、状态码与请求头",
+      "dim": "D3",
+      "level": "must",
+      "keywords": [
+        [
+          "HTTP"
+        ],
+        [
+          "状态码",
+          "200",
+          "403",
+          "429",
+          "404"
+        ],
+        [
+          "请求头",
+          "Header",
+          "User-Agent"
+        ]
+      ]
+    },
+    {
+      "id": "spider.requests",
+      "name": "requests 用法与会话复用",
+      "dim": "D3",
+      "level": "must",
+      "keywords": [
+        [
+          "requests"
+        ],
+        [
+          "Session",
+          "会话",
+          "cookie"
+        ]
+      ]
+    },
+    {
+      "id": "spider.parse",
+      "name": "HTML 解析（BeautifulSoup / 选择器）",
+      "dim": "D3",
+      "level": "must",
+      "keywords": [
+        [
+          "解析",
+          "BeautifulSoup",
+          "bs4",
+          "选择器"
+        ],
+        [
+          "html.parser",
+          "正则解析"
+        ]
+      ]
+    },
+    {
+      "id": "spider.dynamic",
+      "name": "动态页面：Selenium 与接口抓取",
+      "dim": "D3",
+      "level": "must",
+      "keywords": [
+        [
+          "Selenium",
+          "动态",
+          "渲染"
+        ],
+        [
+          "接口",
+          "抓包",
+          "XHR",
+          "JSON 接口"
+        ]
+      ]
+    },
+    {
+      "id": "spider.polite",
+      "name": "礼貌爬取（User-Agent / robots.txt / 限速）",
+      "dim": "D3",
+      "level": "must",
+      "keywords": [
+        [
+          "robots"
+        ],
+        [
+          "限速",
+          "间隔",
+          "sleep",
+          "频率"
+        ],
+        [
+          "User-Agent"
+        ]
+      ]
+    },
+    {
+      "id": "spider.anti",
+      "name": "反爬应对：重试、退避、登录态",
+      "dim": "D3",
+      "level": "should",
+      "keywords": [
+        [
+          "反爬"
+        ],
+        [
+          "重试",
+          "退避",
+          "retry"
+        ]
+      ]
+    },
+    {
+      "id": "data.pandas",
+      "name": "Pandas 基础（读取、清洗、分组、聚合）",
+      "dim": "D4",
+      "level": "must",
+      "keywords": [
+        [
+          "pandas",
+          "DataFrame"
+        ],
+        [
+          "清洗",
+          "分组",
+          "groupby",
+          "聚合"
+        ]
+      ]
+    },
+    {
+      "id": "data.plot",
+      "name": "Matplotlib 绘图（散点、曲线、标注）",
+      "dim": "D4",
+      "level": "must",
+      "keywords": [
+        [
+          "matplotlib",
+          "绘图",
+          "画图"
+        ],
+        [
+          "曲线",
+          "散点",
+          "Logistic"
+        ]
+      ]
+    },
+    {
+      "id": "data.matrix",
+      "name": "矩阵操作（NumPy / 原生实现）",
+      "dim": "D4",
+      "level": "must",
+      "keywords": [
+        [
+          "矩阵",
+          "matrix"
+        ],
+        [
+          "numpy",
+          "转置",
+          "乘法"
+        ]
+      ]
+    },
+    {
+      "id": "ai.pipeline",
+      "name": "HuggingFace pipeline 与零样本分类",
+      "dim": "D5",
+      "level": "must",
+      "keywords": [
+        [
+          "pipeline"
+        ],
+        [
+          "零样本",
+          "zero-shot",
+          "分类"
+        ]
+      ]
+    },
+    {
+      "id": "ai.scoring",
+      "name": "用语言模型给文本打分",
+      "dim": "D5",
+      "level": "should",
+      "keywords": [
+        [
+          "打分",
+          "评分",
+          "score"
+        ]
+      ]
+    },
+    {
+      "id": "ai.bert",
+      "name": "BERT 家族与 [MASK] 填空",
+      "dim": "D5",
+      "level": "should",
+      "keywords": [
+        [
+          "BERT"
+        ],
+        [
+          "MASK",
+          "填空",
+          "掩码"
+        ]
+      ]
+    },
+    {
+      "id": "ai.instruct",
+      "name": "指令微调模型与对话消息构造",
+      "dim": "D5",
+      "level": "must",
+      "keywords": [
+        [
+          "指令",
+          "instruct",
+          "对话"
+        ],
+        [
+          "messages",
+          "role",
+          "system"
+        ]
+      ]
+    },
+    {
+      "id": "ai.prompt",
+      "name": "Prompt 工程基础",
+      "dim": "D6",
+      "level": "must",
+      "keywords": [
+        [
+          "prompt",
+          "提示词",
+          "提示工程"
+        ]
+      ]
+    },
+    {
+      "id": "ai.vibe",
+      "name": "Vibe Coding：与 AI 协作写代码",
+      "dim": "D6",
+      "level": "should",
+      "keywords": [
+        [
+          "vibe coding",
+          "AI 协作",
+          "结对"
+        ]
+      ]
+    },
+    {
+      "id": "career.split",
+      "name": "分流认知：科研路线 vs 应用路线",
+      "dim": "D7",
+      "level": "must",
+      "keywords": [
+        [
+          "分流",
+          "科研",
+          "应用",
+          "方向"
+        ]
+      ]
+    },
+    {
+      "id": "career.answer",
+      "name": "答辩准备：原理 + 为什么 + 坑 + 对比",
+      "dim": "D7",
+      "level": "must",
+      "keywords": [
+        [
+          "答辩",
+          "追问",
+          "知识储备"
+        ]
+      ]
+    },
+    {
+      "id": "app.tiktok",
+      "name": "TikTok-Demo 的需求拆解与实现",
+      "dim": "D6",
+      "level": "must",
+      "keywords": [
+        [
+          "TikTok",
+          "Demo",
+          "需求"
+        ]
+      ]
+    },
+    {
+      "id": "app.stack",
+      "name": "最小前后端集成与联调",
+      "dim": "D6",
+      "level": "must",
+      "keywords": [
+        [
+          "前后端",
+          "联调",
+          "接口对接",
+          "集成"
+        ]
+      ]
+    },
+    {
+      "id": "ai.mldl",
+      "name": "机器学习与深度学习的区别",
+      "dim": "D5",
+      "level": "must",
+      "keywords": [
+        [
+          "机器学习",
+          "深度学习",
+          "区别"
+        ],
+        [
+          "监督",
+          "无监督",
+          "神经网络"
+        ]
+      ]
+    },
+    {
+      "id": "ai.yolo",
+      "name": "YOLO 基本使用（目标检测）",
+      "dim": "D6",
+      "level": "must",
+      "keywords": [
+        [
+          "YOLO"
+        ],
+        [
+          "目标检测",
+          "检测",
+          "标注框"
+        ]
+      ]
+    },
+    {
+      "id": "ai.llm.think",
+      "name": "现代 LLM 思想（Transformer、自回归、对齐）",
+      "dim": "D5",
+      "level": "must",
+      "keywords": [
+        [
+          "Transformer",
+          "注意力",
+          "attention"
+        ],
+        [
+          "自回归",
+          "对齐",
+          "RLHF",
+          "LLM 思想"
+        ]
+      ]
+    },
+    {
+      "id": "ml.classic",
+      "name": "传统机器学习算法之间的区别",
+      "dim": "D5",
+      "level": "must",
+      "keywords": [
+        [
+          "sklearn",
+          "传统机器学习"
+        ],
+        [
+          "回归",
+          "分类",
+          "聚类",
+          "决策树",
+          "SVM"
+        ]
+      ]
+    },
+    {
+      "id": "dl.train",
+      "name": "生成式 AI 的训练流程",
+      "dim": "D5",
+      "level": "must",
+      "keywords": [
+        [
+          "训练流程",
+          "预训练",
+          "微调",
+          "fine-tune"
+        ]
+      ]
+    },
+    {
+      "id": "dl.nn2",
+      "name": "两层神经网络手写实现",
+      "dim": "D5",
+      "level": "must",
+      "keywords": [
+        [
+          "两层",
+          "神经网络",
+          "反向传播"
+        ],
+        [
+          "梯度",
+          "损失",
+          "loss"
+        ]
+      ]
+    },
+    {
+      "id": "dl.cnn",
+      "name": "CNN 卷积神经网络",
+      "dim": "D5",
+      "level": "must",
+      "keywords": [
+        [
+          "CNN",
+          "卷积",
+          "池化"
+        ]
+      ]
+    },
+    {
+      "id": "dl.branch",
+      "name": "CV / NLP 方向选择与进阶路径",
+      "dim": "D7",
+      "level": "should",
+      "keywords": [
+        [
+          "CV",
+          "NLP",
+          "方向"
+        ],
+        [
+          "CS231n",
+          "CS224n"
+        ]
+      ]
+    },
+    {
+      "id": "be.api",
+      "name": "后端 API 设计与路由",
+      "dim": "D6",
+      "level": "must",
+      "keywords": [
+        [
+          "API",
+          "接口设计",
+          "路由"
+        ]
+      ]
+    },
+    {
+      "id": "be.crud",
+      "name": "CRUD 与数据持久化",
+      "dim": "D6",
+      "level": "must",
+      "keywords": [
+        [
+          "CRUD",
+          "增删改查"
+        ],
+        [
+          "数据库",
+          "持久化",
+          "存储"
+        ]
+      ]
+    },
+    {
+      "id": "be.deploy",
+      "name": "部署与运行环境基础",
+      "dim": "D6",
+      "level": "should",
+      "keywords": [
+        [
+          "部署",
+          "服务器",
+          "云服务器"
+        ]
+      ]
+    },
+    {
+      "id": "fe.gradio",
+      "name": "Gradio 快速搭建界面",
+      "dim": "D6",
+      "level": "should",
+      "keywords": [
+        [
+          "Gradio"
+        ]
+      ]
+    },
+    {
+      "id": "fe.streamlit",
+      "name": "Streamlit 搭建数据应用",
+      "dim": "D6",
+      "level": "should",
+      "keywords": [
+        [
+          "Streamlit"
+        ]
+      ]
+    },
+    {
+      "id": "st.model",
+      "name": "数学建模流程与论文表达",
+      "dim": "D4",
+      "level": "must",
+      "keywords": [
+        [
+          "数学建模",
+          "建模"
+        ],
+        [
+          "论文",
+          "摘要",
+          "模型假设"
+        ]
+      ]
+    },
+    {
+      "id": "st.kaggle",
+      "name": "Kaggle 竞赛流程与提交",
+      "dim": "D4",
+      "level": "must",
+      "keywords": [
+        [
+          "Kaggle",
+          "竞赛"
+        ],
+        [
+          "提交",
+          "排行榜",
+          "baseline"
+        ]
+      ]
+    },
+    {
+      "id": "st.feature",
+      "name": "特征工程与模型评估",
+      "dim": "D4",
+      "level": "must",
+      "keywords": [
+        [
+          "特征工程"
+        ],
+        [
+          "评估",
+          "交叉验证",
+          "准确率",
+          "AUC"
+        ]
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "course_id": "west2-f0",
+      "title": "Foundation Task 0 · 环境搭建",
+      "stage": "foundation",
+      "requires": [],
+      "est_days": 10,
+      "knowledge": [
+        "env.setup",
+        "env.ide",
+        "env.tool",
+        "git.basic",
+        "git.spec",
+        "md.syntax",
+        "md.apple",
+        "code.style",
+        "algo.basic"
+      ],
+      "tasks": [
+        {
+          "id": "t0-1",
+          "type": "code",
+          "title": "作业 1 · 环境搭建与基本工具",
+          "deliverable": "环境截图 + 说明",
+          "brief": "搭好 Python 开发环境；学会正确使用浏览器、文件管理、截图工具；能自由访问需要的网站"
+        },
+        {
+          "id": "t0-2",
+          "type": "note",
+          "title": "作业 2 · Git 基础与第一份 Markdown",
+          "deliverable": "crazy-day.md",
+          "brief": "建 GitHub 仓库 learn-ai-<username>；提交 crazy-day.md，含多级标题/图片/链接/代码块/表格；通过 markdownlint 且满足 Apple 中文排版规范"
+        },
+        {
+          "id": "t0-3",
+          "type": "code",
+          "title": "作业 3 · Hello World",
+          "deliverable": "hello.py",
+          "brief": "打印 Hello, World!，注意大小写与标点"
+        },
+        {
+          "id": "t0-4",
+          "type": "code",
+          "title": "作业 4 · OI 五题",
+          "deliverable": "5 个 .py",
+          "brief": "洛谷 P1001 / P1046 / P5737、AtCoder ARC017A、以及 I_love_ 名字传递模拟题"
+        },
+        {
+          "id": "t0-bonus",
+          "type": "code",
+          "title": "Bonus · 8 + 5 道 Python 小程序",
+          "deliverable": "bonus/",
+          "brief": "基础 8 题（排序/乘法表/字符串/列表/字典/计数/商品类/斗地主发牌）与进阶 5 题（装饰器/排序发牌/矩阵推导式/魔术方法 MyZoo/密码正则）"
+        }
+      ],
+      "学习目的": "在一切开始之前，你应该学会一些计算机的基本素养，例如配环境。\n\n以及一些作为 CSer 最基本的技能。",
+      "学习内容": "- 基本的计算机操作\n- 基本的环境配置\n- Python 语法基础",
+      "学习要求": "本轮考核的目的在于熟悉作为 CSer 最基本的工作环境，以及跑通最基本的几个 Python 程序。",
+      "self_check": [
+        {
+          "id": "Q1",
+          "question": "在你自己的机器上，pip 装包很慢或直接失败，你会怎么排查？",
+          "points": [
+            "说出换镜像源（-i 参数或写进 pip 配置）",
+            "能区分「源的问题」与「网络/代理问题」的排查路径",
+            "知道虚拟环境能隔离依赖、避免污染全局 Python"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "Apple 中文排版规范里，什么时候加空格、什么时候不加？举出至少三条。",
+          "points": [
+            "中英文之间加空格",
+            "中文与数字之间加空格，但数字与单位之间不加",
+            "中文语境用全角标点，代码/英文语境用半角"
+          ]
+        },
+        {
+          "id": "Q3",
+          "question": ".gitignore 是干什么的？如果一个很大的文件已经被 commit 了，再把它写进 .gitignore 还有用吗？",
+          "points": [
+            "说明 .gitignore 决定哪些文件不被 Git 追踪",
+            "指出对**已被追踪**的文件无效，需要先 git rm --cached",
+            "知道大文件不该进仓库（历史里会永久保留，clone 会变慢）"
+          ]
+        }
+      ]
+    },
+    {
+      "course_id": "west2-f1",
+      "title": "Foundation Task 1 · 语法基础与简单面向对象",
+      "stage": "foundation",
+      "requires": [
+        "west2-f0"
+      ],
+      "est_days": 14,
+      "knowledge": [
+        "py.syntax",
+        "py.func",
+        "py.module",
+        "py.oop",
+        "py.magic",
+        "py.decorator",
+        "py.comprehension",
+        "py.regex",
+        "py.fileio",
+        "cli.basic"
+      ],
+      "tasks": [
+        {
+          "id": "t1-1",
+          "type": "code",
+          "title": "作业 1 · 娜比娅偷吃事件",
+          "deliverable": "Nabia_Snack_Incident/",
+          "brief": "按仓库给的故事与判定脚本实现；用对象与文件读写组织代码"
+        },
+        {
+          "id": "t1-2",
+          "type": "code",
+          "title": "作业 2 · 校园·if 恋",
+          "deliverable": "Campus_IF_Love/",
+          "brief": "把故事文本转成可运行的分支剧情程序"
+        },
+        {
+          "id": "t1-3",
+          "type": "code",
+          "title": "作业 3 · 宝可梦对战",
+          "deliverable": "Pokemon/",
+          "brief": "用类与继承实现宝可梦、技能与对战流程"
+        },
+        {
+          "id": "t1-4",
+          "type": "code",
+          "title": "作业 4 · 好玩的东西",
+          "deliverable": "自选",
+          "brief": "自选一个小东西做出来，展示语法与 OOP 掌握度"
+        },
+        {
+          "id": "t1-bonus",
+          "type": "practice",
+          "title": "Bonus · CS61A",
+          "deliverable": "笔记 + 代码",
+          "brief": "跟 CS61A 的部分 lab/hw，补齐函数式与抽象思维"
+        }
+      ],
+      "学习目的": "Life is short, you need Python.\n\n如今，Python 是构建人工智能应用的首选语言之一。因此，熟练掌握其语法是开启 AI 之旅的必备基础。\n\n需要注意的是，不建议将主要精力投入到 [Python 后端](https://github.com/west2-online/learn-python) 开发上。Python 后端虽然开发效率高，适合快速原型验证和中小型项目，但在高并发场景下性能表现不如 [Go](https://github.com/west2-online/learn-go) 和 [Java](https://github.com/west2-online/learn-java)，且在企业级应用和就业市场中的竞争力相对较弱。\n\nPython 也有前端框架（如 Streamlit），适合快速搭建数据展示和 AI 演示应用，但功能和生态远不如 JavaScript / TypeScript 生态系统完善。因此，若要从事专业的 [前端开发](https://github.com/west2-online/learn-frontend)，建议学习主流前端技术栈。",
+      "学习内容": "- 终端的使用\n- Python 基本面向对象基础",
+      "学习要求": "本轮考核的目的在于让你初步接触面向对象编程的思想，并且对终端的使用有一个认知。",
+      "self_check": [
+        {
+          "id": "Q1",
+          "question": "用一句话说清 Python 的 with 语句与 C++ RAII 的关系，并举一个**不是文件**的资源例子。",
+          "points": [
+            "说明 with 通过上下文管理器协议在退出时释放资源",
+            "说出与 RAII 的相同点（作用域结束即释放）与不同点（Python 需显式写 with）",
+            "举出非文件资源：锁、数据库连接、事务、临时目录"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "用嵌套列表推导式把 [[1,2],[3,4]] 转置成 [[1,3],[2,4]]，怎么写？求值顺序是怎样的？",
+          "points": [
+            "写出等价于 [[row[i] for row in m] for i in range(len(m[0]))] 的写法",
+            "说明推导式的求值顺序（写在后面的 for 是外层循环）",
+            "说明与手写 for + append 相比的可读性与性能差异"
+          ]
+        },
+        {
+          "id": "Q3",
+          "question": "什么时候必须用类而不是函数？魔术方法（__str__ / __eq__ / __len__）到底解决什么问题？",
+          "points": [
+            "说明类用于把状态与行为绑在一起",
+            "说明魔术方法让自定义类型融入语言自带协议（长度、打印、相等、运算）",
+            "给出一个实际例子，并说明不用魔术方法会怎样"
+          ]
+        }
+      ]
+    },
+    {
+      "course_id": "west2-f2",
+      "title": "Foundation Task 2 · 网络爬虫与数据分析",
+      "stage": "foundation",
+      "requires": [
+        "west2-f1"
+      ],
+      "est_days": 21,
+      "knowledge": [
+        "net.http",
+        "spider.requests",
+        "spider.parse",
+        "spider.dynamic",
+        "spider.polite",
+        "spider.anti",
+        "data.pandas",
+        "data.plot",
+        "data.matrix"
+      ],
+      "tasks": [
+        {
+          "id": "t2-1",
+          "type": "code",
+          "title": "爬虫 1 · 爬取福大教务通知",
+          "deliverable": "spider/fzu_notice.py",
+          "brief": "抓取福州大学教务处通知列表并结构化保存"
+        },
+        {
+          "id": "t2-2",
+          "type": "code",
+          "title": "爬虫 2 · Selenium 爬取知乎话题",
+          "deliverable": "spider/zhihu.py",
+          "brief": "用 Selenium 处理动态渲染页面"
+        },
+        {
+          "id": "t2-3",
+          "type": "code",
+          "title": "爬虫 3 · 抓接口爬开源之夏项目列表",
+          "deliverable": "spider/ospp.py",
+          "brief": "不解析 HTML，直接找并请求背后的 JSON 接口"
+        },
+        {
+          "id": "t2-4",
+          "type": "code",
+          "title": "爬虫 4 · Open-Meteo",
+          "deliverable": "spider/weather.py",
+          "brief": "调用公开气象 API 并整理成结构化数据"
+        },
+        {
+          "id": "t2-bonus",
+          "type": "code",
+          "title": "Bonus · 爬取 B-Wiki 界面",
+          "deliverable": "spider/bwiki.py",
+          "brief": "综合练习：分页、限速、异常与重试"
+        },
+        {
+          "id": "t2-5",
+          "type": "code",
+          "title": "数据分析 1 · 福大教务情报（Pandas）",
+          "deliverable": "analysis/notice_stats.py",
+          "brief": "用 Pandas 清洗并用分组聚合回答问题"
+        },
+        {
+          "id": "t2-6",
+          "type": "code",
+          "title": "数据分析 2 · Logistic 函数（Matplotlib）",
+          "deliverable": "analysis/logistic.py",
+          "brief": "绘制 Logistic 曲线并标注关键点"
+        },
+        {
+          "id": "t2-7",
+          "type": "code",
+          "title": "数据分析 3 · 矩阵操作",
+          "deliverable": "analysis/matrix.py",
+          "brief": "实现矩阵转置与乘法（可对照 NumPy）"
+        }
+      ],
+      "学习目的": "AI 的训练来源是大量的数据，获取数据有两种方式，第一种是直接下载已有的数据集，第二种是利用网络爬虫爬取想要的数据。\n\n与此同时，学习 AI 离不开数据分析，数据分析有三个最基本的工具：NumPy、Pandas 和 Matplotlib。\n\nNumPy 是批量数值计算的基础库，对于理解向量化编程思想非常重要。\n\nPandas 可以理解为 Excel 的编程版。\n\nMatplotlib 是 Python 生态中比较经典的可视化工具。\n\n虽说未来我们会使用更高级的工具来替代 NumPy，但向量化的编程思想往往是基于 NumPy 的。",
+      "学习内容": "- 爬虫初步学习\n  - 网页抓包工具的使用\n  - 网络请求的处理（requests 库的使用）\n  - 数据的提取（XPath（推荐）、bs4、……）\n  - Selenium 的使用\n  - 基本 API 调用\n\n- 数据分析基本工具学习\n  - NumPy 的基本应用：\n    - 矩阵的基本操作\n    - 广播机制\n    - 简单图像处理\n  - Pandas 的深度应用：\n    - 数据读取与写入（`read_csv`、`to_csv` 等）\n    - 数据清洗（处理缺失值、重复值、异常值）\n    - 数据筛选与高级索引（`loc`、`iloc`、布尔索引）\n    - 数据的处理与变换（`groupby`、`apply`、`merge`）\n  - 数据可视化入门：\n    - 学习使用 `matplotlib` 绘制常见的统计图形。\n    - （选学）了解 `plotly`、`pyecharts` 等更现代、更具交互性的可视化库。",
+      "学习要求": "对于爬虫，本轮学习内容不会有太高的要求（毕竟我们不是专门搞爬虫的）。你只需要掌握最基础的能力：使用 requests 发起请求、使用 XPath 等工具进行数据提取、使用更强大的浏览器模拟工具 Selenium（它能有效应对许多反爬机制），以及阅读文档并通过 API 获取数据。\n\n对于 httpx 等支持并发的工具，这里不是重点（httpx 在非并发场景下和 requests 写法几乎一致）。因为后续爬虫大多基于 API，而这类 API 通常会有限速（比如一秒只能请求一次），不像福大教务处，只要你连接校园网就可以随便爬。\n\n虽说不是重点，但这门技术是你不得不掌握的知识。当某日陷入训练数据丢失，或者曾经写的爬虫脚本失效时，你得亲手去修改这些爬虫，让它们获取到正确的数据。\n\n对于数据分析，在完成本轮任务后你应当熟练掌握 NumPy 的核心操作，包括数组创建、索引切片、广播机制和向量化运算，能够使用 NumPy 进行高效的数值计算而不依赖低效的循环。\n\n深入理解 Pandas 的数据处理能力，能够熟练进行数据读写、清洗、筛选、分组聚合等操作，具备处理真实数据集的能力。\n\n掌握 Matplotlib 等可视化工具的基本使用，能够绘制常见的统计图表如折线图、柱状图、散点图等，并将数据分析结果直观地呈现出来。你还应理解向量化思维的重要性，养成用数组操作替代循环的编程习惯，这对后续的机器学习和深度学习至关重要。\n\n本轮学习的重点在于工具的熟练应用而非算法原理，通过实际的数据分析任务来巩固这些工具的使用方法，为后续的特征工程和模型训练打下坚实基础。",
+      "self_check": [
+        {
+          "id": "Q1",
+          "question": "怎么判断一个网页是静态 HTML 还是 JS 动态渲染？如果是动态的，你怎么办？",
+          "points": [
+            "给出判断方法：对比直接请求拿到的响应与浏览器渲染后的 DOM",
+            "指出响应里没有目标数据而页面有，说明是 JS 异步加载",
+            "给出对策：找背后的 XHR/fetch 接口、用无头浏览器、或换数据源"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "robots.txt 是什么？爬之前要不要看？为什么必须限速？",
+          "points": [
+            "说明它在站点根目录声明可访问范围（User-agent / Disallow / Allow / Crawl-delay）",
+            "明确态度：应遵守，属行业惯例而非技术强制",
+            "说明限速的理由：不给对方服务器造成压力，也降低自己被封的风险"
+          ]
+        },
+        {
+          "id": "Q3",
+          "question": "被 403 / 429 拦住时你怎么排查？这两个状态码有什么区别？",
+          "points": [
+            "403 = 服务器理解请求但拒绝执行（缺 UA / 缺登录态 / IP 被封禁）",
+            "429 = 请求过于频繁，应降速 + 指数退避（必要时读 Retry-After）",
+            "给出排查路径：先用 curl 手动复现 → 对比浏览器请求头 → 检查 cookie → 再调整策略"
+          ]
+        }
+      ]
+    },
+    {
+      "course_id": "west2-f3",
+      "title": "Foundation Task 3 · 简单 AI 认识",
+      "stage": "foundation",
+      "requires": [
+        "west2-f2"
+      ],
+      "est_days": 14,
+      "knowledge": [
+        "ai.pipeline",
+        "ai.scoring",
+        "ai.bert",
+        "ai.instruct",
+        "ai.prompt",
+        "ai.vibe"
+      ],
+      "tasks": [
+        {
+          "id": "t3-1",
+          "type": "code",
+          "title": "作业 1 · 鲸鱼小姐迷糊日",
+          "deliverable": "whale/",
+          "brief": "按仓库要求完成，用零样本分类解决一个小判别任务"
+        },
+        {
+          "id": "t3-2",
+          "type": "code",
+          "title": "作业 2 · 简单 AI 原理及任务",
+          "deliverable": "ai_basics/",
+          "brief": "跑通三段代码：零样本分类 / 打分 / BERT [MASK] 填空 / 指令模型对话，并解释各自原理"
+        },
+        {
+          "id": "t3-3",
+          "type": "code",
+          "title": "作业 3 · 雪人三项与女娲 skill",
+          "deliverable": "snowman/",
+          "brief": "把模型能力封装成可复用的 skill"
+        },
+        {
+          "id": "t3-4",
+          "type": "note",
+          "title": "作业 4 · Vibe Coding",
+          "deliverable": "笔记 + 代码",
+          "brief": "与 AI 协作完成一个小工具，写清你负责什么、AI 负责什么"
+        }
+      ],
+      "学习目的": "在前两轮的任务中，我们学习了 Python 基础语法以及如何利用爬虫与数据分析工具获取和处理数据，而再接下来就是人工智能。\n\n在真正开始写第一行 AI 相关的代码之前，建立对 AI 底层逻辑的正确认知至关重要。\n\n目前，绝大多数人只是把 AI 当成一个万能的搜索引擎或高级聊天机器人。然而你需要跳出普通用户的视角，站在开发者的角度来审视它。\n\n这里的开发者有两层含义，一层是你作为底层开发者，也就是改 AI 模型的底层架构；另一层是作为顶层开发者，调用 API 来为你完成各种任务。\n\n这也是后续分成 Research 和 Application 的原因。\n\n本轮任务的重点不在于让你去理解复杂的数学公式，而是让你认识到——\n\nAI 不是万能的。\n\n在这个 AI 发展逐渐趋向克苏鲁的时代，你需要保证自己的主体地位，切记不可主体客体化、客体主体化。",
+      "学习内容": "你什么都学不到，或者说你想学的话，你能学到很多。",
+      "学习要求": "对于这个 Task，你可以自由选择完成至什么程度，本质科普。",
+      "self_check": [
+        {
+          "id": "Q1",
+          "question": "零样本分类为什么不用训练就能分类？它的局限是什么？",
+          "points": [
+            "说明模型已在大规模语料上预训练，具备通用语义理解",
+            "说明做法：把候选标签当作文本提示，模型给每个标签打分",
+            "指出局限：标签的措辞会显著影响结果，且无法处理它没见过的概念"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "BERT 的 [MASK] 填空与指令模型的对话，本质区别是什么？",
+          "points": [
+            "BERT 是掩码语言模型：双向看上下文，做填空/抽取",
+            "指令模型是自回归生成：按 prompt 逐字续写",
+            "说明用途差异：分类与抽取 vs 对话与生成"
+          ]
+        },
+        {
+          "id": "Q3",
+          "question": "调用大模型时，为什么要在提示里限制输出格式（比如要求只输出 JSON）？",
+          "points": [
+            "说明输出要被程序消费，格式不稳就没法可靠解析",
+            "说明约束越具体，模型越不容易跑偏（角色设定 / few-shot / 结构约束）",
+            "举出一个具体的约束写法与它解决的问题"
+          ]
+        }
+      ]
+    },
+    {
+      "course_id": "west2-f4",
+      "title": "Foundation Task 4 · 方向导引与分流决策",
+      "stage": "foundation",
+      "requires": [
+        "west2-f3"
+      ],
+      "est_days": 3,
+      "knowledge": [
+        "career.split",
+        "career.answer"
+      ],
+      "tasks": [
+        {
+          "id": "t4-1",
+          "type": "note",
+          "title": "读方向导引并做出分流决策",
+          "deliverable": "决策笔记",
+          "brief": "对照 backend / frontend / statistic routine 与 Research、Application 两条路线，写下自己选哪条、为什么"
+        },
+        {
+          "id": "t4-2",
+          "type": "note",
+          "title": "答辩知识储备自查",
+          "deliverable": "FAQ 笔记",
+          "brief": "把前面各课的关键概念做成自己的 FAQ，每题能 30 秒口头答出"
+        }
+      ],
+      "学习目的": "学习 AI 未来有两条出路，科研和应用。\n\n对于科研，目前，对于本校的本科生（乃至研究生）而言，AI 的科研更多是偏向于排列组合，而非开创性研究。\n\n我的超级炫酷大模型做出来比传统的模型好几个百分点，就可以水一篇论文出来了。\n\n更底层的东西偏向数学，例如设计新的损失函数，或者在优化器上做文章。这并不是本科生可以接触的领域。\n\n而且更重要的是，AI 的科研除了基础阶段的学习之外，后续的学习强依赖于老师的资源。如果老师没有资源，学生也很难有机会接触到真正的科研项目。\n\n所以，如果你想保研，那么去学 AI 的科研方向是不错的选择，校内实验室的选拔逻辑是——如果你绩点非常高，那么可以进去再学，否则需要先学 CS231n / d2l 之后，才能进去。\n\n科研方向的后续考核，包含了这些内容。\n\n对于 AI 的应用而言，目前尚处于基建过程中。AI 的服务化和产品化仍有较大提升空间。\n\n所以对于 211 本科生而言，如果你更倾向于应用方向，应该去学习更多后端知识，例如 [Go](https://github.com/west2-online/learn-go)。\n\n目前 AI 应用本质上仍是后端的一个分支，纯 AI 应用方向的**本科生**目前在就业市场上认可度相对较低。如果你的学历不够中上 985 研究生及其同层次水准，那么如果你想只做 AI 应用，也大多由后端直接转型而来，且拿的工资仍然是后端的工资。\n\n一条比较合理对于本科生工作的路线是：主攻后端及运维，了解顶层 AI，稍微了解前端，这样可以保证你在毕业的时候可以有一个相当可观的薪资。\n\n所以，如果你考虑好了本科找工作，建议你同时学习后端以及运维的知识，或者读研后再考虑应用方向。\n\n这里所指的后端方向不是 Python 后端。Python 后端和前端一般只会在 Agent 的测试阶段用到，真正的 AI 应用上线仍需要 Go、Java、C++ 等后端语言。\n\n不过无论你选择了科研还是应用，请记住：\n\n是 AI 选择了 Python 作为主要语言，而不是 Python 选择了 AI。\n\n另外补充的几个文件夹属于附属知识。例如 Python 后端可以用来快速在生产环境中验证 AI；还有数据分析，例如数学建模任务通常需要机器学习相关的前置知识。在具备这些前置知识后，学习这些内容只需要掌握基本思路和方法即可。",
+      "学习内容": "如果有时间，都可以学。\n\n- [科研方向](../scientific-research/)\n- [应用方向](../application/)",
+      "self_check": [
+        {
+          "id": "Q1",
+          "question": "科研路线与应用路线分别看重什么能力？你选哪条，为什么？",
+          "points": [
+            "科研：数学基础、论文阅读、实验设计与复现",
+            "应用：工程能力、系统设计、交付与协作",
+            "明确说出自己的选择及理由（结合自身情况，不是复述）"
+          ]
+        },
+        {
+          "id": "Q2",
+          "question": "答辩被追问时，对方通常从哪几个角度问？你该怎么准备？",
+          "points": [
+            "原理：为什么这么做，机制是什么",
+            "取舍：有没有别的方案，为什么不用",
+            "边界与坑：什么情况下会失效，踩过什么坑"
+          ]
+        }
+      ]
+    },
+    {
+      "course_id": "west2-a0",
+      "title": "Application 0 · Tiktok-Demo（门槛任务）",
+      "stage": "application",
+      "requires": [
+        "west2-f4"
+      ],
+      "est_days": 14,
+      "knowledge": [
+        "app.tiktok",
+        "app.stack"
+      ],
+      "tasks": [
+        {
+          "id": "a0-1",
+          "type": "code",
+          "title": "作业 1 · 实现 Tiktok-Demo",
+          "deliverable": "tiktok-demo/",
+          "brief": "按 Application 0 的要求实现，含基本前后端集成；这是继续 Application 方向的前置门槛"
+        }
+      ],
+      "学习目的": "在 Application 方向学习开始前，我认为有一件事情是你必须要知道的。\n\n与 Research 方向明显不同的是，Application 方向更侧重于实际工程上的应用。相比于 AI 单打独斗，更多情况下是与传统的前后端以及客户端等方向做结合。因此，学习 AI 应用相关内容的前提是你已经拥有了基本的工程思维和架构直觉。\n\n举一个简单的例子：一个没有基本工程思维和架构直觉的小白大概率会做出来一个文件写上千行代码，所有逻辑全部堆砌在一个文件中的操作，甚至所有数据都是直接打在内存上，一刷新就全部丢失，这在工程上是绝对不能忍受的，这样的作业也绝对无法通过我们的考核。\n\n因此就有了 Application 0 的作业。\n\n我们在本次作业安排了一个后端开发方向的任务，难度不大，希望通过本次作业让完全没有接触过软件工程的同学建立起最基本的工程思维和架构直觉。\n\n如果这项任务依然让你感到吃力难以完成，不希望你花费太多时间在这项任务上。你可以尝试转向 Research 方向进行学习，或者前往完成后端组 / 客户端组等的考核内容。",
+      "学习内容": "- HTTP 协议和 Web 工作原理\n- 现代 HTTP 框架开发流程\n- 数据库的增删改查（CRUD）及基础的数据库表设计\n- API 文档撰写\n- 基本的工程思维和架构设计思想"
+    },
+    {
+      "course_id": "west2-a1",
+      "title": "Application 1 · AI 应用认知",
+      "stage": "application",
+      "requires": [
+        "west2-a0"
+      ],
+      "est_days": 14,
+      "knowledge": [
+        "ai.mldl",
+        "ai.yolo",
+        "ai.llm.think"
+      ],
+      "tasks": [
+        {
+          "id": "a1-1",
+          "type": "note",
+          "title": "作业 1 · 机器学习与深度学习",
+          "deliverable": "笔记",
+          "brief": "讲清两者区别与各自适用场景"
+        },
+        {
+          "id": "a1-2",
+          "type": "code",
+          "title": "作业 2 · YOLO 的基本使用",
+          "deliverable": "yolo/",
+          "brief": "跑通目标检测并解释输出含义"
+        },
+        {
+          "id": "a1-3",
+          "type": "note",
+          "title": "作业 3 · 现代 LLM 思想",
+          "deliverable": "笔记",
+          "brief": "Transformer、自回归、对齐三件事讲明白"
+        }
+      ],
+      "学习目的": "首先需要说明，这里的应用指的是极为顶层的 AI 应用开发，几乎不涉及底层算法实现。手搓 CNN 训练图片识别模型这类工作不属于应用，而属于算法实现。\n\n因此应用指的是工程化地使用 AI，把 AI 作为业务链条中的一环。比如 Application 2 的 task 1，是调用大语言模型完成情感分析任务，而不是传统地训练一个情感分析器。\n\n打一个通俗易懂的链条：\n\n数学 -> Numpy 手算反向传播 -> Pytorch 自动推导反向传播 -> Transformer 库（Hugging Face 集成 Pytorch / TensorFlow，屏蔽底层细节，抽象出 Pipeline 的概念） -> Langchain / Dify 模块化集成（轻松调用工具） -> LLM API 屏蔽所有底层细节 -> AI 应用（调用 API 完成任务、聊天机器人、Agent 调用 API）-> harness\n\nApplication 的目的是要你站在最顶层的视角向下看，并且向下只最多接触到 Hugging Face。\n\n从这里不难看出，AI 应用主要学习的是怎么使用 AI，而不是 AI 的底层原理。所以如果你选择了应用方向，你不只是学习 AI 调用，还需要学习后端、运维等方面的知识。\n\n当前的 AI 应用开发主要围绕大语言模型展开。未来可能会有更多 AI 模型出现，应用开发形态也会更加多样化。\n\n当然正如 [Task 4](../foundation/task4.md) 导引部分提到的一样，作为一个 211 的本科生，如果只拥有高级应用能力，会在就业市场上很吃亏。\n\n所以建议学习这部分的前提是你已经掌握了一门其他语言，或者将来会去学习其他语言。\n\n本轮作业将从传统机器学习与深度学习开始，带你认识 AI 应用。\n\n$\\color{red}{\\text{再次强调，进行这部分内容前请你清晰的知道你现在在做什么。}}$\n\n$\\color{red}{\\text{否则不仅晦涩难懂，而且还没什么用。}}$",
+      "学习内容": "- 简单底层理解\n- 机器学习与深度学习\n- YOLO"
+    },
+    {
+      "course_id": "west2-r1",
+      "title": "Research 1 · 从机器学习到深度学习",
+      "stage": "research",
+      "requires": [
+        "west2-f4"
+      ],
+      "est_days": 30,
+      "knowledge": [
+        "ml.classic",
+        "dl.train",
+        "dl.nn2",
+        "dl.cnn",
+        "dl.branch"
+      ],
+      "tasks": [
+        {
+          "id": "r1-1",
+          "type": "code",
+          "title": "作业 1 · Two-layer Neural Network",
+          "deliverable": "nn2/",
+          "brief": "手写两层网络（前向 + 反向 + 训练循环）"
+        },
+        {
+          "id": "r1-2",
+          "type": "code",
+          "title": "作业 2 · CNN",
+          "deliverable": "cnn/",
+          "brief": "实现/训练一个卷积网络并说明各层作用"
+        },
+        {
+          "id": "r1-3",
+          "type": "note",
+          "title": "作业 3 · CV / LLM 方向选择",
+          "deliverable": "笔记",
+          "brief": "对照 CS231n / CS224n 选定方向并给出学习路径"
+        }
+      ],
+      "学习目的": "如果你选择偏科研方向，意味着你未来可能想做科研、进实验室、争取保研，或者只是单纯对人工智能底层原理感兴趣。\n\n在前三轮学习中，你已经掌握了 Python 编程基础、爬虫以及基本的数据分析。\n\n人工智能领域主要分为两大方向：计算机视觉和自然语言处理。\n\n无论是 CV、NLP 还是其他方向，模型训练都离不开共同的核心理论基础：反向传播算法。\n\n诚然，使用 PyTorch 等现代的深度学习框架可以有效简化实现过程；但对科研而言，理解底层依然是必要的。\n\n学完 Research 1 后，恭喜你，你已经具备复现顶会论文的基础能力。\n\n从功利的角度出发，你已经可以去其他实验室面试了。\n\n$\\color{red}{\\text{如果你觉得 Research 1 入手晦涩难懂，这很正常。}}$\n\n$\\color{red}{\\text{但是这是进实验室最基本的要求，大家都是这么学过来的。}}$",
+      "学习内容": "从经典机器学习到深度学习。\n\n- KNN\n- SVM\n- Softmax Classifier\n- XGBoost\n- Random Forest\n- CNN\n- RNN\n- GAN\n- Transformer\n- LSTM",
+      "学习要求": "本轮学习内容对新手而言挑战较大，尤其是首次接触全英文课程的同学。这正是我们希望你优先克服的难题。在人工智能领域，英文阅读能力不是加分项，而是必备技能，因为绝大多数前沿论文、官方文档和高质量社区讨论都以英文为载体。我们鼓励你勇敢面对这一挑战，并善用工具辅助学习。\n\n此外，本轮需要一些前置知识：线性代数、微积分、NumPy 以及 Python 编程。\n\n后两者已经在前几轮涉及；若前两者在学校课程中尚未开设（例如大一同学通常会在高数下学期接触偏导数），可以参考下一节的推荐教程。\n\n对于与深度学习思想差异较大的传统机器学习算法，只需要写一篇文档描述其原理和使用场景即可，无需从零实现。"
+    },
+    {
+      "course_id": "west2-be",
+      "title": "Backend Routine · Python 后端日常训练",
+      "stage": "routine",
+      "requires": [
+        "west2-f4"
+      ],
+      "est_days": 30,
+      "knowledge": [
+        "be.api",
+        "be.crud",
+        "be.deploy"
+      ],
+      "tasks": [
+        {
+          "id": "be-1",
+          "type": "code",
+          "title": "To-Do List Demo",
+          "deliverable": "todo/",
+          "brief": "最小 CRUD 服务，跑通增删改查"
+        },
+        {
+          "id": "be-2",
+          "type": "code",
+          "title": "TikTok Demo",
+          "deliverable": "tiktok/",
+          "brief": "把 Application 0 的实现做成更完整的服务"
+        },
+        {
+          "id": "be-3",
+          "type": "code",
+          "title": "TikTok Demo PLUS",
+          "deliverable": "tiktok-plus/",
+          "brief": "加鉴权、分页、错误处理"
+        },
+        {
+          "id": "be-4",
+          "type": "code",
+          "title": "TikTok Demo Ultra",
+          "deliverable": "tiktok-ultra/",
+          "brief": "加缓存/异步/部署，写成可展示的项目"
+        }
+      ],
+      "学习目的": "尽管 Python 后端已经不再推荐，但是仍然可以用于快速验证原型机、个人小项目以及应付大作业。",
+      "学习内容": "[Go 后端 / 运维从入门到如土](https://github.com/west2-online/learn-go)\n\nFlask / FastAPI"
+    },
+    {
+      "course_id": "west2-fe",
+      "title": "Frontend Routine · Gradio / Streamlit",
+      "stage": "routine",
+      "requires": [
+        "west2-a1"
+      ],
+      "est_days": 7,
+      "knowledge": [
+        "fe.gradio",
+        "fe.streamlit"
+      ],
+      "tasks": [
+        {
+          "id": "fe-1",
+          "type": "code",
+          "title": "用 Gradio 包装一个模型",
+          "deliverable": "gradio_app.py",
+          "brief": "把前面做过的模型或 API 变成可交互页面"
+        },
+        {
+          "id": "fe-2",
+          "type": "code",
+          "title": "用 Streamlit 做一个数据应用",
+          "deliverable": "streamlit_app.py",
+          "brief": "结合爬虫/分析结果做一个可交互数据页"
+        }
+      ],
+      "学习目的": "Python 前端的生态远不如前端主流框架。\n\n但它仍然可以用于快速验证原型，尤其是 AI 相关的演示原型。",
+      "学习内容": "[前端从入门到如土](https://github.com/west2-online/learn-frontend)\n\nGradio / Streamlit"
+    },
+    {
+      "course_id": "west2-st",
+      "title": "Statistic Routine · 统计与竞赛",
+      "stage": "routine",
+      "requires": [
+        "west2-f4"
+      ],
+      "est_days": 30,
+      "knowledge": [
+        "st.model",
+        "st.kaggle",
+        "st.feature"
+      ],
+      "tasks": [
+        {
+          "id": "st-1",
+          "type": "code",
+          "title": "作业 1 · 数学建模比赛",
+          "deliverable": "modeling/",
+          "brief": "完整走一遍建模流程并写出论文结构"
+        },
+        {
+          "id": "st-2",
+          "type": "code",
+          "title": "作业 2 · Kaggle",
+          "deliverable": "kaggle/",
+          "brief": "完成一次竞赛提交，记录 baseline 与改进"
+        }
+      ],
+      "学习目的": "数据分析，又称数据科学分析。对于本科生而言，学习数据分析主要是为了打数学建模比赛或者是找有关数据分析师的工作。\n\n数学建模奖项对于保研来讲有一定的含金量，对于找工作而言，如果是非数据分析师的工作，奖项含金量可能一般。\n\n不过数学建模比赛依旧是大学期间含金量比较高，也是比较好拿奖的比赛。\n\n本文提供一条对于比赛而言偏速成的路线以供参考，当然如果你想更深入地学习数据分析，可以在此基础上进行拓展。\n\n此外，Kaggle 平台的比赛也是一个不错的选择。",
+      "学习内容": "### 爬虫（详见 Application Task 2）\n\n- 爬虫（主要使用 API、Selenium）\n\n### 基本表格和绘图（详见 Application Task 3）\n\n- Pandas\n- Matplotlib\n\n### 传统分析工具和方法\n\n#### 数据挖掘\n\n1. 数据挖掘的基本流程\n2. 数据规约（噪声处理、数据规范化）\n3. 关联规则（Apriori、FP-Growth）\n4. 基本分类（决策树、随机森林）\n5. 高级分类（KNN、支持向量机、神经网络）\n6. 聚类分析（K-means、层次聚类、DBSCAN）\n7. 回归（相关性分析、线性回归）\n\n#### 常用模型\n\n1. 评价类：层次分析法、优劣解距离法（Topsis）、模糊综合评价\n2. 规划类：单目标多目标规划、整数规划、线性非线性规划、动态规划\n3. 预测类：微分方程模型、Logistic 阻滞增长模型、线性回归和拟合\n4. 补充模型：生产销售存贮模型、森林救火模型、传染病模型（SIS、SIR、SIRS）、生态模型、马尔科夫链模型、药物动力学 + 稳定性判别、微分方程、差分方程模型\n\n#### 常用算法\n\n- 模拟算法：蒙特卡罗模拟、粒子群算法\n- 统计分析：Fisher 线性判别分析、K-means 聚类分析、主成分分析、因子分析；\n- 数据挖掘（大类课程）\n\n### 机器学习 / 深度学习（详见 Research 1）\n\n对于以下这些算法，你应该了解并掌握如何调 Sk-Learn 库以及了解他们的优缺点。\n\n- Random Forest\n- XGBoost\n- SVM\n- CNN\n- RNN\n- LSTM（重要）\n- Transformer\n\n### 学科基础\n\n数学建模会以以下背景出题\n\n- 数学：微分方程、线性代数，其他现场学\n- 物理：受力分析、抛体运动，其他现场学\n- 化学 / 生物 / 其他：都现场学"
+    }
+  ]
+}

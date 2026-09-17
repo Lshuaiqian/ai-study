@@ -1,0 +1,335 @@
+{
+  "course_id": "west2-f2",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Foundation Task 2 · 网络爬虫与数据分析",
+  "goal": "Foundation（共通路线）｜本课直接依赖：Foundation Task 1 · 语法基础与简单面向对象",
+  "stage": "foundation",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "Foundation（共通路线）｜维度：数据分析与可视化、数据获取",
+    "prerequisites": [
+      {
+        "course_id": "west2-f1",
+        "name": "Foundation Task 1 · 语法基础与简单面向对象"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "west2-f3",
+        "name": "Foundation Task 3 · 简单 AI 认识"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "HTTP 方法、状态码与请求头",
+        "level": "must",
+        "keywords": [
+          [
+            "HTTP"
+          ],
+          [
+            "状态码",
+            "200",
+            "403",
+            "429",
+            "404"
+          ],
+          [
+            "请求头",
+            "Header",
+            "User-Agent"
+          ]
+        ],
+        "dimension": "D3",
+        "dimension_name": "数据获取",
+        "source_knowledge": "net.http"
+      },
+      {
+        "id": "K2",
+        "name": "requests 用法与会话复用",
+        "level": "must",
+        "keywords": [
+          [
+            "requests"
+          ],
+          [
+            "Session",
+            "会话",
+            "cookie"
+          ]
+        ],
+        "dimension": "D3",
+        "dimension_name": "数据获取",
+        "source_knowledge": "spider.requests"
+      },
+      {
+        "id": "K3",
+        "name": "HTML 解析（BeautifulSoup / 选择器）",
+        "level": "must",
+        "keywords": [
+          [
+            "解析",
+            "BeautifulSoup",
+            "bs4",
+            "选择器"
+          ],
+          [
+            "html.parser",
+            "正则解析"
+          ]
+        ],
+        "dimension": "D3",
+        "dimension_name": "数据获取",
+        "source_knowledge": "spider.parse"
+      },
+      {
+        "id": "K4",
+        "name": "动态页面：Selenium 与接口抓取",
+        "level": "must",
+        "keywords": [
+          [
+            "Selenium",
+            "动态",
+            "渲染"
+          ],
+          [
+            "接口",
+            "抓包",
+            "XHR",
+            "JSON 接口"
+          ]
+        ],
+        "dimension": "D3",
+        "dimension_name": "数据获取",
+        "source_knowledge": "spider.dynamic"
+      },
+      {
+        "id": "K5",
+        "name": "礼貌爬取（User-Agent / robots.txt / 限速）",
+        "level": "must",
+        "keywords": [
+          [
+            "robots"
+          ],
+          [
+            "限速",
+            "间隔",
+            "sleep",
+            "频率"
+          ],
+          [
+            "User-Agent"
+          ]
+        ],
+        "dimension": "D3",
+        "dimension_name": "数据获取",
+        "source_knowledge": "spider.polite"
+      },
+      {
+        "id": "K6",
+        "name": "反爬应对：重试、退避、登录态",
+        "level": "should",
+        "keywords": [
+          [
+            "反爬"
+          ],
+          [
+            "重试",
+            "退避",
+            "retry"
+          ]
+        ],
+        "dimension": "D3",
+        "dimension_name": "数据获取",
+        "source_knowledge": "spider.anti"
+      },
+      {
+        "id": "K7",
+        "name": "Pandas 基础（读取、清洗、分组、聚合）",
+        "level": "must",
+        "keywords": [
+          [
+            "pandas",
+            "DataFrame"
+          ],
+          [
+            "清洗",
+            "分组",
+            "groupby",
+            "聚合"
+          ]
+        ],
+        "dimension": "D4",
+        "dimension_name": "数据分析与可视化",
+        "source_knowledge": "data.pandas"
+      },
+      {
+        "id": "K8",
+        "name": "Matplotlib 绘图（散点、曲线、标注）",
+        "level": "must",
+        "keywords": [
+          [
+            "matplotlib",
+            "绘图",
+            "画图"
+          ],
+          [
+            "曲线",
+            "散点",
+            "Logistic"
+          ]
+        ],
+        "dimension": "D4",
+        "dimension_name": "数据分析与可视化",
+        "source_knowledge": "data.plot"
+      },
+      {
+        "id": "K9",
+        "name": "矩阵操作（NumPy / 原生实现）",
+        "level": "must",
+        "keywords": [
+          [
+            "矩阵",
+            "matrix"
+          ],
+          [
+            "numpy",
+            "转置",
+            "乘法"
+          ]
+        ],
+        "dimension": "D4",
+        "dimension_name": "数据分析与可视化",
+        "source_knowledge": "data.matrix"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "t2-1",
+      "type": "code",
+      "title": "爬虫 1 · 爬取福大教务通知",
+      "brief": "抓取福州大学教务处通知列表并结构化保存",
+      "deliverable": "spider/fzu_notice.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t2-2",
+      "type": "code",
+      "title": "爬虫 2 · Selenium 爬取知乎话题",
+      "brief": "用 Selenium 处理动态渲染页面",
+      "deliverable": "spider/zhihu.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t2-3",
+      "type": "code",
+      "title": "爬虫 3 · 抓接口爬开源之夏项目列表",
+      "brief": "不解析 HTML，直接找并请求背后的 JSON 接口",
+      "deliverable": "spider/ospp.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t2-4",
+      "type": "code",
+      "title": "爬虫 4 · Open-Meteo",
+      "brief": "调用公开气象 API 并整理成结构化数据",
+      "deliverable": "spider/weather.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t2-bonus",
+      "type": "code",
+      "title": "Bonus · 爬取 B-Wiki 界面",
+      "brief": "综合练习：分页、限速、异常与重试",
+      "deliverable": "spider/bwiki.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t2-5",
+      "type": "code",
+      "title": "数据分析 1 · 福大教务情报（Pandas）",
+      "brief": "用 Pandas 清洗并用分组聚合回答问题",
+      "deliverable": "analysis/notice_stats.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t2-6",
+      "type": "code",
+      "title": "数据分析 2 · Logistic 函数（Matplotlib）",
+      "brief": "绘制 Logistic 曲线并标注关键点",
+      "deliverable": "analysis/logistic.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t2-7",
+      "type": "code",
+      "title": "数据分析 3 · 矩阵操作",
+      "brief": "实现矩阵转置与乘法（可对照 NumPy）",
+      "deliverable": "analysis/matrix.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

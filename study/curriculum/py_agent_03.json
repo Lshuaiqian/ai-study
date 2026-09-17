@@ -1,0 +1,459 @@
+{
+  "course_id": "py-agent-03",
+  "route": "西二在线 learn-AI 考核路线 · 导师强化版（C/C++ 起点）",
+  "title": "第 3 课：网络爬虫（对标 west2 Task2）",
+  "goal": "完成考核爬虫环节的能力要求",
+  "declares": {
+    "system_position": "Python 基础 →【网络层】→ 数据分析",
+    "prerequisites": [
+      {
+        "course_id": "py-agent-02",
+        "name": "网络基础与 HTTP/JSON",
+        "status_hint": "本课直接依赖：不会发请求、不会解析 JSON 就无法开始"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "py-agent-06",
+        "name": "项目整合（对标四个考核案例之一）"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "爬虫流程：分析页面→请求→解析→抽取→保存",
+        "level": "must",
+        "keywords": [
+          [
+            "请求"
+          ],
+          [
+            "解析"
+          ],
+          [
+            "抽取",
+            "提取"
+          ],
+          [
+            "保存",
+            "落盘",
+            "存储"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K1",
+            "why": "不知道 HTTP 方法与状态码就无法判断请求是否成功"
+          },
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K4",
+            "why": "发请求这一步直接复用第 2 课的 urllib/requests 用法"
+          }
+        ],
+        "contrast": [],
+        "applies_to": [
+          {
+            "course_id": "py-agent-04",
+            "why": "第 4 课分析的数据正是本课流程产出的"
+          }
+        ]
+      },
+      {
+        "id": "K2",
+        "name": "HTML 结构基础与简单解析（html.parser / 正则）",
+        "level": "must",
+        "keywords": [
+          [
+            "HTML"
+          ],
+          [
+            "parser",
+            "正则",
+            "re",
+            "BeautifulSoup",
+            "bs4",
+            "选择器",
+            "标签"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-01",
+            "knowledge_id": "K3",
+            "why": "写 HTMLParser 子类需要 class 与继承——这是真实依赖，不是摆设"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K6",
+            "why": "同一个问题（解析 HTML）的两条路：手写 html.parser vs BeautifulSoup"
+          }
+        ],
+        "applies_to": []
+      },
+      {
+        "id": "K3",
+        "name": "礼貌爬取：User-Agent / robots.txt / 频率控制",
+        "level": "must",
+        "keywords": [
+          [
+            "User-Agent",
+            "请求头",
+            "Headers",
+            "UA"
+          ],
+          [
+            "robots"
+          ],
+          [
+            "限速",
+            "频率",
+            "间隔",
+            "sleep"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K2",
+            "why": "User-Agent 是请求头字段，先要知道 Header 是什么"
+          }
+        ],
+        "contrast": [],
+        "applies_to": [
+          {
+            "course_id": "py-agent-06",
+            "why": "项目整合阶段要求脚本可重复运行，礼貌爬取是前提"
+          }
+        ]
+      },
+      {
+        "id": "K4",
+        "name": "反爬初步：cookie/session、限速、错误重试",
+        "level": "must",
+        "keywords": [
+          [
+            "cookie",
+            "session",
+            "会话"
+          ],
+          [
+            "重试",
+            "retry",
+            "403",
+            "429",
+            "退避"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K1",
+            "why": "403 / 429 的语义来自第 2 课的状态码"
+          },
+          {
+            "course_id": "py-agent-01",
+            "knowledge_id": "K2",
+            "why": "异常处理与重试建立在 try/except 之上"
+          }
+        ],
+        "contrast": [],
+        "applies_to": []
+      },
+      {
+        "id": "K5",
+        "name": "把数据存为 json / csv",
+        "level": "must",
+        "keywords": [
+          [
+            "json"
+          ],
+          [
+            "csv"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K3",
+            "why": "json.dump 与第 2 课的 json 序列化是同一套 API"
+          }
+        ],
+        "contrast": [],
+        "applies_to": [
+          {
+            "course_id": "py-agent-04",
+            "why": "第 4 课的输入就是这里落盘的 json/csv"
+          }
+        ]
+      },
+      {
+        "id": "K6",
+        "name": "requests + BeautifulSoup 用法（可安装增强）",
+        "level": "should",
+        "keywords": [
+          [
+            "requests"
+          ],
+          [
+            "BeautifulSoup",
+            "bs4",
+            "选择器"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K4",
+            "why": "requests 的用法在第 2 课已经学过"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K2",
+            "why": "与手写 html.parser 互为替代方案"
+          }
+        ],
+        "applies_to": []
+      },
+      {
+        "id": "K7",
+        "name": "动态页面：Selenium 与接口抓取",
+        "level": "must",
+        "keywords": [
+          [
+            "Selenium",
+            "动态",
+            "渲染"
+          ],
+          [
+            "接口",
+            "抓包",
+            "XHR",
+            "JSON 接口"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K2",
+            "why": "要先能判断『拿到的 HTML 里到底有没有目标数据』，才谈得上它是不是动态渲染"
+          },
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K4",
+            "why": "找后端接口这条路的本质是自己再造一个同样的请求，得会发请求与设请求头"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K2",
+            "why": "静态页解析 HTML，动态页要么直接打接口（跳过 HTML），要么用无头浏览器把页面渲染出来再解析——三条路的取舍就是本知识点的核心"
+          }
+        ],
+        "applies_to": [
+          {
+            "course_id": "py-agent-06",
+            "why": "项目里要抓的数据源经常是动态页，接口抓取是让脚本可重复运行的关键"
+          }
+        ],
+        "source_knowledge": "spider.dynamic"
+      }
+    ]
+  },
+  "theory": [
+    {
+      "atom_id": "M8",
+      "brief": "静态 HTML vs JS 动态渲染的判断方法"
+    },
+    {
+      "atom_id": "M1",
+      "brief": "robots.txt 的作用与常见指令"
+    }
+  ],
+  "self_check": [
+    {
+      "id": "Q1",
+      "question": "怎么判断网页是静态 HTML 还是 JS 动态渲染？动态页面怎么办？",
+      "points": [
+        "P1 给出判断方法：对比『查看页面源代码』与渲染后的 DOM，或直接请求看返回内容里有没有目标数据",
+        "P2 指出若返回的 HTML 里没有数据、数据由 JS 异步加载，则说明是动态渲染",
+        "P3 给出动态页面的应对：找后端接口（XHR/fetch）、用无头浏览器（Selenium/Playwright）、或换数据源"
+      ]
+    },
+    {
+      "id": "Q2",
+      "question": "robots.txt 是什么？爬之前要不要看？",
+      "points": [
+        "P1 说明它是站点根目录下声明爬虫可访问范围的协议文件",
+        "P2 提到它的常见指令：User-agent / Disallow / Allow / Crawl-delay",
+        "P3 明确态度：爬之前应当先看并遵守，属行业惯例，违反可能被封禁"
+      ]
+    },
+    {
+      "id": "Q3",
+      "question": "反爬被 403/429 时你怎么排查？",
+      "points": [
+        "P1 区分 403（被识别为爬虫 / 缺请求头 / 缺登录态）与 429（频率超限）",
+        "P2 给出 429 的应对：降速、加 sleep、指数退避、随机间隔",
+        "P3 给出排查路径：先手动 / curl 复现 → 对比浏览器请求头 → 检查 cookie → 再考虑放慢或换策略"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "t_py03_1",
+      "type": "concept",
+      "title": "判定目标页是静态还是动态",
+      "brief": "对目标页分别用『浏览器查看页面源代码』和『直接请求』观察返回内容，写出你的判断与依据",
+      "deliverable": "work/t_py03_1.md",
+      "atoms": [
+        "M8",
+        "K7"
+      ],
+      "est_minutes": 30,
+      "acceptance": [
+        "明确写出判断方法：对比直接请求的响应与浏览器里渲染后的 DOM",
+        "给出结论：目标页是静态还是动态，并附上依据（响应里到底有没有目标数据）",
+        "如果是动态页，说出你打算走哪条路（抓接口 / 无头浏览器）以及为什么"
+      ]
+    },
+    {
+      "task_id": "t_py03_2",
+      "type": "code",
+      "title": "写爬虫 west2_spider.py",
+      "brief": "爬取一个公开允许访问的列表页，抽取至少 10 条数据（标题+链接 或 标题+价格），存成 data.json；必须带 User-Agent、限速 1s/次、异常与重试、打印成功/失败统计",
+      "deliverable": "work/west2_spider.py",
+      "acceptance": [
+        "能跑通并产出非空结果（≥10 条）",
+        "请求带 User-Agent",
+        "请求间隔 ≥ 1s",
+        "有异常处理与重试（含 403/429 分支）",
+        "打印成功/失败统计"
+      ],
+      "atoms": [
+        "K1",
+        "K2",
+        "K3",
+        "K4",
+        "K5"
+      ],
+      "est_minutes": 90
+    },
+    {
+      "task_id": "t_py03_3",
+      "type": "transfer",
+      "title": "换一个站点复用你的爬虫",
+      "brief": "另选一个结构不同的公开列表页，在不复制粘贴硬编码的前提下复用你的抽取逻辑，30 分钟内抓到 10 条。写清你改了哪几处、为什么",
+      "deliverable": "work/t_py03_3_spider.py",
+      "acceptance": [
+        "真的换了目标站点（不是原练习原样提交）",
+        "复用了请求/解析框架，而不是把结果硬编码",
+        "说明了改了哪几处、为什么",
+        "产物有效：能说出抓到多少条"
+      ],
+      "atoms": [
+        "K1",
+        "K2"
+      ],
+      "est_minutes": 40
+    },
+    {
+      "task_id": "t_py03_4",
+      "type": "note",
+      "title": "写第 3 课笔记",
+      "brief": "覆盖本课全部 must 知识点，必须包含 robots.txt 的说明与 403/429 的排查步骤；用你自己的话写，不要整段抄资料",
+      "deliverable": "notes/py-agent-03.md",
+      "atoms": [
+        "K1",
+        "K2",
+        "K3",
+        "K4",
+        "K5"
+      ],
+      "est_minutes": 30,
+      "acceptance": [
+        "覆盖本课全部必会知识点，尤其是 robots.txt 与 403/429 的排查步骤",
+        "必须写「为什么」而不只是「是什么」：至少对 2 个知识点说明适用边界",
+        "有一条自己的踩坑记录（报错原文 + 怎么定位 + 最后怎么解决）"
+      ]
+    }
+  ],
+  "materials": {
+    "note": "以下为学习库视图的种子内容（seed）。S-H1 尚未用真实资料跑过抽取，待你提供第 3 课真实资料后替换。",
+    "atoms": [
+      {
+        "id": "M1",
+        "type": "api",
+        "knowledge_id": "K3",
+        "text": "robots.txt 是放在站点根目录的文本文件，用 User-agent / Disallow / Allow / Crawl-delay 等指令声明爬虫可以访问的范围与频率。它是行业惯例而非技术强制，但遵守它是基本礼貌，违反可能导致 IP 被封。"
+      },
+      {
+        "id": "M2",
+        "type": "concept",
+        "knowledge_id": "K3",
+        "text": "User-Agent 是请求头字段，用于标识客户端身份。多数站点会拦截默认的 python-urllib / python-requests UA，因此爬虫应显式设置一个可识别的 UA。"
+      },
+      {
+        "id": "M3",
+        "type": "pitfall",
+        "knowledge_id": "K4",
+        "text": "HTTP 403 表示服务器理解请求但拒绝执行。爬虫场景常见原因：缺少或伪造 User-Agent、缺少登录 Cookie、被 IP 级封禁、请求了 robots.txt 禁止的路径。"
+      },
+      {
+        "id": "M4",
+        "type": "pitfall",
+        "knowledge_id": "K4",
+        "text": "HTTP 429 表示请求过于频繁（Too Many Requests）。应对方式：降低频率、加入 sleep 间隔、使用指数退避重试，必要时读取 Retry-After 响应头。"
+      },
+      {
+        "id": "M5",
+        "type": "api",
+        "knowledge_id": "K2",
+        "text": "HTML 解析有三条路：标准库 html.parser（无需安装）、正则 re（适合结构极简单的页面，但脆弱）、BeautifulSoup（需安装 bs4，支持 CSS 选择器，容错性最好）。"
+      },
+      {
+        "id": "M6",
+        "type": "concept",
+        "knowledge_id": "K4",
+        "text": "requests.Session 会复用底层 TCP 连接，并在同一会话内自动保持 Cookie，因此对需要登录态或多次请求同一站点的场景比每次新建连接更合适，也更快。"
+      },
+      {
+        "id": "M7",
+        "type": "api",
+        "knowledge_id": "K5",
+        "text": "落盘方式：json.dump(obj, f, ensure_ascii=False, indent=2) 写 JSON；csv.writer / csv.DictWriter 写 CSV。中文场景务必显式指定 encoding='utf-8'。"
+      },
+      {
+        "id": "M8",
+        "type": "concept",
+        "knowledge_id": "K1",
+        "text": "判断页面是静态还是动态：直接发起 HTTP 请求拿到原始响应，若响应 HTML 中不含目标数据，而浏览器里能看到数据，则数据是由 JavaScript 异步加载的（动态渲染）。动态页面的对策是找到其背后的 XHR/fetch 接口直接请求，或使用无头浏览器渲染后再解析。"
+      },
+      {
+        "id": "M10",
+        "type": "api",
+        "knowledge_id": "K6",
+        "text": "`soup.select(\"div.item > a\")` 用 CSS 选择器取元素列表，`select_one` 只取第一个；`el[\"href\"]` 取属性、`el.get_text(strip=True)` 取文本。装 `requests` 与 `beautifulsoup4`；解析器可选 `html.parser`（标准库、够用）或 `lxml`（更快、需另装）。"
+      },
+      {
+        "id": "M10",
+        "type": "concept",
+        "knowledge_id": "K7",
+        "text": "判断页面是否动态渲染：**直接发起 HTTP 请求**拿到的 HTML 里若没有目标数据、而浏览器里能看到，就说明数据是 JavaScript 异步加载的。三条应对路各有代价：① 打开开发者工具的 Network 面板找 XHR/fetch 接口直接请求（最快最稳，但接口可能有签名/加密）；② 用无头浏览器 Selenium / Playwright 渲染完再解析（最通用，但慢、依赖浏览器驱动、更容易被识别为自动化）；③ 换一个静态数据源。",
+        "source": "bridge"
+      }
+    ]
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": true,
+    "min_practice_lines": 100
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "course_id": "py-agent-02",
+  "route": "西二在线 learn-AI 考核路线 · 导师强化版（C/C++ 起点）",
+  "title": "第 2 课：网络基础与 HTTP/JSON",
+  "goal": "理解 Web 协议，为爬虫与调用 AI API 打底",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "Python 基础 →【网络层】—— 爬虫与 AI 调用的共同前置",
+    "prerequisites": [
+      {
+        "course_id": "py-agent-01",
+        "name": "Python 语法速览 + 面向对象",
+        "status_hint": "本课直接依赖：不会写模块与异常处理就无法组织请求代码"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "py-agent-03",
+        "name": "网络爬虫"
+      },
+      {
+        "course_id": "py-agent-04",
+        "name": "数据分析与统计描述"
+      },
+      {
+        "course_id": "py-agent-07",
+        "name": "顶层 AI 应用 - LLM API 与提示工程"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "HTTP 方法与状态码（200 / 301 / 403 / 429 / 5xx）",
+        "level": "must",
+        "keywords": [
+          [
+            "GET",
+            "POST",
+            "方法"
+          ],
+          [
+            "状态码",
+            "status",
+            "200",
+            "404",
+            "403",
+            "429",
+            "5xx"
+          ]
+        ],
+        "requires": [],
+        "contrast": []
+      },
+      {
+        "id": "K2",
+        "name": "URL 结构与 Header（含 User-Agent / Authorization）",
+        "level": "must",
+        "keywords": [
+          [
+            "URL",
+            "query",
+            "参数"
+          ],
+          [
+            "Header",
+            "请求头",
+            "User-Agent",
+            "Authorization"
+          ]
+        ],
+        "requires": [
+          "K1"
+        ],
+        "contrast": []
+      },
+      {
+        "id": "K3",
+        "name": "JSON 序列化与反序列化（与 dict 的关系）",
+        "level": "must",
+        "keywords": [
+          [
+            "json"
+          ],
+          [
+            "序列化",
+            "反序列化",
+            "dumps",
+            "loads"
+          ],
+          [
+            "dict",
+            "字典"
+          ]
+        ],
+        "requires": [],
+        "contrast": [
+          "C++ 手写序列化 / 结构体映射"
+        ]
+      },
+      {
+        "id": "K4",
+        "name": "用 urllib / requests 发 GET、POST 并解析响应",
+        "level": "must",
+        "keywords": [
+          [
+            "urllib",
+            "requests"
+          ],
+          [
+            "GET",
+            "POST"
+          ],
+          [
+            "响应",
+            "resp",
+            "response",
+            "解析"
+          ]
+        ],
+        "requires": [
+          "K1",
+          "K2"
+        ],
+        "contrast": []
+      },
+      {
+        "id": "K5",
+        "name": "鉴权头 Authorization: Bearer",
+        "level": "must",
+        "keywords": [
+          [
+            "Bearer",
+            "鉴权",
+            "token",
+            "Token"
+          ],
+          [
+            "Authorization",
+            "请求头"
+          ]
+        ],
+        "requires": [
+          "K2"
+        ],
+        "contrast": [
+          "Draw 项目的同套鉴权概念"
+        ]
+      }
+    ]
+  },
+  "theory": [
+    {
+      "atom_id": "M1",
+      "brief": "HTTP 是无状态协议；登录态靠 Cookie/Token 在客户端保存"
+    }
+  ],
+  "self_check": [
+    {
+      "id": "Q1",
+      "question": "200/301/403/429 分别代表什么？",
+      "points": [
+        "P1 200 = 请求成功",
+        "P2 301 = 永久重定向（资源已移动）",
+        "P3 403 = 服务器理解请求但拒绝执行；429 = 请求过于频繁"
+      ]
+    },
+    {
+      "id": "Q2",
+      "question": "JSON 里 dict/list/str/int 怎么互转？",
+      "points": [
+        "P1 说出 json.dumps 把 Python 对象 → JSON 字符串，json.loads 反之",
+        "P2 说出类型映射：dict↔object、list↔array、str/int/float/bool↔对应类型",
+        "P3 提到 ensure_ascii=False 处理中文，以及编码相关的坑"
+      ]
+    },
+    {
+      "id": "Q3",
+      "question": "为什么 API Key 要放环境变量？",
+      "points": [
+        "P1 避免硬编码进源码，防止随代码仓库泄露",
+        "P2 环境变量不进入版本控制，可按机器/环境分别配置",
+        "P3 说出 os.environ 读取 + 缺省回退的写法，并知道密钥不应打印进日志"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "t_py02_1",
+      "type": "concept",
+      "title": "用 curl 与 Python 各发一次请求并对比",
+      "brief": "对同一公开接口分别用 curl 和 Python 请求，对比状态码、响应头、响应体结构",
+      "deliverable": "work/t_py02_1.md",
+      "acceptance": [
+        "能读出状态码",
+        "能指出响应头里的关键字段",
+        "说明了 body 的结构"
+      ],
+      "atoms": [
+        "K1",
+        "K2"
+      ],
+      "est_minutes": 30
+    },
+    {
+      "task_id": "t_py02_2",
+      "type": "code",
+      "title": "写 west2_http.py 请求公开接口并打印关键信息",
+      "brief": "用 urllib（或 requests）请求 https://api.github.com/repos/west2-online/learn-AI，打印状态码、star 数、描述；再 POST 到 DeepSeek chat/completions 问一句话并打印回复（Key 走环境变量）",
+      "deliverable": "work/west2_http.py",
+      "acceptance": [
+        "能跑通",
+        "Key 从环境变量读取",
+        "有异常处理",
+        "打印出状态码与解析后的字段"
+      ],
+      "atoms": [
+        "K3",
+        "K4",
+        "K5"
+      ],
+      "est_minutes": 70
+    },
+    {
+      "task_id": "t_py02_3",
+      "type": "transfer",
+      "title": "换一个带鉴权的接口",
+      "brief": "换一个需要 Authorization: Bearer 的公开接口（或用假 token 观察 401/403），复用你的请求封装，说明改了什么",
+      "deliverable": "work/t_py02_3_auth.py",
+      "acceptance": [
+        "真的带了鉴权头",
+        "复用了请求封装而非重写",
+        "说明了改动点与观察到的状态码"
+      ],
+      "atoms": [
+        "K2",
+        "K4",
+        "K5"
+      ],
+      "est_minutes": 35
+    },
+    {
+      "task_id": "t_py02_4",
+      "type": "note",
+      "title": "写第 2 课笔记",
+      "brief": "覆盖本课全部 must 知识点，必须包含状态码表、JSON 与 dict 的对应关系、以及为什么要用环境变量存密钥",
+      "deliverable": "notes/py-agent-02.md",
+      "acceptance": [
+        "必会知识点全覆盖",
+        "有状态码对照表",
+        "无事实错误"
+      ],
+      "atoms": [
+        "K1",
+        "K2",
+        "K3",
+        "K4",
+        "K5"
+      ],
+      "est_minutes": 30
+    }
+  ],
+  "materials": {
+    "note": "待 S-H1 用真实资料抽取后填充（当前为空，笔记医生的『准确』维度将只输出待确认）。",
+    "atoms": [
+      {
+        "id": "M1",
+        "type": "concept",
+        "knowledge_id": "K1",
+        "text": "HTTP 方法：GET 取数据（幂等、可缓存）、POST 提交数据（非幂等）、PUT / PATCH 更新、DELETE 删除。状态码分五类：2xx 成功（200 / 201 / 204）、3xx 重定向（301 永久 / 302 临时）、4xx 客户端错（400 参数错 / 401 未认证 / 403 拒绝 / 404 不存在 / 429 太频繁）、5xx 服务端错。"
+      },
+      {
+        "id": "M2",
+        "type": "concept",
+        "knowledge_id": "K2",
+        "text": "URL 结构：`scheme://host:port/path?query#fragment`，查询串里的中文与特殊字符要做 URL 编码。请求头里 User-Agent 标识客户端、Accept 声明想要的返回格式、Content-Type 说明请求体的格式、Authorization 带凭证；响应头里 Content-Type 说明实际返回的格式、Set-Cookie 下发会话标识。"
+      },
+      {
+        "id": "M3",
+        "type": "api",
+        "knowledge_id": "K3",
+        "text": "JSON 是文本格式，与 Python 的 dict / list 一一对应（`true/false/null` 对应 `True/False/None`）。`json.dumps` 把对象转成字符串、`json.loads` 把字符串转成对象，写文件用 `json.dump`。中文场景要 `ensure_ascii=False` 加 `encoding=\"utf-8\"`，否则会变成 `\\uXXXX` 转义。"
+      },
+      {
+        "id": "M4",
+        "type": "api",
+        "knowledge_id": "K4",
+        "text": "`requests.get(url, params=..., headers=..., timeout=10)` 返回 Response：`.status_code` 是状态码、`.text` 是文本、`.json()` 解析 JSON、`.headers` 是响应头。**必须设 timeout**，否则可能永久挂住。非 2xx 不会自动抛异常，要自己判断状态码或调 `raise_for_status()`。"
+      },
+      {
+        "id": "M5",
+        "type": "concept",
+        "knowledge_id": "K5",
+        "text": "`Authorization: Bearer <token>` 是主流 API 的鉴权方式：先用自己的凭证换一个 token，之后每个请求在头里带上它。token 会过期，需要刷新逻辑；它等同于密码，不能写进代码仓库，要走环境变量。有些服务用自定义头（例如 `X-API-Key`）。"
+      }
+    ]
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": true,
+    "min_practice_lines": 80
+  }
+}

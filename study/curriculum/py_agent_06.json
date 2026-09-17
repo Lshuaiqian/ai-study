@@ -1,0 +1,371 @@
+{
+  "course_id": "py-agent-06",
+  "route": "西二在线 learn-AI 考核路线 · 导师强化版（C/C++ 起点）",
+  "title": "第 6 课：项目整合（对标四个考核案例之一）",
+  "goal": "把爬取、分析、可视化三段能力组装成一个能跑通、能持久化、能部署的最小全栈案例，对标考核四案例之一",
+  "declares": {
+    "system_position": "爬虫 + 数据分析 →【项目整合】→ 顶层 AI 应用 / 考核答辩",
+    "prerequisites": [
+      {
+        "course_id": "py-agent-03",
+        "name": "第 3 课：网络爬虫（对标 west2 Task2）",
+        "status_hint": "由图反推的课程级硬前置"
+      },
+      {
+        "course_id": "py-agent-04",
+        "name": "第 4 课：数据分析与统计描述（对标 west2 Task3）",
+        "status_hint": "由图反推的课程级硬前置"
+      },
+      {
+        "course_id": "py-agent-05",
+        "name": "第 5 课：可视化与报告",
+        "status_hint": "由图反推的课程级硬前置"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "py-agent-09",
+        "name": "第 9 课：模拟考核与答辩冲刺"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "TikTok-Demo 的需求拆解与实现",
+        "level": "must",
+        "keywords": [
+          [
+            "TikTok",
+            "Demo",
+            "需求"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K1",
+            "why": "案例的数据来自网络，需求拆解的第一步就是回答数据从哪个页面来、拿不拿得到，这正是第 3 课的爬取流程"
+          },
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K5",
+            "why": "拆需求时要当场定下数据存成什么格式，这个决定直接复用第 3 课的 json/csv 落盘经验"
+          }
+        ],
+        "contrast": [],
+        "applies_to": [
+          {
+            "course_id": "py-agent-09",
+            "why": "答辩的第一个采分点就是你怎么拆这个需求，讲不出拆解过程等于案例没做过"
+          }
+        ],
+        "source_knowledge": "app.tiktok"
+      },
+      {
+        "id": "K2",
+        "name": "最小前后端集成与联调",
+        "level": "must",
+        "keywords": [
+          [
+            "前后端",
+            "联调",
+            "接口对接",
+            "集成"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-06",
+            "knowledge_id": "K3",
+            "why": "前端要能发请求，前提是后端已经约定好路径与方法，没有可调用的路由就无从联调"
+          },
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K4",
+            "why": "联调本质就是发 HTTP 请求再解析响应，接不通时排查的仍然是第 2 课的请求构造与状态码"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-06",
+            "knowledge_id": "K3",
+            "why": "同一条流水线的两种推进顺序：先定 API 契约再各自实现，还是先把界面接上假数据再补后端——本课要求前者，否则联调期会反复返工"
+          }
+        ],
+        "applies_to": [
+          {
+            "course_id": "py-agent-08",
+            "why": "Agent 暴露工具给模型调用同样要先定契约再联调，这套对接经验可直接迁移"
+          }
+        ],
+        "source_knowledge": "app.stack"
+      },
+      {
+        "id": "K3",
+        "name": "后端 API 设计与路由",
+        "level": "must",
+        "keywords": [
+          [
+            "API",
+            "接口设计",
+            "路由"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K2",
+            "why": "路由就是 URL 路径、路径参数与查询参数的设计，不懂 URL 结构和请求头就设计不出可用的接口"
+          }
+        ],
+        "contrast": [],
+        "applies_to": [
+          {
+            "course_id": "py-agent-08",
+            "why": "Function Calling 要把工具暴露成带参数 schema 的接口，路由划分与参数校验方法完全同源"
+          }
+        ],
+        "source_knowledge": "be.api"
+      },
+      {
+        "id": "K4",
+        "name": "CRUD 与数据持久化",
+        "level": "must",
+        "keywords": [
+          [
+            "CRUD",
+            "增删改查"
+          ],
+          [
+            "数据库",
+            "持久化",
+            "存储"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-02",
+            "knowledge_id": "K3",
+            "why": "接口的请求体与响应体都是 JSON，写库前要序列化、读出来要反序列化"
+          },
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K5",
+            "why": "先有把抓到的数据落盘的经验，才会追问重启后数据还在不在，从而理解持久化必须单独设计"
+          }
+        ],
+        "contrast": [
+          {
+            "course_id": "py-agent-03",
+            "knowledge_id": "K5",
+            "why": "同样是把数据留下来：第 3 课的 json/csv 是一次性导出快照，本课要的是能增删改查、能被并发读写的持久层"
+          }
+        ],
+        "applies_to": [
+          {
+            "course_id": "py-agent-08",
+            "why": "Agent 的会话历史与工具执行结果需要持久化，CRUD 是它的最小实现"
+          }
+        ],
+        "source_knowledge": "be.crud"
+      },
+      {
+        "id": "K5",
+        "name": "部署与运行环境基础",
+        "level": "should",
+        "keywords": [
+          [
+            "部署",
+            "服务器",
+            "云服务器"
+          ]
+        ],
+        "requires": [
+          {
+            "course_id": "py-agent-01",
+            "knowledge_id": "K5",
+            "why": "部署就是在没有 IDE 的机器上按入口启动进程，依赖 __main__ 保护与模块导入路径都正确"
+          },
+          {
+            "course_id": "py-agent-06",
+            "knowledge_id": "K4",
+            "why": "服务对外提供的是状态而不是一次运行结果，数据必须落在服务端持久层，否则一重启用户数据全丢"
+          }
+        ],
+        "contrast": [],
+        "applies_to": [
+          {
+            "course_id": "py-agent-09",
+            "why": "现场演示要求服务能在别人机器上按说明启动，部署说明写不清会当场翻车"
+          }
+        ],
+        "source_knowledge": "be.deploy"
+      }
+    ]
+  },
+  "theory": [
+    {
+      "atom_id": "M1",
+      "brief": "需求拆解固定顺序：数据从哪来 → 存在哪 → 怎么给用户看"
+    },
+    {
+      "atom_id": "M3",
+      "brief": "API 契约先行：名词做路由、方法表操作、状态码表结果"
+    },
+    {
+      "atom_id": "M4",
+      "brief": "持久化三档：内存 dict → 文件 → 关系数据库，各自边界"
+    }
+  ],
+  "self_check": [
+    {
+      "id": "Q1",
+      "question": "拿到一个 TikTok 式的案例需求，你会怎么拆？拆完先动手做哪一块？",
+      "points": [
+        "P1 按数据流向拆成三段：数据从哪来（爬取或现成接口）→ 存在哪（格式与持久层）→ 怎么用（接口与前端展示）",
+        "P2 先写 API 契约（路径 / 方法 / 请求字段 / 响应字段 / 状态码），两端照契约并行实现，改契约要先同步对方",
+        "P3 先做一条数据的纵向最小切片（抓一条 → 存一条 → 接口读出来 → 界面显示），跑通后再横向补功能，而不是前后端各写一半再对接"
+      ]
+    },
+    {
+      "id": "Q2",
+      "question": "前端报 404 / 500 / 跨域失败，你怎么判断错在哪一层？",
+      "points": [
+        "P1 404 属于请求没打到处理器：先核对路径、方法、大小写、末尾斜杠与端口是否和后端路由一致",
+        "P2 500 属于处理器内部抛异常：去看后端日志与异常栈，不要在前端改代码猜",
+        "P3 浏览器报 CORS 而 curl 正常，说明是浏览器同源策略：需要服务端返回 Access-Control-Allow-Origin 并处理预检的 OPTIONS 请求，属配置问题不是业务逻辑错误"
+      ]
+    },
+    {
+      "id": "Q3",
+      "question": "数据现在存在内存里的 dict，什么时候必须换成数据库？换之前要想清哪几件事？",
+      "points": [
+        "P1 判据：进程重启后数据要保留、要支持多进程或多用户并发读写、要按条件查询分页——任一成立就必须持久化",
+        "P2 说清内存 dict 的边界：单进程内最快，重启即失，多进程各自一份不共享",
+        "P3 迁移做法：先把增删改查封装成函数再替换内部实现，同时处理写操作提交与并发写覆盖，避免边写边读读到半成品"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "t_py06_1",
+      "type": "concept",
+      "title": "把案例需求拆成数据流与接口契约",
+      "brief": "选定一个要做的案例（TikTok-Demo 或同构的收藏/榜单类），写出数据从哪来、存在哪、怎么给前端用三段拆解，并列出接口契约表（路径 / 方法 / 请求字段 / 响应字段 / 状态码），标出最小可跑通切片是哪一条链路",
+      "deliverable": "work/t_py06_1_contract.md",
+      "acceptance": [
+        "有三段数据流拆解，且每段写清输入与输出",
+        "接口清单覆盖至少 4 个操作，字段名与类型写全，不写待定",
+        "每个接口能对应到界面上的一个具体操作",
+        "明确指出最小可跑通切片是哪一条链路"
+      ],
+      "atoms": [
+        "K1",
+        "K3"
+      ],
+      "est_minutes": 45
+    },
+    {
+      "task_id": "t_py06_2",
+      "type": "code",
+      "title": "实现最小全栈案例（含持久化与启动方式）",
+      "brief": "按上一任务的契约实现后端（至少 4 个 CRUD 接口 + 一个非 CRUD 查询）与最简前端页面；数据必须落到文件或 SQLite，服务重启后数据仍在；提供 requirements.txt 与一条启动命令，绑定 0.0.0.0 并说明端口",
+      "deliverable": "work/tiktok_demo/",
+      "acceptance": [
+        "一条命令可启动服务，启动命令写进 README",
+        "至少 4 个 CRUD 接口，用 curl 或 pytest 逐条验证并贴出命令与输出",
+        "数据落在文件或 SQLite：重启服务后重新查询，数据仍在",
+        "前端展示的字段来自真实接口，没有硬编码的假数据",
+        "有 requirements.txt，且不把密钥/路径写死在代码里"
+      ],
+      "atoms": [
+        "K1",
+        "K2",
+        "K3",
+        "K4",
+        "K5"
+      ],
+      "est_minutes": 120
+    },
+    {
+      "task_id": "t_py06_3",
+      "type": "transfer",
+      "title": "换一个业务实体复用同一套骨架",
+      "brief": "把案例换成另一个业务实体（如书签、观影清单、待办），复用同一套路由分层与 CRUD 封装，并新增一个非 CRUD 能力（分页 / 关键字筛选 / 按时间排序三者选一），写清复用了哪几处、改动了哪几处",
+      "deliverable": "work/t_py06_3_alt_demo/",
+      "acceptance": [
+        "真的是另一个业务实体与字段设计，不是原案例改个名字",
+        "复用原来的路由分层与 CRUD 封装，说明复用了哪几个文件/函数",
+        "新增的非 CRUD 能力有可复现的验证命令与输出",
+        "目录内含 NOTES.md 说明改动点与复用点"
+      ],
+      "atoms": [
+        "K3",
+        "K4"
+      ],
+      "est_minutes": 60
+    },
+    {
+      "task_id": "t_py06_4",
+      "type": "note",
+      "title": "写第 6 课笔记与部署运行说明",
+      "brief": "覆盖本课全部 must 知识点（需求拆解、前后端联调、API 设计、CRUD 与持久化），并单列部署章节：启动命令、绑定地址与端口、依赖安装、环境变量、日志位置；附至少 3 条踩坑记录（现象 + 原因 + 修法）",
+      "deliverable": "notes/py-agent-06.md",
+      "acceptance": [
+        "must 知识点全覆盖，且不是名词罗列而是能讲清边界",
+        "部署章节给出可直接照做的命令，别人照着能启动",
+        "踩坑清单至少 3 条，每条写清现象、原因、修法",
+        "用自己的话写，不整段抄资料"
+      ],
+      "atoms": [
+        "K1",
+        "K2",
+        "K3",
+        "K4",
+        "K5"
+      ],
+      "est_minutes": 40
+    }
+  ],
+  "materials": {
+    "note": "种子资料（seed）：本课桥接文件自带的最小权威片段，尚未用真实资料抽取，待真实资料到位后替换。",
+    "atoms": [
+      {
+        "id": "M1",
+        "type": "concept",
+        "knowledge_id": "K1",
+        "text": "案例类需求的拆解顺序是「数据从哪来 → 存在哪里 → 怎么给用户看」三段。第一段先确认数据能否合法稳定地拿到，第二段定存储格式与持久层，第三段才落到接口与界面。按这个顺序拆，才能在前端还没动之前就发现数据拿不到这类致命问题。"
+      },
+      {
+        "id": "M2",
+        "type": "pitfall",
+        "knowledge_id": "K2",
+        "text": "前后端联调最常见的三类失败：字段名或类型对不上导致前端拿到 undefined；路径或端口写错导致 404；浏览器报 CORS 而 curl 却正常。CORS 是浏览器的同源策略，需要服务端返回 Access-Control-Allow-Origin 并正确处理预检的 OPTIONS 请求，它属于配置问题，不是后端业务逻辑错误。"
+      },
+      {
+        "id": "M3",
+        "type": "api",
+        "knowledge_id": "K3",
+        "text": "REST 风格用名词表示资源、用 HTTP 方法表示操作：GET 读取（200）、POST 新建（201）、PUT/PATCH 修改、DELETE 删除；路径参数定位单条资源，查询参数做筛选与分页。参数不合法返回 400、资源不存在返回 404、服务端异常返回 500，前后端应按状态码而不是响应文本判断成败。"
+      },
+      {
+        "id": "M4",
+        "type": "concept",
+        "knowledge_id": "K4",
+        "text": "数据持久化大致分三档：进程内存 dict（重启即失、多进程不共享）、文件 json/csv（单进程够用，并发写有互相覆盖的风险）、SQLite 等关系数据库（支持并发读、事务与索引）。CRUD 对应 SQL 的 INSERT / SELECT / UPDATE / DELETE。用 Python 标准库 sqlite3 时默认不会自动提交，写操作后需要 connection.commit()，否则改动会随连接关闭丢失。"
+      },
+      {
+        "id": "M5",
+        "type": "concept",
+        "knowledge_id": "K5",
+        "text": "部署的最小闭环是四件事：**依赖清单**（`requirements.txt` 锁版本）、**启动命令**（写进 README 或启动脚本，别人能一条命令跑起来）、**进程守护**（挂了要能自动重启，否则不是服务）、**端口与访问**（监听地址与端口、防火墙放行）。密钥一律走环境变量，绝不写进代码仓库；日志要落到文件，只打终端的话一重启就什么都没了。"
+      }
+    ]
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": true,
+    "min_practice_lines": 150
+  }
+}

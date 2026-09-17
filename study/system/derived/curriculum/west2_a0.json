@@ -1,0 +1,85 @@
+{
+  "course_id": "west2-a0",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Application 0 · Tiktok-Demo（门槛任务）",
+  "goal": "Application 路线｜本课直接依赖：Foundation Task 4 · 方向导引与分流决策",
+  "stage": "application",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "Application 路线｜维度：AI 应用工程",
+    "prerequisites": [
+      {
+        "course_id": "west2-f4",
+        "name": "Foundation Task 4 · 方向导引与分流决策"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "west2-a1",
+        "name": "Application 1 · AI 应用认知"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "TikTok-Demo 的需求拆解与实现",
+        "level": "must",
+        "keywords": [
+          [
+            "TikTok",
+            "Demo",
+            "需求"
+          ]
+        ],
+        "dimension": "D6",
+        "dimension_name": "AI 应用工程",
+        "source_knowledge": "app.tiktok"
+      },
+      {
+        "id": "K2",
+        "name": "最小前后端集成与联调",
+        "level": "must",
+        "keywords": [
+          [
+            "前后端",
+            "联调",
+            "接口对接",
+            "集成"
+          ]
+        ],
+        "dimension": "D6",
+        "dimension_name": "AI 应用工程",
+        "source_knowledge": "app.stack"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "a0-1",
+      "type": "code",
+      "title": "作业 1 · 实现 Tiktok-Demo",
+      "brief": "按 Application 0 的要求实现，含基本前后端集成；这是继续 Application 方向的前置门槛",
+      "deliverable": "tiktok-demo/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

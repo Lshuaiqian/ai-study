@@ -1,0 +1,120 @@
+{
+  "course_id": "west2-st",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Statistic Routine · 统计与竞赛",
+  "goal": "方向日常训练｜本课直接依赖：Foundation Task 4 · 方向导引与分流决策",
+  "stage": "routine",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "方向日常训练｜维度：数据分析与可视化",
+    "prerequisites": [
+      {
+        "course_id": "west2-f4",
+        "name": "Foundation Task 4 · 方向导引与分流决策"
+      }
+    ],
+    "unlocks": [],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "数学建模流程与论文表达",
+        "level": "must",
+        "keywords": [
+          [
+            "数学建模",
+            "建模"
+          ],
+          [
+            "论文",
+            "摘要",
+            "模型假设"
+          ]
+        ],
+        "dimension": "D4",
+        "dimension_name": "数据分析与可视化",
+        "source_knowledge": "st.model"
+      },
+      {
+        "id": "K2",
+        "name": "Kaggle 竞赛流程与提交",
+        "level": "must",
+        "keywords": [
+          [
+            "Kaggle",
+            "竞赛"
+          ],
+          [
+            "提交",
+            "排行榜",
+            "baseline"
+          ]
+        ],
+        "dimension": "D4",
+        "dimension_name": "数据分析与可视化",
+        "source_knowledge": "st.kaggle"
+      },
+      {
+        "id": "K3",
+        "name": "特征工程与模型评估",
+        "level": "must",
+        "keywords": [
+          [
+            "特征工程"
+          ],
+          [
+            "评估",
+            "交叉验证",
+            "准确率",
+            "AUC"
+          ]
+        ],
+        "dimension": "D4",
+        "dimension_name": "数据分析与可视化",
+        "source_knowledge": "st.feature"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "st-1",
+      "type": "code",
+      "title": "作业 1 · 数学建模比赛",
+      "brief": "完整走一遍建模流程并写出论文结构",
+      "deliverable": "modeling/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "st-2",
+      "type": "code",
+      "title": "作业 2 · Kaggle",
+      "brief": "完成一次竞赛提交，记录 baseline 与改进",
+      "deliverable": "kaggle/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

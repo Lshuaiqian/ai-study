@@ -1,0 +1,111 @@
+{
+  "course_id": "west2-f4",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Foundation Task 4 · 方向导引与分流决策",
+  "goal": "Foundation（共通路线）｜本课直接依赖：Foundation Task 3 · 简单 AI 认识",
+  "stage": "foundation",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "Foundation（共通路线）｜维度：工程规范与表达",
+    "prerequisites": [
+      {
+        "course_id": "west2-f3",
+        "name": "Foundation Task 3 · 简单 AI 认识"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "west2-a0",
+        "name": "Application 0 · Tiktok-Demo（门槛任务）"
+      },
+      {
+        "course_id": "west2-be",
+        "name": "Backend Routine · Python 后端日常训练"
+      },
+      {
+        "course_id": "west2-r1",
+        "name": "Research 1 · 从机器学习到深度学习"
+      },
+      {
+        "course_id": "west2-st",
+        "name": "Statistic Routine · 统计与竞赛"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "分流认知：科研路线 vs 应用路线",
+        "level": "must",
+        "keywords": [
+          [
+            "分流",
+            "科研",
+            "应用",
+            "方向"
+          ]
+        ],
+        "dimension": "D7",
+        "dimension_name": "工程规范与表达",
+        "source_knowledge": "career.split"
+      },
+      {
+        "id": "K2",
+        "name": "答辩准备：原理 + 为什么 + 坑 + 对比",
+        "level": "must",
+        "keywords": [
+          [
+            "答辩",
+            "追问",
+            "知识储备"
+          ]
+        ],
+        "dimension": "D7",
+        "dimension_name": "工程规范与表达",
+        "source_knowledge": "career.answer"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "t4-1",
+      "type": "note",
+      "title": "读方向导引并做出分流决策",
+      "brief": "对照 backend / frontend / statistic routine 与 Research、Application 两条路线，写下自己选哪条、为什么",
+      "deliverable": "决策笔记",
+      "acceptance": [
+        "覆盖本课全部必会知识点",
+        "用你自己的话写",
+        "无事实错误"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t4-2",
+      "type": "note",
+      "title": "答辩知识储备自查",
+      "brief": "把前面各课的关键概念做成自己的 FAQ，每题能 30 秒口头答出",
+      "deliverable": "FAQ 笔记",
+      "acceptance": [
+        "覆盖本课全部必会知识点",
+        "用你自己的话写",
+        "无事实错误"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

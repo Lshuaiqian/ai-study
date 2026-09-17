@@ -1,0 +1,140 @@
+{
+  "course_id": "west2-be",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Backend Routine · Python 后端日常训练",
+  "goal": "方向日常训练｜本课直接依赖：Foundation Task 4 · 方向导引与分流决策",
+  "stage": "routine",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "方向日常训练｜维度：AI 应用工程",
+    "prerequisites": [
+      {
+        "course_id": "west2-f4",
+        "name": "Foundation Task 4 · 方向导引与分流决策"
+      }
+    ],
+    "unlocks": [],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "后端 API 设计与路由",
+        "level": "must",
+        "keywords": [
+          [
+            "API",
+            "接口设计",
+            "路由"
+          ]
+        ],
+        "dimension": "D6",
+        "dimension_name": "AI 应用工程",
+        "source_knowledge": "be.api"
+      },
+      {
+        "id": "K2",
+        "name": "CRUD 与数据持久化",
+        "level": "must",
+        "keywords": [
+          [
+            "CRUD",
+            "增删改查"
+          ],
+          [
+            "数据库",
+            "持久化",
+            "存储"
+          ]
+        ],
+        "dimension": "D6",
+        "dimension_name": "AI 应用工程",
+        "source_knowledge": "be.crud"
+      },
+      {
+        "id": "K3",
+        "name": "部署与运行环境基础",
+        "level": "should",
+        "keywords": [
+          [
+            "部署",
+            "服务器",
+            "云服务器"
+          ]
+        ],
+        "dimension": "D6",
+        "dimension_name": "AI 应用工程",
+        "source_knowledge": "be.deploy"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "be-1",
+      "type": "code",
+      "title": "To-Do List Demo",
+      "brief": "最小 CRUD 服务，跑通增删改查",
+      "deliverable": "todo/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "be-2",
+      "type": "code",
+      "title": "TikTok Demo",
+      "brief": "把 Application 0 的实现做成更完整的服务",
+      "deliverable": "tiktok/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "be-3",
+      "type": "code",
+      "title": "TikTok Demo PLUS",
+      "brief": "加鉴权、分页、错误处理",
+      "deliverable": "tiktok-plus/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "be-4",
+      "type": "code",
+      "title": "TikTok Demo Ultra",
+      "brief": "加缓存/异步/部署，写成可展示的项目",
+      "deliverable": "tiktok-ultra/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

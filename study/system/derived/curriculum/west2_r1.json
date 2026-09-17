@@ -1,0 +1,168 @@
+{
+  "course_id": "west2-r1",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Research 1 · 从机器学习到深度学习",
+  "goal": "Scientific Research 路线｜本课直接依赖：Foundation Task 4 · 方向导引与分流决策",
+  "stage": "research",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "Scientific Research 路线｜维度：AI 认知与原理、工程规范与表达",
+    "prerequisites": [
+      {
+        "course_id": "west2-f4",
+        "name": "Foundation Task 4 · 方向导引与分流决策"
+      }
+    ],
+    "unlocks": [],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "传统机器学习算法之间的区别",
+        "level": "must",
+        "keywords": [
+          [
+            "sklearn",
+            "传统机器学习"
+          ],
+          [
+            "回归",
+            "分类",
+            "聚类",
+            "决策树",
+            "SVM"
+          ]
+        ],
+        "dimension": "D5",
+        "dimension_name": "AI 认知与原理",
+        "source_knowledge": "ml.classic"
+      },
+      {
+        "id": "K2",
+        "name": "生成式 AI 的训练流程",
+        "level": "must",
+        "keywords": [
+          [
+            "训练流程",
+            "预训练",
+            "微调",
+            "fine-tune"
+          ]
+        ],
+        "dimension": "D5",
+        "dimension_name": "AI 认知与原理",
+        "source_knowledge": "dl.train"
+      },
+      {
+        "id": "K3",
+        "name": "两层神经网络手写实现",
+        "level": "must",
+        "keywords": [
+          [
+            "两层",
+            "神经网络",
+            "反向传播"
+          ],
+          [
+            "梯度",
+            "损失",
+            "loss"
+          ]
+        ],
+        "dimension": "D5",
+        "dimension_name": "AI 认知与原理",
+        "source_knowledge": "dl.nn2"
+      },
+      {
+        "id": "K4",
+        "name": "CNN 卷积神经网络",
+        "level": "must",
+        "keywords": [
+          [
+            "CNN",
+            "卷积",
+            "池化"
+          ]
+        ],
+        "dimension": "D5",
+        "dimension_name": "AI 认知与原理",
+        "source_knowledge": "dl.cnn"
+      },
+      {
+        "id": "K5",
+        "name": "CV / NLP 方向选择与进阶路径",
+        "level": "should",
+        "keywords": [
+          [
+            "CV",
+            "NLP",
+            "方向"
+          ],
+          [
+            "CS231n",
+            "CS224n"
+          ]
+        ],
+        "dimension": "D7",
+        "dimension_name": "工程规范与表达",
+        "source_knowledge": "dl.branch"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "r1-1",
+      "type": "code",
+      "title": "作业 1 · Two-layer Neural Network",
+      "brief": "手写两层网络（前向 + 反向 + 训练循环）",
+      "deliverable": "nn2/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "r1-2",
+      "type": "code",
+      "title": "作业 2 · CNN",
+      "brief": "实现/训练一个卷积网络并说明各层作用",
+      "deliverable": "cnn/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "r1-3",
+      "type": "note",
+      "title": "作业 3 · CV / LLM 方向选择",
+      "brief": "对照 CS231n / CS224n 选定方向并给出学习路径",
+      "deliverable": "笔记",
+      "acceptance": [
+        "覆盖本课全部必会知识点",
+        "用你自己的话写",
+        "无事实错误"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

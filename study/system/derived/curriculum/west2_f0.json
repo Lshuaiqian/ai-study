@@ -1,0 +1,294 @@
+{
+  "course_id": "west2-f0",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Foundation Task 0 · 环境搭建",
+  "goal": "Foundation（共通路线）｜本课是路线起点",
+  "stage": "foundation",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "Foundation（共通路线）｜维度：Python 语言能力、工程规范与表达、计算机基础素养",
+    "prerequisites": [],
+    "unlocks": [
+      {
+        "course_id": "west2-f1",
+        "name": "Foundation Task 1 · 语法基础与简单面向对象"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "Python 环境安装与虚拟环境（venv / uv / conda）",
+        "level": "must",
+        "keywords": [
+          [
+            "环境",
+            "安装",
+            "Python 3.12"
+          ],
+          [
+            "虚拟环境",
+            "venv",
+            "uv",
+            "conda"
+          ]
+        ],
+        "dimension": "D1",
+        "dimension_name": "计算机基础素养",
+        "source_knowledge": "env.setup"
+      },
+      {
+        "id": "K2",
+        "name": "IDE 与编辑器配置（VS Code / PyCharm、插件、格式化）",
+        "level": "should",
+        "keywords": [
+          [
+            "IDE",
+            "VS Code",
+            "PyCharm"
+          ],
+          [
+            "插件",
+            "Pylance",
+            "格式化",
+            "black",
+            "ruff"
+          ]
+        ],
+        "dimension": "D1",
+        "dimension_name": "计算机基础素养",
+        "source_knowledge": "env.ide"
+      },
+      {
+        "id": "K3",
+        "name": "基本工具与镜像源（浏览器、截图、文件管理、清华源）",
+        "level": "must",
+        "keywords": [
+          [
+            "截图"
+          ],
+          [
+            "镜像",
+            "清华源",
+            "pip install -i"
+          ],
+          [
+            "文件管理",
+            "浏览器"
+          ]
+        ],
+        "dimension": "D1",
+        "dimension_name": "计算机基础素养",
+        "source_knowledge": "env.tool"
+      },
+      {
+        "id": "K4",
+        "name": "Git 基础与 GitHub 仓库（add / commit / push）",
+        "level": "must",
+        "keywords": [
+          [
+            "git"
+          ],
+          [
+            "GitHub",
+            "仓库",
+            "commit",
+            "push"
+          ]
+        ],
+        "dimension": "D1",
+        "dimension_name": "计算机基础素养",
+        "source_knowledge": "git.basic"
+      },
+      {
+        "id": "K5",
+        "name": "Git 规范：.gitignore、大文件、commit 信息",
+        "level": "must",
+        "keywords": [
+          [
+            "gitignore",
+            ".gitignore"
+          ],
+          [
+            "commit 信息",
+            "提交规范",
+            "大文件"
+          ]
+        ],
+        "dimension": "D7",
+        "dimension_name": "工程规范与表达",
+        "source_knowledge": "git.spec"
+      },
+      {
+        "id": "K6",
+        "name": "Markdown 语法（多级标题 / 图片 / 链接 / 代码块 / 表格）",
+        "level": "must",
+        "keywords": [
+          [
+            "Markdown"
+          ],
+          [
+            "标题",
+            "图片",
+            "链接",
+            "代码块",
+            "表格"
+          ]
+        ],
+        "dimension": "D1",
+        "dimension_name": "计算机基础素养",
+        "source_knowledge": "md.syntax"
+      },
+      {
+        "id": "K7",
+        "name": "Apple 中文排版规范（中英文空格、中文数字空格、数字单位、全角标点）",
+        "level": "must",
+        "keywords": [
+          [
+            "中英文",
+            "空格"
+          ],
+          [
+            "全角",
+            "半角",
+            "标点"
+          ],
+          [
+            "markdownlint",
+            "Lint",
+            "规范检查"
+          ]
+        ],
+        "dimension": "D7",
+        "dimension_name": "工程规范与表达",
+        "source_knowledge": "md.apple"
+      },
+      {
+        "id": "K8",
+        "name": "代码风格：PEP 8、main 函数封装、类型检查",
+        "level": "should",
+        "keywords": [
+          [
+            "PEP 8",
+            "PEP8"
+          ],
+          [
+            "main 函数",
+            "__main__"
+          ],
+          [
+            "类型",
+            "类型提示"
+          ]
+        ],
+        "dimension": "D7",
+        "dimension_name": "工程规范与表达",
+        "source_knowledge": "code.style"
+      },
+      {
+        "id": "K9",
+        "name": "基础算法题能力（输入输出、模拟、字符串处理）",
+        "level": "must",
+        "keywords": [
+          [
+            "洛谷",
+            "AtCoder",
+            "OI"
+          ],
+          [
+            "算法",
+            "模拟",
+            "字符串"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "algo.basic"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "t0-1",
+      "type": "code",
+      "title": "作业 1 · 环境搭建与基本工具",
+      "brief": "搭好 Python 开发环境；学会正确使用浏览器、文件管理、截图工具；能自由访问需要的网站",
+      "deliverable": "环境截图 + 说明",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t0-2",
+      "type": "note",
+      "title": "作业 2 · Git 基础与第一份 Markdown",
+      "brief": "建 GitHub 仓库 learn-ai-<username>；提交 crazy-day.md，含多级标题/图片/链接/代码块/表格；通过 markdownlint 且满足 Apple 中文排版规范",
+      "deliverable": "crazy-day.md",
+      "acceptance": [
+        "覆盖本课全部必会知识点",
+        "用你自己的话写",
+        "无事实错误"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t0-3",
+      "type": "code",
+      "title": "作业 3 · Hello World",
+      "brief": "打印 Hello, World!，注意大小写与标点",
+      "deliverable": "hello.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t0-4",
+      "type": "code",
+      "title": "作业 4 · OI 五题",
+      "brief": "洛谷 P1001 / P1046 / P5737、AtCoder ARC017A、以及 I_love_ 名字传递模拟题",
+      "deliverable": "5 个 .py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t0-bonus",
+      "type": "code",
+      "title": "Bonus · 8 + 5 道 Python 小程序",
+      "brief": "基础 8 题（排序/乘法表/字符串/列表/字典/计数/商品类/斗地主发牌）与进阶 5 题（装饰器/排序发牌/矩阵推导式/魔术方法 MyZoo/密码正则）",
+      "deliverable": "bonus/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

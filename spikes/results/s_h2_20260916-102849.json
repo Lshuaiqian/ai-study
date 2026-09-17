@@ -1,0 +1,188 @@
+{
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "temperature": 0,
+  "runs": 3,
+  "question": "为什么 Python 多线程算不快（GIL），与 C++ 线程差别？",
+  "rubric": [
+    "P1 指出 GIL 是 CPython 的全局解释器锁，且同一时刻只有一个线程执行 Python 字节码",
+    "P2 区分 CPU 密集（拿不到多核加速）与 IO 密集（等 IO 时释放 GIL，仍能提速）",
+    "P3 与 C++ 对照（C++ 线程可真并行利用多核），并给出绕过方式（多进程 / 原生扩展释放 GIL）"
+  ],
+  "records": [
+    {
+      "id": "A1",
+      "expect": "pass",
+      "scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mean": 1.0,
+      "range": 0.0,
+      "verdicts": [
+        [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        [
+          "pass",
+          "pass",
+          "pass"
+        ]
+      ],
+      "comments": [
+        "三个判定点均明确、准确覆盖，无遗漏或偏差。",
+        "三个判定点均明确、准确覆盖，无遗漏或概念错误。",
+        "三个判定点均明确、准确覆盖，无遗漏或概念错误。"
+      ]
+    },
+    {
+      "id": "A2",
+      "expect": "pass",
+      "scores": [
+        0.8333,
+        0.8333,
+        0.8333
+      ],
+      "mean": 0.8333,
+      "range": 0.0,
+      "verdicts": [
+        [
+          "pass",
+          "pass",
+          "partial"
+        ],
+        [
+          "pass",
+          "pass",
+          "partial"
+        ],
+        [
+          "pass",
+          "pass",
+          "partial"
+        ]
+      ],
+      "comments": [
+        "核心机制与 CPU/IO 区分正确，但绕过方式只提到多进程，漏了原生扩展释放 GIL。",
+        "核心机制与 CPU/IO 区分正确，但绕过方式只提到多进程，漏了原生扩展释放 GIL。",
+        "核心机制与 CPU/IO 区分准确，但绕过方式只提多进程，漏了原生扩展释放 GIL。"
+      ]
+    },
+    {
+      "id": "A3",
+      "expect": "fail",
+      "scores": [
+        0.1667,
+        0.1667,
+        0.1667
+      ],
+      "mean": 0.1667,
+      "range": 0.0,
+      "verdicts": [
+        [
+          "partial",
+          "fail",
+          "fail"
+        ],
+        [
+          "partial",
+          "fail",
+          "fail"
+        ],
+        [
+          "partial",
+          "fail",
+          "fail"
+        ]
+      ],
+      "comments": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "A4",
+      "expect": "fail",
+      "scores": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "range": 0.0,
+      "verdicts": [
+        [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        [
+          "fail",
+          "fail",
+          "fail"
+        ]
+      ],
+      "comments": [
+        "答案对 GIL 的理解完全错误，且未涉及 CPU/IO 区分、C++ 对照或绕过方式。",
+        "答案对 GIL 的理解完全错误，且未涉及 CPU/IO 区分、C++ 对照或绕过方式。",
+        "答案对 GIL 的理解完全错误，且未涉及 CPU/IO 区分、C++ 对照或绕过方式。"
+      ]
+    },
+    {
+      "id": "A5",
+      "expect": "fail",
+      "scores": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "range": 0.0,
+      "verdicts": [
+        [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        [
+          "fail",
+          "fail",
+          "fail"
+        ],
+        [
+          "fail",
+          "fail",
+          "fail"
+        ]
+      ],
+      "comments": [
+        "答案把原因错误归为解释型语言本身慢，完全未涉及GIL、CPU/IO区分及与C++的对照。",
+        "答案把原因错误归为解释型语言慢，完全未涉及 GIL、CPU/IO 区分及与 C++ 的对照。",
+        "答案把原因错误归为解释型语言慢，完全未涉及 GIL、CPU/IO 区分及与 C++ 的对照。"
+      ]
+    }
+  ],
+  "errors": [],
+  "usage_total": {
+    "prompt_tokens": 5337,
+    "completion_tokens": 2229,
+    "prompt_cache_hit_tokens": 2048,
+    "prompt_cache_miss_tokens": 3289
+  },
+  "cost_cny_estimated": 0.01225,
+  "verdict": "PASS"
+}

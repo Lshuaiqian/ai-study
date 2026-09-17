@@ -1,0 +1,202 @@
+{
+  "model": "deepseek-flash",
+  "runs": 3,
+  "raw_results": [
+    {
+      "issues": [
+        {
+          "quote": "HTTP 状态码 404 表示服务器内部错误。",
+          "verdict": "error",
+          "reason": "404 表示请求的资源不存在（Not Found），服务器端错误是 5xx。",
+          "source_ref": "M4"
+        },
+        {
+          "quote": "GET 请求也可以带请求体传数据，而且比 POST 更安全。",
+          "verdict": "error",
+          "reason": "GET 参数放在 URL 的 query string 中，POST 数据放在请求体；二者是语义与位置的区别，不是安全等级的区别。",
+          "source_ref": "M2"
+        },
+        {
+          "quote": "requests.get() 默认会自动重试 3 次，所以不用自己写重试。",
+          "verdict": "error",
+          "reason": "requests 的 get/post 默认不会自动重试，需要显式配置。",
+          "source_ref": "M3"
+        },
+        {
+          "quote": "timeout 参数不写也没关系，requests 默认 30 秒超时。",
+          "verdict": "uncertain",
+          "reason": "资料未提及 requests 的默认超时行为，无法据此判定对错。",
+          "source_ref": ""
+        },
+        {
+          "quote": "json.loads() 用于把 Python 对象转成 JSON 字符串。",
+          "verdict": "error",
+          "reason": "json.loads() 是把 JSON 字符串反序列化成 Python 对象；json.dumps() 才是把 Python 对象序列化成 JSON 字符串。",
+          "source_ref": "M5"
+        }
+      ],
+      "coverage": {
+        "covered": [
+          "HTTP 请求/响应结构",
+          "requests 基本用法与 Session",
+          "异常处理与超时/重试"
+        ],
+        "missing": [
+          "robots.txt 与请求礼仪"
+        ]
+      },
+      "summary": "笔记存在多处与资料冲突的错误（404 含义、GET/POST 语义、默认重试、json.loads 方向），且完全缺失 robots.txt 与请求礼仪知识点。"
+    },
+    {
+      "issues": [
+        {
+          "quote": "HTTP 状态码 404 表示服务器内部错误。",
+          "verdict": "error",
+          "reason": "404 表示请求的资源不存在（Not Found），服务器内部错误是 5xx。",
+          "source_ref": "M4"
+        },
+        {
+          "quote": "GET 请求也可以带请求体传数据，而且比 POST 更安全。",
+          "verdict": "error",
+          "reason": "GET 参数应放在 URL query string，POST 数据放在 body；二者是语义与位置的区别，不是安全等级的区别。",
+          "source_ref": "M2"
+        },
+        {
+          "quote": "requests.get() 默认会自动重试 3 次，所以不用自己写重试。",
+          "verdict": "error",
+          "reason": "requests 的 get/post 默认不会自动重试，需要显式配置。",
+          "source_ref": "M3"
+        },
+        {
+          "quote": "timeout 参数不写也没关系，requests 默认 30 秒超时。",
+          "verdict": "uncertain",
+          "reason": "资料未提及 requests 的默认超时行为，无法据此判定冲突。",
+          "source_ref": ""
+        },
+        {
+          "quote": "json.loads() 用于把 Python 对象转成 JSON 字符串。",
+          "verdict": "error",
+          "reason": "json.loads() 是把 JSON 字符串反序列化成 Python 对象；序列化是 json.dumps()。",
+          "source_ref": "M5"
+        }
+      ],
+      "coverage": {
+        "covered": [
+          "HTTP 请求/响应结构",
+          "requests 基本用法与 Session",
+          "异常处理与超时/重试"
+        ],
+        "missing": [
+          "robots.txt 与请求礼仪"
+        ]
+      },
+      "summary": "笔记存在多处与资料冲突的错误（404 含义、GET/POST 语义、默认重试、json.loads 方向），且完全缺失 robots.txt 与请求礼仪内容。"
+    },
+    {
+      "issues": [
+        {
+          "quote": "HTTP 状态码 404 表示服务器内部错误。",
+          "verdict": "error",
+          "reason": "404 表示请求的资源不存在（Not Found），服务器内部错误是 5xx。",
+          "source_ref": "M4"
+        },
+        {
+          "quote": "GET 请求也可以带请求体传数据，而且比 POST 更安全。",
+          "verdict": "error",
+          "reason": "GET 参数应放在 URL 的 query string 中，POST 数据放在 body 中；二者是语义与位置的区别，不是安全等级的区别。",
+          "source_ref": "M2"
+        },
+        {
+          "quote": "requests.get() 默认会自动重试 3 次，所以不用自己写重试。",
+          "verdict": "error",
+          "reason": "requests 的 get/post 默认不会自动重试，需要显式配置。",
+          "source_ref": "M3"
+        },
+        {
+          "quote": "timeout 参数不写也没关系，requests 默认 30 秒超时。",
+          "verdict": "uncertain",
+          "reason": "资料未提及 requests 的默认超时行为，无法据此判定冲突。",
+          "source_ref": ""
+        },
+        {
+          "quote": "json.loads() 用于把 Python 对象转成 JSON 字符串。",
+          "verdict": "error",
+          "reason": "json.loads() 是把 JSON 字符串反序列化成 Python 对象；把 Python 对象序列化成 JSON 字符串的是 json.dumps()。",
+          "source_ref": "M5"
+        }
+      ],
+      "coverage": {
+        "covered": [
+          "HTTP 请求/响应结构",
+          "requests 基本用法与 Session",
+          "异常处理与超时/重试"
+        ],
+        "missing": [
+          "robots.txt 与请求礼仪"
+        ]
+      },
+      "summary": "笔记存在多处与资料明确冲突的错误（404 含义、GET/POST 语义、默认重试、json.loads 方向），且缺少 robots.txt 与请求礼仪相关内容。"
+    }
+  ],
+  "planted": {
+    "E1": {
+      "quote_hint": "默认会自动重试 3 次",
+      "kind": "error_covered",
+      "truth": "requests 默认不重试 [M3]"
+    },
+    "E2": {
+      "quote_hint": "404 表示服务器内部错误",
+      "kind": "error_covered",
+      "truth": "404=资源不存在，5xx=服务器错误 [M4]"
+    },
+    "E3": {
+      "quote_hint": "GET 请求也可以带请求体",
+      "kind": "error_covered",
+      "truth": "GET 参数在 URL，安全等级不是区别点 [M2]"
+    },
+    "E4": {
+      "quote_hint": "json.loads() 用于把 Python 对象转成 JSON",
+      "kind": "error_covered",
+      "truth": "说反了：dumps 才是序列化 [M5]"
+    },
+    "E5": {
+      "quote_hint": "默认 30 秒超时",
+      "kind": "error_uncovered",
+      "truth": "资料未覆盖 → 应降级为 uncertain"
+    }
+  },
+  "correct_ids": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5"
+  ],
+  "precision": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "recall": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "fp_correct": [
+    0,
+    0,
+    0
+  ],
+  "degrade_ok": [
+    true,
+    true,
+    true
+  ],
+  "usage_total": {
+    "prompt_tokens": 2472,
+    "completion_tokens": 1418,
+    "prompt_cache_hit_tokens": 1280
+  },
+  "cost_cny_estimated": 0.00689,
+  "verdict": "PASS"
+}

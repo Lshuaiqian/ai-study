@@ -1,0 +1,296 @@
+{
+  "course_id": "py-agent-05",
+  "sources": [
+    "west2-f2",
+    "west2-st",
+    "west2-fe"
+  ],
+  "goal": "把分析结果画成能说明问题的图，再用 Gradio / Streamlit 包装成可交互页面，最后按 Kaggle 流程提交一次可复现的竞赛结果",
+  "system_position": "数据分析层 →【表达层：可视化与应用】→ 报告交付",
+  "knowledge": [
+    {
+      "local": "K1",
+      "from": "data.plot",
+      "requires": [
+        {
+          "course_id": "py-agent-04",
+          "knowledge_id": "K2",
+          "why": "统计图的数据通常要先用 pandas 分组聚合出来，直接拿未清洗的原始表画图只会得到一张读不懂的图"
+        },
+        {
+          "course_id": "py-agent-04",
+          "knowledge_id": "K1",
+          "why": "绘图函数的 x/y 实参是 ndarray，缺失值要做掩码或过滤，都需要数组运算的基础"
+        },
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K9",
+          "why": "图要存成 png 交付，靠的是文件读写；中文标题要显式指定字体，否则会变成方框"
+        }
+      ],
+      "contrast": [
+        {
+          "course_id": "py-agent-05",
+          "knowledge_id": "K3",
+          "why": "同一张图在 Matplotlib 里是手工像素级控制，在 Streamlit 里可以直接把图交给前端渲染成可交互图表，控制力与开发速度是取舍关系"
+        }
+      ],
+      "applies_to": [
+        {
+          "course_id": "py-agent-05",
+          "why": "K3 的页面里至少要有一张图，直接用 Matplotlib 的 figure 交给容器渲染即可"
+        },
+        {
+          "course_id": "py-agent-09",
+          "why": "训练曲线（loss / 指标随轮次变化）与模型对比图都是这一套绘图 API"
+        }
+      ]
+    },
+    {
+      "local": "K2",
+      "from": "fe.gradio",
+      "requires": [
+        {
+          "course_id": "py-agent-05",
+          "knowledge_id": "K1",
+          "why": "Gradio 的输出组件要展示图或统计结果，先得有能画出来的东西"
+        },
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K5",
+          "why": "Gradio 应用必须有 __main__ 保护，否则被 import 时会意外占用端口启动服务"
+        }
+      ],
+      "contrast": [
+        {
+          "course_id": "py-agent-05",
+          "knowledge_id": "K3",
+          "why": "Gradio 是『函数 + 组件』的推理界面思路，Streamlit 是『脚本自上而下重跑』的数据应用思路，做多页数据应用时后者更省事"
+        }
+      ],
+      "applies_to": [
+        {
+          "course_id": "py-agent-07",
+          "why": "调用 LLM API 做出来的能力，最省事的展示方式就是套一个 Gradio 界面"
+        }
+      ]
+    },
+    {
+      "local": "K3",
+      "from": "fe.streamlit",
+      "requires": [
+        {
+          "course_id": "py-agent-05",
+          "knowledge_id": "K1",
+          "why": "Streamlit 页面上的图表与统计表要先有可画的数据，否则就只是一个空壳表单"
+        },
+        {
+          "course_id": "py-agent-04",
+          "knowledge_id": "K2",
+          "why": "侧边栏筛选、按类别切换视图这些交互本质上是在用 pandas 做条件筛选与聚合"
+        },
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K2",
+          "why": "读 CSV/JSON 要用 with 与异常处理，数据文件缺失时页面应给出可读提示而不是直接崩掉"
+        }
+      ],
+      "contrast": [
+        {
+          "course_id": "py-agent-05",
+          "knowledge_id": "K2",
+          "why": "同一个模型既能用 Gradio 快速包成单页推理界面，也能用 Streamlit 做成带筛选与多图的数据应用，选哪个取决于交付形态"
+        }
+      ],
+      "applies_to": [
+        {
+          "course_id": "py-agent-05",
+          "why": "K4 的 Kaggle 结果可以用 Streamlit 页面展示分数变化与特征对比，让提交记录可读"
+        }
+      ]
+    },
+    {
+      "local": "K4",
+      "from": "st.kaggle",
+      "requires": [
+        {
+          "course_id": "py-agent-04",
+          "knowledge_id": "K3",
+          "why": "要理解排行榜分数为何波动、验证集为何要可信，先得会特征工程与交叉验证"
+        },
+        {
+          "course_id": "py-agent-04",
+          "knowledge_id": "K2",
+          "why": "读 train/test.csv、按 sample_submission 的列构造提交文件都是 pandas 操作，格式错一次提交就会被判无效"
+        },
+        {
+          "course_id": "py-agent-05",
+          "knowledge_id": "K1",
+          "why": "判断一次改进是否真的有效，要先看图（分数/损失曲线、预测分布）再下结论，而不是只看一个数字"
+        }
+      ],
+      "contrast": [
+        {
+          "course_id": "py-agent-04",
+          "knowledge_id": "K4",
+          "why": "Kaggle 用排行榜分数定义成功，建模论文用逻辑自洽与可解释性定义成功，两套验收标准要分清、不要互相套用"
+        }
+      ],
+      "applies_to": []
+    }
+  ],
+  "theory": [
+    {
+      "atom_id": "M1",
+      "brief": "图的作用是说明一个问题：先定结论，再选图型，最后才写代码"
+    },
+    {
+      "atom_id": "M2",
+      "brief": "Gradio 与 Streamlit 的心智模型差异（函数式推理界面 vs 脚本式数据应用）"
+    },
+    {
+      "atom_id": "M4",
+      "brief": "一次 Kaggle 投入的完整流程：从 sample_submission 到可复现的提交，验证集必须可信"
+    }
+  ],
+  "self_check": [
+    {
+      "id": "Q1",
+      "question": "要说明「近一年每月通知条数在上升」，你会画哪种图、给出哪三个必备元素？什么时候该用散点或直方图而不是折线图？",
+      "points": [
+        "P1 按数据关系选图型：时间序列用折线、类别比较用柱状、两个数值变量的关系用散点、单个变量的分布用直方图",
+        "P2 给出三个必备元素：有意义的轴标签与单位、标题或图例、量级不合适时用对数轴；中文标签必须显式设置字体",
+        "P3 说明判断图是否合格的标准：遮住标题后仍能看出结论；只用来堆满页面的图（与结论无关）应当删掉"
+      ]
+    },
+    {
+      "id": "Q2",
+      "question": "Gradio 与 Streamlit 的核心差别是什么？同一个需求你按什么标准选？",
+      "points": [
+        "P1 说明 Gradio 的模型：定义一个处理函数，再用输入/输出组件把它包成页面，天然适合「一次输入换一次输出」的推理演示",
+        "P2 说明 Streamlit 的模型：脚本自上到下执行，每次交互整个脚本重跑，所以状态要放 st.session_state，重活要用 @st.cache_data 缓存，适合带筛选与多图的数据应用",
+        "P3 给出选择标准：只包一个模型/函数用 Gradio，需要多组件联动、多图与数据表格用 Streamlit；并把两者都定位为原型与演示工具，不是生产级前端"
+      ]
+    },
+    {
+      "id": "Q3",
+      "question": "Kaggle 本地验证分数比排行榜高一大截，通常是什么原因？下次怎么避免？",
+      "points": [
+        "P1 指出最常见的原因是验证方式与测试集结构不一致：随机划分的时间序列数据、按类别划分会泄漏、训练集与测试集分布不同",
+        "P2 指出调参反复看排行榜本身就是对测试集的过拟合，排行榜会因此虚高，且无法在下一次比赛中复用这套做法",
+        "P3 给出可复现的做法：提交文件严格对齐 sample_submission 的列名与行数，用可信的本地交叉验证追踪每次改动，记录每次提交的分数与改动说明，从最简 baseline 开始逐步迭代"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "t_py05_1",
+      "type": "code",
+      "title": "用 Matplotlib 画三张说明问题的图",
+      "brief": "写 work/plot_report.py：基于第 4 课的分析结果（或自造等价数据并说明）产出至少三张图——一张趋势折线图、一张类别对比柱状图、一张分布直方图或两变量散点图。每张图必须带标题、轴标签（含单位）与必要标注，中文正常显示，并全部保存为 PNG",
+      "deliverable": "work/plot_report.py",
+      "acceptance": [
+        "产出至少 3 个 PNG 文件且文件名能看出画的是什么",
+        "每张图都有标题、轴标签与单位，中文没有变成方框",
+        "至少一张图上有针对具体数据点的标注或数值说明（不是只有一条光秃秃的线）",
+        "能在 work/t_py05_1.md 中用一句话说出每张图的结论"
+      ],
+      "atoms": [
+        "K1"
+      ],
+      "est_minutes": 60
+    },
+    {
+      "task_id": "t_py05_2",
+      "type": "code",
+      "title": "把模型与数据包成两个可交互页面",
+      "brief": "写 work/gradio_app.py 与 work/streamlit_app.py：Gradio 版把自己的一个模型或函数（分类/回归/文本处理均可）包成可交互页面；Streamlit 版做一个数据应用，必须包含侧边栏筛选、至少一张图和一个统计表，表格随筛选联动更新，数据从文件读入而非硬编码",
+      "deliverable": "work/streamlit_app.py",
+      "acceptance": [
+        "两个脚本都能本地启动且页面可交互（提交运行命令与启动后的截图或终端输出）",
+        "Streamlit 版的统计表随侧边栏筛选变化，数据来自文件读取",
+        "图表不被重复叠加：用缓存或正确的绘图对象管理，多次交互后图上不出现重复曲线",
+        "Gradio 脚本有 __main__ 保护，被 import 时不会自动启动服务"
+      ],
+      "atoms": [
+        "K2",
+        "K3",
+        "K1"
+      ],
+      "est_minutes": 90
+    },
+    {
+      "task_id": "t_py05_3",
+      "type": "transfer",
+      "title": "换一套数据复用你的页面模板",
+      "brief": "把上一题的 Streamlit 应用换成另一套数据（不同主题、不同列结构），在不复制粘贴硬编码的前提下复用页面结构，让新数据也能正常筛选与出图。写清你改了哪几处、为什么",
+      "deliverable": "work/t_py05_3_app.py",
+      "acceptance": [
+        "真的换了数据集，不是原题原样提交",
+        "复用的是读取—筛选—出图的框架，而不是把新数据的结果写死进页面",
+        "改动的列名、筛选项、图型在 work/t_py05_3.md 中逐条说明理由",
+        "新数据下页面能跑起来并正确显示条数或聚合结果"
+      ],
+      "atoms": [
+        "K3",
+        "K1"
+      ],
+      "est_minutes": 60
+    },
+    {
+      "task_id": "t_py05_4",
+      "type": "note",
+      "title": "写第 5 课笔记并记录一次 Kaggle 提交",
+      "brief": "写 notes/py-agent-05.md：覆盖本课全部 must 知识点，必须写清 Gradio 与 Streamlit 的差别、图形选择的依据，以及 Kaggle 的提交流程与常用验证策略；同时记录一次真实提交（比赛名、baseline 分数、改了什么、分数怎么变、本地验证与排行榜的差异）",
+      "deliverable": "notes/py-agent-05.md",
+      "atoms": [
+        "K1",
+        "K2",
+        "K3",
+        "K4"
+      ],
+      "est_minutes": 45,
+      "acceptance": [
+        "覆盖：Matplotlib 绘图（散点、曲线、标注）、Gradio 快速搭建界面、Streamlit 搭建数据应用、Kaggle 竞赛流程与提交",
+        "必须写「为什么」而不只是「是什么」：至少对 2 个知识点说明适用边界",
+        "有一条自己的踩坑记录（报错原文 + 怎么定位 + 最后怎么解决）",
+        "用自己的话写，不要整段抄资料；代码块标明语言"
+      ]
+    }
+  ],
+  "materials": {
+    "note": "种子资料，待真实资料替换",
+    "atoms": [
+      {
+        "id": "M1",
+        "type": "api",
+        "knowledge_id": "K1",
+        "text": "Matplotlib 的核心对象是 Figure（整张画布）与 Axes（一个坐标系），plt.subplots 一次拿到两者，之后所有绘制都作用在 ax 上。常用函数：plot 折线、scatter 散点、bar 柱状、hist 直方图、imshow 图像，配 xlabel/ylabel/title/legend/annotate。中文显示要显式设置字体（如 rcParams['font.sans-serif']），否则出现方框；保存用 fig.savefig('x.png', dpi=150, bbox_inches='tight')。seaborn 是建立在 Matplotlib 之上的封装，可减少样板代码。"
+      },
+      {
+        "id": "M2",
+        "type": "api",
+        "knowledge_id": "K2",
+        "text": "Gradio 的基本用法是写一个普通 Python 函数，再用 gr.Interface(fn=..., inputs=..., outputs=...) 或 gr.Blocks 把它变成网页，.launch() 本地启动，share=True 可生成临时外链。它的定位是快速把模型或函数变成可交互 Demo，不追求复杂前端逻辑、路由与高并发，也不适合承载多用户状态。"
+      },
+      {
+        "id": "M3",
+        "type": "api",
+        "knowledge_id": "K3",
+        "text": "Streamlit 采用脚本式模型：每次用户交互都会把整个脚本从头到尾重新执行一遍，因此普通局部变量在交互之间不会保留，需要 st.session_state 存跨次状态，耗时的数据读取或模型加载用 @st.cache_data / @st.cache_resource 缓存。常用调用是 st.title / st.sidebar / st.dataframe / st.pyplot / st.line_chart。"
+      },
+      {
+        "id": "M4",
+        "type": "concept",
+        "knowledge_id": "K4",
+        "text": "Kaggle 竞赛的常规流程是：读题与评估指标 → 下载并读取 train/test.csv → 建立最简 baseline 并做出第一次提交 → 做特征工程与模型选择并通过本地验证集判断改动是否有效 → 用 sample_submission.csv 对齐列名与行数生成提交文件。排行榜分数是测试集上的实际成绩，不能当作调参依据；反复看排行榜调参等于对测试集过拟合，本地交叉验证才是可复现的改进依据。"
+      }
+    ]
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": true,
+    "min_practice_lines": 120
+  }
+}

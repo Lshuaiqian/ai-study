@@ -1,0 +1,170 @@
+{
+  "course_id": "py-agent-01",
+  "mode": "append",
+  "sources": [
+    "west2-f1"
+  ],
+  "note": "老 1 已经是西二 f1 的细粒度展开（K1 语法/推导式、K2 异常与 with、K3 class 与魔术方法、K4 typing、K5 模块与包）。f1 里还有 5 个侧面老 1 没覆盖，按「只追加不改号」补成 K6–K10——老 1 的 K1–K5 一个都不许动，mastery.json 里的 py-agent-01:K* 原子全指着它们。",
+  "knowledge": [
+    {
+      "local": "K6",
+      "from": "py.func",
+      "requires": [
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K1",
+          "why": "默认值、可变参数、作用域都是建立在语法与容器之上的，先会写函数体才谈得上参数设计"
+        }
+      ],
+      "contrast": [
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K4",
+          "why": "函数签名上的类型提示（typing）与这里讲的参数机制是同一件事的两个侧面"
+        }
+      ],
+      "applies_to": [
+        {
+          "course_id": "py-agent-01",
+          "why": "装饰器就是接收函数、返回函数的函数，参数机制不清楚就写不出装饰器"
+        }
+      ]
+    },
+    {
+      "local": "K7",
+      "from": "py.decorator",
+      "requires": [
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K6",
+          "why": "装饰器的本质是『把函数当参数传进去再返回一个函数』，不理解函数是一等对象就写不出来"
+        },
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K3",
+          "why": "@ 语法糖与 __call__ / 闭包相关，需要类和魔术方法的基础"
+        }
+      ],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-07",
+          "why": "写 LLM 调用时常需要计时/重试/日志装饰器，这是最直接的复用场景"
+        }
+      ]
+    },
+    {
+      "local": "K8",
+      "from": "py.regex",
+      "requires": [
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K1",
+          "why": "正则的匹配结果处理要用到字符串与容器操作"
+        }
+      ],
+      "contrast": [
+        {
+          "course_id": "py-agent-03",
+          "knowledge_id": "K2",
+          "why": "同一个抽取任务的两条路：正则适合结构极简单的文本，HTML 这种嵌套结构要交给解析器"
+        }
+      ],
+      "applies_to": [
+        {
+          "course_id": "py-agent-03",
+          "why": "爬虫清洗文本、从非结构化文本里抽字段时会用到"
+        }
+      ]
+    },
+    {
+      "local": "K9",
+      "from": "py.fileio",
+      "requires": [
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K2",
+          "why": "文件读写必须用 with 保证关闭，这正是本课异常处理与上下文管理器那一节的内容"
+        }
+      ],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-03",
+          "why": "爬虫结果落盘就是文件读写"
+        },
+        {
+          "course_id": "py-agent-04",
+          "why": "数据分析的第一步是把 CSV/JSON 读进来"
+        }
+      ]
+    },
+    {
+      "local": "K10",
+      "from": "cli.basic",
+      "requires": [],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-03",
+          "why": "跑脚本、看报错、管道过滤输出都发生在终端里"
+        }
+      ]
+    }
+  ],
+  "materials": {
+    "note": "种子资料，待真实资料替换",
+    "atoms": [
+      {
+        "id": "M1",
+        "type": "api",
+        "knowledge_id": "K6",
+        "text": "函数参数：默认值在**函数定义时**求值一次，被所有调用共享，所以不能用可变对象（list/dict）当默认值，否则会跨调用累积；正确写法是默认 None、函数体内 `if x is None: x = []`。可变参数 `*args` 收成 tuple、`**kwargs` 收成 dict。作用域上函数内赋值默认产生局部变量，要改外层变量需 `nonlocal`（闭包）或 `global`（模块级）。"
+      },
+      {
+        "id": "M2",
+        "type": "api",
+        "knowledge_id": "K7",
+        "text": "装饰器是**接收函数并返回可调用对象**的函数，`@dec` 等价于 `f = dec(f)`，因此原函数名被重新绑定为包装函数。必须用 `functools.wraps` 把原函数的 `__name__` / `__doc__` 复制到包装函数上，否则日志、调试器、文档工具以及依赖函数名的框架都会读到包装函数的信息。常见用途：计时、日志、重试、缓存、权限校验。"
+      },
+      {
+        "id": "M3",
+        "type": "api",
+        "knowledge_id": "K8",
+        "text": "`re` 模块常用 `search`（找第一个）、`findall`（找全部）、`sub`（替换）、`match`（只匹配开头）。模式字符串用**原始字符串** `r\"\\d+\"`，否则反斜杠会先被 Python 转义一次。`()` 是捕获分组，用 `m.group(1)` 取；量词默认贪婪，加 `?` 变非贪婪。结构复杂的文本（如嵌套 HTML）不要用正则硬解。"
+      },
+      {
+        "id": "M4",
+        "type": "api",
+        "knowledge_id": "K9",
+        "text": "文件读写必须用 `with open(...)` 保证异常时也会关闭。文本模式要**显式**写 `encoding=\"utf-8\"`（Windows 默认编码是 GBK，读 UTF-8 文件会乱码）。模式：`r` 读、`w` 覆盖写、`a` 追加、`rb/wb` 二进制；`newline=\"\"` 可关闭换行转换。大文件要逐行迭代，不要一次 `read()` 进内存。"
+      },
+      {
+        "id": "M5",
+        "type": "concept",
+        "knowledge_id": "K10",
+        "text": "终端基本操作：`cd` 切目录、`ls`（Windows 是 `dir`）列目录、`|` 管道把上一个命令的输出喂给下一个、`>` 与 `>>` 重定向到文件。运行脚本用 `python script.py`，以模块方式运行用 `python -m 包.模块`（后者会把包目录加入路径，能正确处理相对导入）。命令的退出码 0 表示成功、非 0 表示失败，脚本里用 `sys.exit(1)` 表达失败。"
+      }
+    ]
+  },
+  "self_check": [
+    {
+      "id": "TMP",
+      "question": "为什么不能用可变对象（list / dict）当函数的默认值？正确写法是什么？",
+      "points": [
+        "P1 说明默认值在函数**定义时**只求值一次，被之后所有调用共享同一个对象",
+        "P2 指出后果：往默认 list 里 append，内容和长度会跨调用累积，出现『上次调用的脏数据』",
+        "P3 给出正确做法：默认写 None，函数体内 `if x is None: x = []` 每次新建"
+      ]
+    },
+    {
+      "id": "TMP",
+      "question": "装饰器为什么必须用 functools.wraps？不写会发生什么？",
+      "points": [
+        "P1 说明 `@dec` 等价于 `f = dec(f)`，调用方拿到的其实是包装函数",
+        "P2 指出不写 wraps 时原函数的 `__name__` / `__doc__` 被替换成包装函数的",
+        "P3 说明影响面：日志与调试信息失真、文档工具抓不到 docstring、依赖函数名的框架（路由注册、序列化等）会认错"
+      ]
+    }
+  ]
+}

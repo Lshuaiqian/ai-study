@@ -1,0 +1,358 @@
+{
+  "course_id": "py-agent-07",
+  "sources": [
+    "west2-f3",
+    "west2-a1"
+  ],
+  "goal": "会调用现成模型完成分类/打分/填空/对话，并能讲清 Transformer、自回归与对齐的原理边界，写出稳定的提示词",
+  "system_position": "Python + HTTP 基础 →【模型调用与提示层】→ Agent / 顶层 AI 应用",
+  "knowledge": [
+    {
+      "local": "K1",
+      "from": "ai.pipeline",
+      "requires": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K8",
+          "why": "要理解零样本为什么是零样本，必须先知道监督学习是要靠标注样本训练分类器的，否则分不清它省掉的是哪一步"
+        }
+      ],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-08",
+          "why": "Agent 里判断用户意图、决定调用哪个工具，常用零样本分类做第一层路由"
+        }
+      ]
+    },
+    {
+      "local": "K2",
+      "from": "ai.scoring",
+      "requires": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K1",
+          "why": "打分用的是同一套模型调用接口，只是取输出的分数与概率而不是标签，先跑通 pipeline 才能读懂分数从哪来"
+        }
+      ],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-08",
+          "why": "给多个候选回答打分再择优，是 Agent 自检与结果重排的常用手段"
+        }
+      ]
+    },
+    {
+      "local": "K3",
+      "from": "ai.bert",
+      "requires": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K7",
+          "why": "BERT 就是 Transformer 编码器的堆叠，不讲自注意力与掩码语言建模，就只能背名词而不知道它为什么不能自由生成"
+        }
+      ],
+      "contrast": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K7",
+          "why": "同样是 Transformer：BERT 是双向编码器，训练目标是遮词还原；GPT 类是带因果掩码的自回归解码器，训练目标是预测下一个词"
+        }
+      ],
+      "applies_to": [
+        {
+          "course_id": "py-agent-09",
+          "why": "答辩常要求对比编码器与自回归生成模型，这是原理题的固定考点"
+        }
+      ]
+    },
+    {
+      "local": "K4",
+      "from": "ai.instruct",
+      "requires": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K7",
+          "why": "对话模型的 messages 结构对应它训练时的对话模板，不懂自回归生成与指令对齐就不知道为什么要有 role"
+        },
+        {
+          "course_id": "py-agent-02",
+          "knowledge_id": "K5",
+          "why": "在线调用对话模型必须带 Authorization: Bearer 的 API Key，这是第 2 课鉴权头的直接复用"
+        }
+      ],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-08",
+          "why": "Agent 与模型的每一轮交互都是 messages 数组，工具调用结果也以消息形式回填"
+        }
+      ]
+    },
+    {
+      "local": "K5",
+      "from": "ai.prompt",
+      "requires": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K4",
+          "why": "提示词最终要落进 system / user / assistant 三种 role 里，不懂消息构造就无处安放"
+        },
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K7",
+          "why": "知道模型是逐词自回归采样，才理解为什么指令顺序、示例数量与输出格式约束会真的改变结果"
+        }
+      ],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-08",
+          "why": "Agent 的 system prompt 直接决定工具选择策略与行为边界"
+        }
+      ]
+    },
+    {
+      "local": "K6",
+      "from": "ai.vibe",
+      "requires": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K5",
+          "why": "让 AI 产出可运行代码，靠的是把需求、约束与验收标准写进提示词，这本身就是 prompt 工程"
+        },
+        {
+          "course_id": "py-agent-01",
+          "knowledge_id": "K2",
+          "why": "AI 常给出没有异常处理与资源管理的代码，看得懂 try/except 与 with 才知道该改哪里、怎么验收"
+        }
+      ],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-08",
+          "why": "写 Agent 代码本身高度依赖与 AI 结对，人工把关能力决定项目质量"
+        }
+      ]
+    },
+    {
+      "local": "K7",
+      "from": "ai.llm.think",
+      "requires": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K8",
+          "why": "Transformer 属于深度学习：多层神经网络加端到端训练，先划清 ML 与 DL 的边界才知道它在技术谱系的哪一层"
+        }
+      ],
+      "contrast": [],
+      "applies_to": [
+        {
+          "course_id": "py-agent-08",
+          "why": "要解释 Agent 为什么受上下文长度限制、为什么会幻觉，必须回到自回归生成与注意力的机制"
+        }
+      ]
+    },
+    {
+      "local": "K8",
+      "from": "ai.mldl",
+      "requires": [],
+      "contrast": [
+        {
+          "course_id": "py-agent-07",
+          "knowledge_id": "K7",
+          "why": "同一谱系的两端：K8 讲传统机器学习的人工特征加统计模型，K7 讲深度学习用网络自动学表示"
+        }
+      ],
+      "applies_to": [
+        {
+          "course_id": "py-agent-09",
+          "why": "答辩要求讲清传统机器学习与深度学习的边界及各自适用场景"
+        }
+      ]
+    }
+  ],
+  "theory": [
+    {
+      "atom_id": "M2",
+      "brief": "ML 与 DL 的边界：人工设计特征 vs 网络端到端学表示"
+    },
+    {
+      "atom_id": "M1",
+      "brief": "Transformer 自注意力 → 自回归生成 → 对齐，三段串起来才是现代 LLM"
+    },
+    {
+      "atom_id": "M3",
+      "brief": "messages 的 role 语义：system 定规则、user 提要求、assistant 是模型的回合"
+    }
+  ],
+  "self_check": [
+    {
+      "id": "Q1",
+      "question": "BERT 和 GPT 都是 Transformer，为什么一个适合填空与分类，另一个适合对话生成？",
+      "points": [
+        "P1 结构差异：BERT 是 encoder-only 且双向注意力，同一层里每个位置都能看到左右两侧；GPT 是 decoder-only，用因果掩码让每个位置只能看到它左边",
+        "P2 训练目标差异：BERT 用掩码语言建模（随机遮住部分词再还原），GPT 用自回归的预测下一个词",
+        "P3 任务映射：双向表示适合分类与 [MASK] 填空这类理解任务，自回归生成才适合连续写文本和对话，所以 BERT 不擅长自由生成"
+      ]
+    },
+    {
+      "id": "Q2",
+      "question": "机器学习和深度学习的区别到底在哪？什么情况下应该先试传统机器学习？",
+      "points": [
+        "P1 关系与差别：深度学习是机器学习的分支，核心差别在特征来源——传统 ML 靠人工设计与筛选特征，DL 用多层神经网络从原始数据学表示",
+        "P2 选型判据：样本量小、结构化表格数据、要求可解释或快速迭代时先上传统 ML（逻辑回归、树模型），此时深度网络容易过拟合且收益不明显",
+        "P3 代价与边界：DL 在图像、语音、文本等非结构化数据上明显更强，但需要更多标注数据与算力、调参成本高、可解释性差，二者是适用场景之分而非新旧替代"
+      ]
+    },
+    {
+      "id": "Q3",
+      "question": "模型只是逐词生成，为什么 prompt 里写清角色、示例和输出格式真的有用？对齐在其中起了什么作用？",
+      "points": [
+        "P1 自回归的条件概率视角：模型是在给定前文的条件下采样下一个词，prompt 就是那个条件，措辞、示例与顺序都会改变后续词的概率分布，所以写得越具体输出越稳定",
+        "P2 对齐的作用：预训练基座只会续写，指令微调让它学会按指令回答，RLHF 等偏好对齐进一步让输出更符合人类偏好与安全要求，角色约束和格式要求因此才被遵守",
+        "P3 边界与不稳定来源：对齐不保证事实正确（仍会一本正经地编造），约束会被长上下文稀释，采样参数会让同一 prompt 结果不同，所以关键输出要用程序做格式校验与兜底"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "t_py07_1",
+      "type": "code",
+      "title": "跑通四类模型能力并落盘结果",
+      "brief": "在同一脚本里跑通四段：HuggingFace pipeline 的零样本分类、用模型给文本打分、BERT 的 [MASK] 填空、指令模型的对话；每段都写出实际输出到 work/ai_basics_out.json，并把用到的模型名与任务名写在脚本里注释清楚",
+      "deliverable": "work/ai_basics.py",
+      "acceptance": [
+        "四段能力在同一脚本里都跑通，一条命令可复现",
+        "每段都产出可核对的实际结果，写入 work/ai_basics_out.json",
+        "零样本分类显式给出 candidate_labels，填空显式给出待填空文本",
+        "结果来自真实推理，脚本里没有任何硬编码的模型输出（离线改用 API 也必须真实调用）",
+        "脚本注明每段用的模型名与任务名，以及为什么选它"
+      ],
+      "atoms": [
+        "K1",
+        "K2",
+        "K3",
+        "K4"
+      ],
+      "est_minutes": 90
+    },
+    {
+      "task_id": "t_py07_2",
+      "type": "note",
+      "title": "写第 7 课原理笔记",
+      "brief": "覆盖本课 must 知识点，重点讲原理：Transformer 与自注意力、自回归生成、BERT 与 GPT 的对比、指令微调与 RLHF 对齐各解决什么问题、ML 与 DL 的区别与选型判据、prompt 工程为什么有效",
+      "deliverable": "notes/py-agent-07.md",
+      "acceptance": [
+        "有 BERT 与 GPT 的对比表（结构 / 训练目标 / 适用任务）",
+        "讲清自回归生成与对齐各自解决什么问题，并能说出对齐的副作用或边界",
+        "讲清 ML 与 DL 的差别，并给出至少一条选型判据",
+        "无事实错误，用你自己的话写，不整段抄资料"
+      ],
+      "atoms": [
+        "K3",
+        "K5",
+        "K7",
+        "K8"
+      ],
+      "est_minutes": 45
+    },
+    {
+      "task_id": "t_py07_3",
+      "type": "transfer",
+      "title": "把模型能力用到自己的真实语料上",
+      "brief": "把零样本分类与文本打分两套方案用到同一批真实语料（第 3 课爬到的数据或自备 ≥30 条文本），输出文本/预测标签/分数对照表，并挑出至少 3 个失败或分数异常的案例分析原因",
+      "deliverable": "work/t_py07_3_apply.py",
+      "acceptance": [
+        "语料是真实文本且不少于 30 条，不是示例句子",
+        "同一批数据上同时跑零样本分类与打分，结果写入对照表文件",
+        "报告至少 3 个失败或异常案例，并归因（标签措辞、领域不匹配、反讽或长文本截断等）",
+        "说明换到自己的场景后改了哪几处，哪些部分直接复用"
+      ],
+      "atoms": [
+        "K1",
+        "K2",
+        "K5"
+      ],
+      "est_minutes": 60
+    },
+    {
+      "task_id": "t_py07_4",
+      "type": "note",
+      "title": "Vibe Coding：与 AI 协作写一个模型小工具",
+      "brief": "与 AI 结对完成一个调用大模型的小工具（命令行或脚本），并在目录内留下协作记录：你负责什么、AI 负责什么、你怎么验收，至少记 2 处 AI 给错的地方（现象 + 你怎么发现 + 最终修法）",
+      "deliverable": "work/t_py07_4/",
+      "acceptance": [
+        "工具能一条命令跑通，并给出示例输入与输出",
+        "目录内含协作记录 vibe.md，写清人机分工与验收方式",
+        "至少 2 处 AI 错误被记录下来，含现象、发现方式与修法",
+        "验收动作真实执行过（能贴出运行命令与结果），不是只描述"
+      ],
+      "atoms": [
+        "K5",
+        "K6"
+      ],
+      "est_minutes": 60
+    }
+  ],
+  "materials": {
+    "note": "种子资料（seed）：本课桥接文件自带的最小权威片段，尚未用真实资料抽取，待真实资料到位后替换。",
+    "atoms": [
+      {
+        "id": "M1",
+        "type": "concept",
+        "knowledge_id": "K7",
+        "text": "现代 LLM 的主干是 Transformer：自注意力在同一序列内计算每个位置与其他位置的关联权重，因此可以并行处理整段文本。按训练目标分两类：BERT 这类 encoder-only 模型用掩码语言建模（遮住部分词再预测），GPT 这类 decoder-only 模型用自回归的预测下一个词。预训练得到的基座模型只会续写，还要经过指令微调与基于人类偏好的强化学习等对齐步骤，才会按指令回答。"
+      },
+      {
+        "id": "M2",
+        "type": "concept",
+        "knowledge_id": "K8",
+        "text": "机器学习指从数据中拟合出模型（线性/逻辑回归、SVM、树模型等）；深度学习是它的一个分支，特征不再由人设计，而由多层神经网络从原始数据中自动学习表示。小样本、结构化表格、需要可解释性时传统 ML 往往更合适；深度网络在图像、语音、文本等非结构化数据上更强，但需要更多数据与算力，可解释性也更差。"
+      },
+      {
+        "id": "M3",
+        "type": "concept",
+        "knowledge_id": "K4",
+        "text": "指令微调模型把「指令 → 回答」的样本当作训练数据，因此推理时输入要构造成对话消息数组：system 放角色、边界与输出格式等长期约束，user 放本次请求，assistant 是模型的历史回复。多轮对话要把之前的 assistant 与 user 消息一起带上，模型本身不记忆上一轮内容。"
+      },
+      {
+        "id": "M4",
+        "type": "api",
+        "knowledge_id": "K1",
+        "text": "HuggingFace 的 pipeline() 把分词、模型前向与后处理封装成一个可调用对象；零样本分类用 pipeline('zero-shot-classification')，传入文本与 candidate_labels 列表，返回各标签的分数。它不需要为你的标签准备训练数据，但准确率很受标签措辞与文本领域影响，标签写成互斥、语义清晰的名词短语通常效果最好。"
+      },
+      {
+        "id": "M5",
+        "type": "api",
+        "knowledge_id": "K2",
+        "text": "用语言模型给文本打分：把评分标准写进提示词，并**约束输出格式**（只输出数字或 JSON），再用代码解析。模型裸给的分数抖动很大，稳的做法是固定 `temperature=0`、给出 1–5 分的档位与每档的文字说明，必要时多次采样取平均或投票。"
+      },
+      {
+        "id": "M6",
+        "type": "concept",
+        "knowledge_id": "K3",
+        "text": "BERT 家族是**编码器**结构，用掩码语言建模（MLM）预训练，擅长理解类任务（分类、抽取、句向量）；`[MASK]` 填空就是 MLM 的用法，预测被遮住的 token。它与自回归生成模型（GPT 类）的本质区别是：BERT 双向可见上下文，GPT 只能看左边已生成的 token。"
+      },
+      {
+        "id": "M7",
+        "type": "concept",
+        "knowledge_id": "K5",
+        "text": "Prompt 工程基础：把**任务、输入、输出格式、约束与示例**分别写清楚。给 1–3 个示例（few-shot）通常比只下指令稳；要求结构化输出就明确『只输出 JSON，不要解释』。指令的**顺序与位置**会真的影响结果，长上下文里关键约束放前面或重复一遍更可靠。"
+      },
+      {
+        "id": "M8",
+        "type": "concept",
+        "knowledge_id": "K6",
+        "text": "Vibe Coding 的正确姿势是『你负责判断与验收，AI 负责出草稿』：给足上下文（相关文件、报错原文、期望行为），一次只推进一小步，每步都真的跑一遍验证，不接受自己没读懂、也跑不通的代码。"
+      }
+    ]
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": true,
+    "min_practice_lines": 100
+  }
+}

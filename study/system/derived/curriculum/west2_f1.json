@@ -1,0 +1,307 @@
+{
+  "course_id": "west2-f1",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Foundation Task 1 · 语法基础与简单面向对象",
+  "goal": "Foundation（共通路线）｜本课直接依赖：Foundation Task 0 · 环境搭建",
+  "stage": "foundation",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "Foundation（共通路线）｜维度：Python 语言能力、计算机基础素养",
+    "prerequisites": [
+      {
+        "course_id": "west2-f0",
+        "name": "Foundation Task 0 · 环境搭建"
+      }
+    ],
+    "unlocks": [
+      {
+        "course_id": "west2-f2",
+        "name": "Foundation Task 2 · 网络爬虫与数据分析"
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "Python 基础语法（类型、流程控制、常用容器）",
+        "level": "must",
+        "keywords": [
+          [
+            "语法",
+            "变量",
+            "类型"
+          ],
+          [
+            "循环",
+            "条件",
+            "判断"
+          ],
+          [
+            "list",
+            "dict",
+            "tuple",
+            "set"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.syntax"
+      },
+      {
+        "id": "K2",
+        "name": "函数与参数（默认值、可变参数、作用域）",
+        "level": "must",
+        "keywords": [
+          [
+            "函数",
+            "def"
+          ],
+          [
+            "参数",
+            "作用域"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.func"
+      },
+      {
+        "id": "K3",
+        "name": "模块与包（import、__main__ 保护）",
+        "level": "must",
+        "keywords": [
+          [
+            "import",
+            "模块",
+            "包"
+          ],
+          [
+            "__main__"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.module"
+      },
+      {
+        "id": "K4",
+        "name": "类与对象（构造函数、实例属性与方法）",
+        "level": "must",
+        "keywords": [
+          [
+            "class",
+            "类",
+            "对象"
+          ],
+          [
+            "__init__",
+            "构造函数",
+            "self"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.oop"
+      },
+      {
+        "id": "K5",
+        "name": "魔术方法（__str__ / __eq__ / __len__ 等）",
+        "level": "must",
+        "keywords": [
+          [
+            "魔术方法",
+            "magic method",
+            "dunder"
+          ],
+          [
+            "__str__",
+            "__eq__",
+            "__len__",
+            "__add__"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.magic"
+      },
+      {
+        "id": "K6",
+        "name": "装饰器（函数装饰、计时与日志）",
+        "level": "should",
+        "keywords": [
+          [
+            "装饰器",
+            "decorator"
+          ],
+          [
+            "functools",
+            "wraps"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.decorator"
+      },
+      {
+        "id": "K7",
+        "name": "推导式（含嵌套推导式做矩阵转置）",
+        "level": "must",
+        "keywords": [
+          [
+            "推导式",
+            "comprehension"
+          ],
+          [
+            "嵌套",
+            "矩阵",
+            "转置"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.comprehension"
+      },
+      {
+        "id": "K8",
+        "name": "正则表达式基础",
+        "level": "should",
+        "keywords": [
+          [
+            "正则",
+            "re",
+            "regex"
+          ],
+          [
+            "匹配",
+            "pattern"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.regex"
+      },
+      {
+        "id": "K9",
+        "name": "文件读写与编码",
+        "level": "must",
+        "keywords": [
+          [
+            "文件",
+            "open"
+          ],
+          [
+            "encoding",
+            "utf-8",
+            "编码"
+          ]
+        ],
+        "dimension": "D2",
+        "dimension_name": "Python 语言能力",
+        "source_knowledge": "py.fileio"
+      },
+      {
+        "id": "K10",
+        "name": "终端基本使用（路径、管道、运行脚本）",
+        "level": "must",
+        "keywords": [
+          [
+            "终端",
+            "命令行",
+            "shell"
+          ],
+          [
+            "路径",
+            "cd",
+            "管道"
+          ]
+        ],
+        "dimension": "D1",
+        "dimension_name": "计算机基础素养",
+        "source_knowledge": "cli.basic"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "t1-1",
+      "type": "code",
+      "title": "作业 1 · 娜比娅偷吃事件",
+      "brief": "按仓库给的故事与判定脚本实现；用对象与文件读写组织代码",
+      "deliverable": "Nabia_Snack_Incident/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t1-2",
+      "type": "code",
+      "title": "作业 2 · 校园·if 恋",
+      "brief": "把故事文本转成可运行的分支剧情程序",
+      "deliverable": "Campus_IF_Love/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t1-3",
+      "type": "code",
+      "title": "作业 3 · 宝可梦对战",
+      "brief": "用类与继承实现宝可梦、技能与对战流程",
+      "deliverable": "Pokemon/",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t1-4",
+      "type": "code",
+      "title": "作业 4 · 好玩的东西",
+      "brief": "自选一个小东西做出来，展示语法与 OOP 掌握度",
+      "deliverable": "自选",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "t1-bonus",
+      "type": "practice",
+      "title": "Bonus · CS61A",
+      "brief": "跟 CS61A 的部分 lab/hw，补齐函数式与抽象思维",
+      "deliverable": "笔记 + 代码",
+      "acceptance": [
+        "有可运行的产出",
+        "写清卡住的地方与解法"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}

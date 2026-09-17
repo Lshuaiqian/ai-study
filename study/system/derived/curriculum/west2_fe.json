@@ -1,0 +1,89 @@
+{
+  "course_id": "west2-fe",
+  "route": "西二在线 AI 方向 · 2026 考核知识体系",
+  "title": "Frontend Routine · Gradio / Streamlit",
+  "goal": "方向日常训练｜本课直接依赖：Application 1 · AI 应用认知",
+  "stage": "routine",
+  "source": "https://github.com/west2-online/learn-AI",
+  "status": "declares-ready",
+  "declares": {
+    "system_position": "方向日常训练｜维度：AI 应用工程",
+    "prerequisites": [
+      {
+        "course_id": "west2-a1",
+        "name": "Application 1 · AI 应用认知"
+      }
+    ],
+    "unlocks": [],
+    "knowledge": [
+      {
+        "id": "K1",
+        "name": "Gradio 快速搭建界面",
+        "level": "should",
+        "keywords": [
+          [
+            "Gradio"
+          ]
+        ],
+        "dimension": "D6",
+        "dimension_name": "AI 应用工程",
+        "source_knowledge": "fe.gradio"
+      },
+      {
+        "id": "K2",
+        "name": "Streamlit 搭建数据应用",
+        "level": "should",
+        "keywords": [
+          [
+            "Streamlit"
+          ]
+        ],
+        "dimension": "D6",
+        "dimension_name": "AI 应用工程",
+        "source_knowledge": "fe.streamlit"
+      }
+    ]
+  },
+  "theory": [],
+  "self_check": [],
+  "tasks": [
+    {
+      "task_id": "fe-1",
+      "type": "code",
+      "title": "用 Gradio 包装一个模型",
+      "brief": "把前面做过的模型或 API 变成可交互页面",
+      "deliverable": "gradio_app.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    },
+    {
+      "task_id": "fe-2",
+      "type": "code",
+      "title": "用 Streamlit 做一个数据应用",
+      "brief": "结合爬虫/分析结果做一个可交互数据页",
+      "deliverable": "streamlit_app.py",
+      "acceptance": [
+        "能跑通并产出非空结果",
+        "代码可读、有必要的注释",
+        "写清你踩到的坑与怎么解决的"
+      ],
+      "atoms": [],
+      "est_minutes": 0
+    }
+  ],
+  "materials": {
+    "note": "由体系拆分生成；知识点来自 system/*.json，原子库待用真实资料抽取填充。",
+    "atoms": []
+  },
+  "gate": {
+    "min_mastery": 0.85,
+    "min_each": 0.6,
+    "require_transfer": false,
+    "min_practice_lines": 0
+  }
+}
