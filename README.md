@@ -1,6 +1,3 @@
-﻿> **关于文件位置**：GitHub 默认展示 `README.md`，但本仓库根目录那个 `README.md`
-> 属于另一个无关的 Java 项目（已被 `.gitignore` 排除），所以项目说明放在 `PROJECT.md`。
-> 等那些文件搬走之后，把本文件改名为 `README.md` 即可。
 # AI 辅助学习系统 · 项目说明
 
 > 一个把「自主学习的五无」变成可执行闭环的学习系统。
@@ -479,7 +476,17 @@ python study/integrations/verify_tutor_curriculum.py             # 课程表一�
 ### 9.3 为什么花笺用 Tauri
 
 花笺（floral-notepaper）是 Tauri 2 + React + TypeScript 的笔记应用，MIT 协议。
-选它而不是自己写：见 §1.3。补丁改动集中在少数文件，冲突面小。
+选它而不是自己写：见 §1.3。
+
+**我们对花笺的改造以补丁形式提供，不在本仓库里放源码副本**：见
+[`patches/floral-notepaper/`](patches/floral-notepaper/)。
+
+补丁只有 66 KB，而上游完整副本 6.25 GB（`src-tauri/target/` 构建目录占了 6 GB），
+而且它是别人的项目——整份塞进来会让仓库体积失控、许可证归属混乱，
+上游一更新还会产生大面积无意义 diff。补丁可读、可审、可选择性应用。
+
+补丁内容是：**多级分类（花笺原本只有单层）** + **便签墙** +
+「一键整理按钮」的 Rust 侧（已实现但未接线）。改动集中在 3 个手写文件 + 1 个新模块，冲突面小。
 
 ---
 
@@ -527,8 +534,8 @@ mkdir ../bookshare-platform
 mv src out web data build.bat run.bat clean.bat README.md ../bookshare-platform/
 ```
 
-> 根 `README.md` 目前是那个 Java 项目的。放到 GitHub 时，
-> 把本文档改名为 `README.md` 覆盖掉它即可。
+> 根 `README.md` 已经是本文档。那个 Java 项目的说明已改名为 `README-bookshare.md`
+> （同样在 `.gitignore` 里），跟它一起搬走即可。
 
 ### 11.2 密钥（这条没得商量）
 

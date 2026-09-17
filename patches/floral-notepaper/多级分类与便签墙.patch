@@ -1,0 +1,1853 @@
+diff --git a/src-tauri/src/desktop.rs b/src-tauri/src/desktop.rs
+index ebb6903..16a9c22 100644
+--- a/src-tauri/src/desktop.rs
++++ b/src-tauri/src/desktop.rs
+@@ -2,6 +2,12 @@ use crate::{
+     locales::{self, Locale},
+     services::notes::{default_store, AppConfig, AppError},
+ };
++// 默认值函数只被下面的测试构造 AppConfig 时用到：不加 cfg(test) 会在正常构建里
++// 报 unused imports。测试代码不会被 `cargo check --lib` 编译。
++#[cfg(test)]
++use crate::services::notes::{
++    default_study_python, default_study_root, default_study_timeout_s,
++};
+ use serde::{Deserialize, Serialize};
+ #[cfg(target_os = "macos")]
+ use std::sync::OnceLock;
+@@ -2601,6 +2607,10 @@ mod tests {
+             toggle_visibility_shortcut: toggle_visibility_shortcut.into(),
+             notes_dir: None,
+             last_known_base_dir: None,
++            study_enabled: false,
++            study_root: default_study_root(),
++            study_python: default_study_python(),
++            study_timeout_s: default_study_timeout_s(),
+         }
+     }
+ 
+@@ -2686,6 +2696,10 @@ mod tests {
+             toggle_visibility_shortcut: String::new(),
+             notes_dir: None,
+             last_known_base_dir: None,
++            study_enabled: false,
++            study_root: default_study_root(),
++            study_python: default_study_python(),
++            study_timeout_s: default_study_timeout_s(),
+         };
+         let next = AppConfig {
+             locale: "en-US".into(),
+@@ -2723,6 +2737,10 @@ mod tests {
+             toggle_visibility_shortcut: "Ctrl+Shift+H".into(),
+             notes_dir: None,
+             last_known_base_dir: None,
++            study_enabled: false,
++            study_root: default_study_root(),
++            study_python: default_study_python(),
++            study_timeout_s: default_study_timeout_s(),
+         };
+ 
+         assert_eq!(
+diff --git a/src-tauri/src/lib.rs b/src-tauri/src/lib.rs
+index cbfaab2..ceabe88 100644
+--- a/src-tauri/src/lib.rs
++++ b/src-tauri/src/lib.rs
+@@ -512,7 +512,11 @@ pub fn run() {
+             updater::commands::update_install,
+             updater::commands::update_install_prepare_report,
+             updater::commands::update_cancel,
+-            take_startup_file
++            take_startup_file,
++            services::study::study_ping,
++            services::study::study_tidy_start,
++            services::study::study_tidy_cancel,
++            services::study::study_tidy_rollback
+         ])
+         .build(tauri::generate_context!())
+         .expect("error while building tauri application")
+diff --git a/src-tauri/src/services/mod.rs b/src-tauri/src/services/mod.rs
+index 9080a9a..7a01fec 100644
+--- a/src-tauri/src/services/mod.rs
++++ b/src-tauri/src/services/mod.rs
+@@ -1 +1,2 @@
+ pub mod notes;
++pub mod study;
+diff --git a/src-tauri/src/services/notes.rs b/src-tauri/src/services/notes.rs
+index 5404988..0fdf551 100644
+--- a/src-tauri/src/services/notes.rs
++++ b/src-tauri/src/services/notes.rs
+@@ -93,6 +93,16 @@ pub struct AppConfig {
+     pub notes_dir: Option<String>,
+     #[serde(default, skip_serializing)]
+     pub last_known_base_dir: Option<String>,
++    // 学习助手（花笺「一键整理」按钮）：默认关闭 —— 没用它的人不该看到任何变化。
++    // 全部带 serde default，旧 config 缺这些字段照样能读。
++    #[serde(default)]
++    pub study_enabled: bool,
++    #[serde(default = "default_study_root")]
++    pub study_root: String,
++    #[serde(default = "default_study_python")]
++    pub study_python: String,
++    #[serde(default = "default_study_timeout_s")]
++    pub study_timeout_s: u64,
+ }
+ 
+ #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+@@ -225,6 +235,67 @@ pub fn default_store() -> Result<NoteStore, AppError> {
+     Ok(NoteStore::new(config_dir, data_dir))
+ }
+ 
++/// 归一化分类路径：允许 `工作/2026` 这样的多层写法，
++/// 但拒绝空段、`.`、`..` 以及 Windows 非法字符，防止写出 notes_dir 之外。
++///
++/// 这是「多层文件夹」补丁新增的函数，取代原先各处「一律拒绝 /」的内联校验。
++pub(crate) fn normalize_category(name: &str) -> Result<String, AppError> {
++    let name = name.trim().replace('\\', "/");
++    let name = name.trim_matches('/');
++    if name.is_empty() {
++        return Err(AppError::category_name_empty());
++    }
++    let mut parts: Vec<&str> = Vec::new();
++    for part in name.split('/') {
++        let part = part.trim();
++        if part.is_empty() || part == "." || part == ".." {
++            return Err(AppError::category_name_invalid_chars());
++        }
++        if part.contains([':', '*', '?', '"', '<', '>', '|']) {
++            return Err(AppError::category_name_invalid_chars());
++        }
++        parts.push(part);
++    }
++    Ok(parts.join("/"))
++}
++
++/// 递归收集分类目录，输出用 `/` 分隔的相对路径（如 `工作/2026`）。
++///
++/// 「多层文件夹」补丁新增。改前 `list_categories` 只遍历 notes_dir 的一层。
++fn collect_categories(dir: &Path, prefix: &str, out: &mut Vec<String>) -> Result<(), AppError> {
++    for entry in fs::read_dir(dir)? {
++        let entry = entry?;
++        if !entry.path().is_dir() {
++            continue;
++        }
++        let name = entry.file_name().to_string_lossy().to_string();
++        if name.starts_with('.') {
++            continue;
++        }
++        let current = if prefix.is_empty() {
++            name
++        } else {
++            format!("{prefix}/{name}")
++        };
++        out.push(current.clone());
++        collect_categories(&entry.path(), &current, out)?;
++    }
++    Ok(())
++}
++
++/// 归一化「可选」分类：空串表示未分类（笔记直接放在 notes_dir 根下），不算错误。
++///
++/// `create_note` / `update_note` / `move_note_to_category` 用它。
++/// 改前这几个入口直接 `request.category.clone()`，`category = "../x"` 会把文件写到
++/// notesDir 之外——这是补丁顺手堵上的一个真实漏洞。
++pub(crate) fn normalize_optional_category(name: &str) -> Result<String, AppError> {
++    if name.trim().is_empty() {
++        Ok(String::new())
++    } else {
++        normalize_category(name)
++    }
++}
++
+ pub(crate) fn default_config_dir() -> Result<PathBuf, AppError> {
+     if let Ok(path) = env::var("FLORAL_NOTEPAPER_CONFIG_DIR") {
+         let trimmed = path.trim();
+@@ -771,7 +842,8 @@ impl NoteStore {
+         let now = Utc::now();
+         let file_name = self.file_name_for(&id, &request.title);
+         let word_count = count_words(&request.content);
+-        let category = request.category.clone();
++        // 分类必须归一化：否则 category = "../x" 会把笔记写到 notesDir 之外
++        let category = normalize_optional_category(&request.category)?;
+         let note_path = self.note_path_in_category(&file_name, &category);
+         if let Some(parent) = note_path.parent() {
+             fs::create_dir_all(parent)?;
+@@ -816,7 +888,7 @@ impl NoteStore {
+         let old_file_name = note.file_name.clone();
+         let old_category = note.category.clone();
+         let new_file_name = self.file_name_for(id, &request.title);
+-        let new_category = request.category.clone();
++        let new_category = normalize_optional_category(&request.category)?;
+         let now = Utc::now();
+         let word_count = count_words(&request.content);
+ 
+@@ -981,57 +1053,46 @@ impl NoteStore {
+         let notes_dir = self.notes_dir();
+         fs::create_dir_all(&notes_dir)?;
+         let mut categories = Vec::new();
+-        for entry in fs::read_dir(&notes_dir)? {
+-            let entry = entry?;
+-            if entry.path().is_dir() {
+-                categories.push(entry.file_name().to_string_lossy().to_string());
+-            }
+-        }
++        // 递归收集：多层分类要返回完整相对路径（"工作/2026"），
++        // 只列一层的话前端拿不到子分类。
++        collect_categories(&notes_dir, "", &mut categories)?;
+         categories.sort();
++        categories.dedup();
+         Ok(categories)
+     }
+ 
+     pub fn create_category(&self, name: &str) -> Result<(), AppError> {
+-        let name = name.trim();
+-        if name.is_empty() {
+-            return Err(AppError::category_name_empty());
+-        }
+-        if name.contains('/') || name.contains('\\') || name.contains(':') || name.contains("..") {
+-            return Err(AppError::category_name_invalid_chars());
+-        }
++        let name = normalize_category(name)?;
+         let notes_dir = self.notes_dir();
+-        let path = notes_dir.join(name);
++        let path = notes_dir.join(&name);
+         fs::create_dir_all(&path)?;
+         Ok(())
+     }
+ 
+     pub fn rename_category(&self, old_name: &str, new_name: &str) -> Result<(), AppError> {
+-        let new_name = new_name.trim();
+-        if new_name.is_empty() {
+-            return Err(AppError::category_name_empty());
+-        }
+-        if new_name.contains('/')
+-            || new_name.contains('\\')
+-            || new_name.contains(':')
+-            || new_name.contains("..")
+-        {
+-            return Err(AppError::category_name_invalid_chars());
+-        }
++        let new_name = normalize_category(new_name)?;
+         let notes_dir = self.notes_dir();
+         let old_path = notes_dir.join(old_name);
+-        let new_path = notes_dir.join(new_name);
++        let new_path = notes_dir.join(&new_name);
+         if !old_path.exists() {
+             return Err(AppError::category_not_found(old_name));
+         }
+         if new_path.exists() {
+-            return Err(AppError::category_already_exists(new_name));
++            return Err(AppError::category_already_exists(&new_name));
++        }
++        // 新名字可能是多层的（"A" → "A/B"），父目录要先建出来
++        if let Some(parent) = new_path.parent() {
++            fs::create_dir_all(parent)?;
+         }
+         fs::rename(&old_path, &new_path)?;
+ 
+         let mut metadata_file = self.load_metadata()?;
+         for note in &mut metadata_file.notes {
+             if note.category == old_name {
+-                note.category = new_name.to_string();
++                note.category = new_name.clone();
++            } else if let Some(rest) = note.category.strip_prefix(&format!("{old_name}/")) {
++                // 分类改名时，它下面的子分类前缀也要跟着改，否则多层结构会断
++                note.category = format!("{new_name}/{rest}");
+             }
+         }
+         self.save_metadata(&metadata_file)?;
+@@ -1105,13 +1166,16 @@ impl NoteStore {
+             .find(|note| note.id == id)
+             .ok_or_else(|| AppError::note_not_found(id))?;
+ 
++        // 允许把笔记移动到多层分类（"工作/2026"）；空串表示移回根目录
++        let new_category = normalize_optional_category(new_category)?;
++
+         let old_category = note.category.clone();
+         if old_category == new_category {
+             return Ok(note.clone());
+         }
+ 
+         let old_path = self.note_path_in_category(&note.file_name, &old_category);
+-        let new_path = self.note_path_in_category(&note.file_name, new_category);
++        let new_path = self.note_path_in_category(&note.file_name, &new_category);
+         if let Some(parent) = new_path.parent() {
+             fs::create_dir_all(parent)?;
+         }
+@@ -1119,7 +1183,7 @@ impl NoteStore {
+             fs::rename(&old_path, &new_path)?;
+         }
+ 
+-        note.category = new_category.to_string();
++        note.category = new_category.clone();
+         let result = note.clone();
+         self.save_metadata(&metadata_file)?;
+         Ok(result)
+@@ -1165,6 +1229,10 @@ impl NoteStore {
+             open_at_cursor: default_open_at_cursor(),
+             notes_dir: None,
+             last_known_base_dir: None,
++            study_enabled: false,
++            study_root: default_study_root(),
++            study_python: default_study_python(),
++            study_timeout_s: default_study_timeout_s(),
+         }
+     }
+ 
+@@ -1388,17 +1456,10 @@ impl NoteStore {
+         fs::create_dir_all(&notes_dir)?;
+         let mut notes = Vec::new();
+ 
++        // 一次递归搞定：分类由相对路径推导，不再假设只有一层
++        // （改前这里只遍历 notes_dir 的一层子目录，两层以上会被漏掉）
+         self.scan_dir_for_notes(&notes_dir, "", &mut notes)?;
+ 
+-        for entry in fs::read_dir(&notes_dir)? {
+-            let entry = entry?;
+-            let path = entry.path();
+-            if path.is_dir() {
+-                let category = entry.file_name().to_string_lossy().to_string();
+-                self.scan_dir_for_notes(&path, &category, &mut notes)?;
+-            }
+-        }
+-
+         Ok(MetadataFile { notes })
+     }
+ 
+@@ -1411,6 +1472,22 @@ impl NoteStore {
+         for entry in fs::read_dir(dir)? {
+             let entry = entry?;
+             let path = entry.path();
++
++            if path.is_dir() {
++                // 递归：子目录继续当分类层级，用 '/' 拼出相对路径
++                let name = entry.file_name().to_string_lossy().to_string();
++                if name.starts_with('.') {
++                    continue; // 跳过隐藏目录
++                }
++                let child = if category.is_empty() {
++                    name
++                } else {
++                    format!("{category}/{name}")
++                };
++                self.scan_dir_for_notes(&path, &child, notes)?;
++                continue;
++            }
++
+             if path.extension().and_then(|extension| extension.to_str()) != Some("md") {
+                 continue;
+             }
+@@ -1672,6 +1749,21 @@ fn imported_markdown_title(path: &Path, content: &str) -> String {
+         .to_string()
+ }
+ 
++/// 学习助手默认值：study 根目录（学习体系的 BASE）。
++pub(crate) fn default_study_root() -> String {
++    r"E:\Docs\Code\Java\book".to_string()
++}
++
++/// 学习助手默认值：跑 study 工具用的 Python 解释器。
++pub(crate) fn default_study_python() -> String {
++    r"E:\Develop\python\python.exe".to_string()
++}
++
++/// 学习助手默认值：单次整理的超时秒数（模型要跑两次，30–90 秒是常态）。
++pub(crate) fn default_study_timeout_s() -> u64 {
++    180
++}
++
+ fn default_note_auto_save() -> bool {
+     true
+ }
+@@ -1926,6 +2018,10 @@ mod tests {
+             toggle_visibility_shortcut: String::new(),
+             notes_dir: None,
+             last_known_base_dir: None,
++            study_enabled: false,
++            study_root: default_study_root(),
++            study_python: default_study_python(),
++            study_timeout_s: default_study_timeout_s(),
+             open_at_cursor: true,
+         };
+ 
+@@ -2449,4 +2545,164 @@ mod tests {
+             content
+         );
+     }
++
++    // ---------------- 多层分类（多层文件夹补丁新增能力） ----------------
++
++    fn create_in(store: &NoteStore, title: &str, category: &str) -> Note {
++        store
++            .create_note(SaveNoteRequest {
++                title: title.into(),
++                content: format!("# {title}\n正文内容"),
++                category: category.into(),
++            })
++            .expect("create note")
++    }
++
++    #[test]
++    fn accepts_multilevel_category_and_places_file_in_nested_dir() {
++        let store = test_store("multilevel_create");
++        store
++            .create_category("工作/2026")
++            .expect("create multi-level category");
++
++        let note = create_in(&store, "季度计划", "工作/2026");
++        assert_eq!(note.category, "工作/2026");
++
++        let path = store.note_path_in_category(&note.file_name, "工作/2026");
++        assert!(path.exists(), "笔记文件应落在 notes/工作/2026/ 下");
++        let normalized = path.to_string_lossy().replace('\\', "/");
++        assert!(normalized.contains("工作/2026/"), "实际路径: {normalized}");
++    }
++
++    #[test]
++    fn list_categories_returns_full_relative_paths() {
++        let store = test_store("multilevel_list");
++        store
++            .create_category("A/B/C")
++            .expect("create deep category");
++        let cats = store.list_categories().expect("list categories");
++        assert!(cats.contains(&"A".to_string()));
++        assert!(cats.contains(&"A/B".to_string()));
++        assert!(
++            cats.contains(&"A/B/C".to_string()),
++            "多层分类必须出现在列表里（只列一层前端就拿不到子分类）: {cats:?}"
++        );
++    }
++
++    #[test]
++    fn rebuild_metadata_discovers_notes_deeper_than_one_level() {
++        let store = test_store("multilevel_rebuild");
++        store.create_category("A/B").expect("create category");
++        let note = create_in(&store, "深笔记", "A/B");
++
++        // 删掉 metadata，强制走 rebuild（模拟索引丢失/重建）
++        fs::remove_file(store.metadata_path()).expect("remove metadata");
++        let listed = store.list_notes().expect("list after rebuild");
++
++        let found = listed
++            .iter()
++            .find(|n| n.id == note.id)
++            .expect("两层目录中的笔记必须能被扫描到");
++        assert_eq!(found.category, "A/B");
++    }
++
++    #[test]
++    fn rejects_traversal_and_junk_category_names() {
++        let store = test_store("multilevel_guard");
++        for bad in ["", "   ", "..", "A/../B", "A//B", "A/./B", "C:D", "a*b"] {
++            assert!(
++                store.create_category(bad).is_err(),
++                "{bad:?} 应被拒绝，否则会写出 notesDir 之外"
++            );
++        }
++        assert!(store.create_category("工作/2026").is_ok());
++        assert!(
++            store.create_category("A\\B").is_ok(),
++            "反斜杠应被归一为 / 而不是放行"
++        );
++        assert_eq!(
++            store.list_categories().expect("list"),
++            // 递归收集会返回每一层（前端建树需要中间层级），而不只是叶子
++            vec![
++                "A".to_string(),
++                "A/B".to_string(),
++                "工作".to_string(),
++                "工作/2026".to_string()
++            ]
++        );
++    }
++
++    #[test]
++    fn create_note_rejects_path_traversal_in_category() {
++        let store = test_store("multilevel_create_guard");
++        // 改前 create_note 直接 clone category，会把笔记写到 notesDir 之外
++        let result = store.create_note(SaveNoteRequest {
++            title: "越界".into(),
++            content: "x".into(),
++            category: "../外面".into(),
++        });
++        assert!(result.is_err(), "create_note 必须拒绝包含 .. 的分类");
++    }
++
++    #[test]
++    fn rename_category_rewrites_descendant_prefixes() {
++        let store = test_store("multilevel_rename");
++        store.create_category("工作/2026").expect("create nested");
++        let deep = create_in(&store, "深笔记", "工作/2026");
++        let shallow = create_in(&store, "浅笔记", "工作");
++
++        store
++            .rename_category("工作", "项目")
++            .expect("rename parent category");
++
++        let listed = store.list_notes().expect("list");
++        let category_of = |id: &str| {
++            listed
++                .iter()
++                .find(|n| n.id == id)
++                .map(|n| n.category.clone())
++                .expect("note present")
++        };
++        assert_eq!(category_of(&shallow.id), "项目");
++        assert_eq!(
++            category_of(&deep.id),
++            "项目/2026",
++            "父分类改名后，子分类前缀必须跟着改，否则多层结构会断"
++        );
++        assert!(
++            store
++                .note_path_in_category(&deep.file_name, "项目/2026")
++                .exists(),
++            "文件应随目录一起移动"
++        );
++    }
++
++    #[test]
++    fn moves_note_between_root_and_multilevel_category() {
++        let store = test_store("multilevel_move");
++        store
++            .create_category("学习/Python")
++            .expect("create category");
++        let note = create_in(&store, "第3课", "");
++
++        let moved = store
++            .move_note_to_category(&note.id, "学习/Python")
++            .expect("move into nested category");
++        assert_eq!(moved.category, "学习/Python");
++        assert!(store
++            .note_path_in_category(&moved.file_name, "学习/Python")
++            .exists());
++
++        let back = store
++            .move_note_to_category(&note.id, "")
++            .expect("move back to root");
++        assert_eq!(back.category, "");
++        assert!(store.note_path_in_category(&back.file_name, "").exists());
++        assert!(
++            !store
++                .note_path_in_category(&back.file_name, "学习/Python")
++                .exists(),
++            "移回根目录后旧位置不应还留着文件"
++        );
++    }
+ }
+diff --git a/src-tauri/src/services/study.rs b/src-tauri/src/services/study.rs
+new file mode 100644
+index 0000000..3025433
+--- /dev/null
++++ b/src-tauri/src/services/study.rs
+@@ -0,0 +1,522 @@
++//! 学习助手：把学习体系（`study/`）的「一键整理」流水线接进花笺。
++//!
++//! 这个模块是**触发器 + 显示器**，整理的大脑始终是 `study/tools/tidy.py` ——
++//! 不在这里重写任何整理逻辑（方案 §1 非目标）。
++//!
++//! ## 安全边界（方案 §5.4）
++//! `study_tidy_start` 本质上会执行一个**用户可配置路径下的可执行文件**，也就是
++//! 一个任意命令执行入口。因此：
++//!   - 只接受 `note_path` 与 `apply` 两个参数，**绝不接受任意命令行**；
++//!   - `python` 与脚本路径全部由配置拼装，前端无法传入；
++//!   - `note_path` 必须落在花笺自己的 notesDir 内（canonicalize 后前缀校验，防 `..` 穿越），
++//!     且必须是 `.md`。
++//!
++//! ## 生命周期（方案 §5.3）
++//!   - 子进程 stdout 逐行读 → 每行 `app.emit(EVENT_NAME, line)`（行本身就是 tidy.py
++//!     `--json` 产出的一条 JSONL，前端 `JSON.parse` 即可）；
++//!   - 同一个 `note_path` 同时只允许一个 run：重复点按钮**复用已有 run_id**，
++//!     不重复烧钱调模型；
++//!   - 超时/取消都在**监督线程**里 kill 并 `wait()` 回收，不留孤儿 python；
++//!   - Windows 下 `CREATE_NO_WINDOW`，不闪黑框。
++
++use crate::services::notes::{default_store, AppConfig, AppError};
++use serde::Serialize;
++use std::collections::HashMap;
++use std::io::{BufRead, BufReader, Read};
++use std::path::{Path, PathBuf};
++use std::process::{Child, Command, Stdio};
++use std::sync::atomic::{AtomicBool, Ordering};
++use std::sync::{Arc, Mutex, OnceLock};
++use std::thread;
++use std::time::{Duration, Instant};
++use tauri::{AppHandle, Emitter};
++
++/// 流式事件名；前端 `listen("study://tidy/event")`。
++pub const EVENT_NAME: &str = "study://tidy/event";
++
++/// 监督线程轮询子进程的间隔。
++const POLL_INTERVAL: Duration = Duration::from_millis(120);
++/// `study_ping` 的探测超时。
++const PING_TIMEOUT: Duration = Duration::from_secs(20);
++/// 失败时随 exit 事件回传的 stderr 尾部上限（诊断够用，又不至于把事件撑爆）。
++const STDERR_TAIL_LIMIT: usize = 8 * 1024;
++/// 超时下限：模型要跑两次，30–90 秒是常态。
++const MIN_TIMEOUT_S: u64 = 10;
++/// Windows `CREATE_NO_WINDOW`。
++#[cfg(windows)]
++const CREATE_NO_WINDOW: u32 = 0x0800_0000;
++
++#[derive(Debug, Clone, Serialize)]
++#[serde(rename_all = "camelCase")]
++pub struct StudyPing {
++    pub ok: bool,
++    pub python_version: Option<String>,
++    pub python: String,
++    pub study_root: String,
++    pub script: String,
++    pub script_exists: bool,
++    pub error: Option<String>,
++}
++
++#[derive(Debug, Clone, Serialize)]
++#[serde(rename_all = "camelCase")]
++pub struct StudyRunStart {
++    pub run_id: String,
++    /// `true` = 这篇笔记已有一个在跑，复用了它的 run_id（防狂点）。
++    pub reused: bool,
++}
++
++struct RunHandle {
++    run_id: String,
++    /// 取消标志：监督线程轮询到它就把子进程 kill 掉并回收。
++    /// 这里**不存 Child 句柄** —— 句柄由监督线程独占持有，两处持有只会多一层锁、
++    /// 并让「谁负责 wait 回收」变得含糊。
++    cancel: Arc<AtomicBool>,
++}
++
++fn registry() -> &'static Mutex<HashMap<String, RunHandle>> {
++    static REGISTRY: OnceLock<Mutex<HashMap<String, RunHandle>>> = OnceLock::new();
++    REGISTRY.get_or_init(|| Mutex::new(HashMap::new()))
++}
++
++fn app_error(code: &str, message: impl Into<String>) -> AppError {
++    AppError {
++        code: code.to_string(),
++        message: message.into(),
++        details: Default::default(),
++    }
++}
++
++/// 整理脚本路径：`<study_root>/study/tools/tidy.py`。
++fn tidy_script(study_root: &str) -> PathBuf {
++    PathBuf::from(study_root)
++        .join("study")
++        .join("tools")
++        .join("tidy.py")
++}
++
++/// 纯函数：`candidate` 必须落在 `notes_root` 内，且是 `.md`。
++///
++/// 两侧都必须是**已 canonicalize** 的绝对路径（调用方负责），否则 `..` 穿越
++/// 会在比较时被绕过——`\\?\` 前缀（Windows canonicalize 的产物）两边一致，
++/// 不影响 `starts_with`。
++fn validate_within(notes_root: &Path, candidate: &Path) -> Result<PathBuf, AppError> {
++    if !candidate.starts_with(notes_root) {
++        return Err(app_error(
++            "unsafePath",
++            "只能整理花笺笔记目录里的文件（已拒绝目录外的路径）",
++        ));
++    }
++    let is_md = candidate
++        .extension()
++        .and_then(|s| s.to_str())
++        .map(|s| s.eq_ignore_ascii_case("md"))
++        .unwrap_or(false);
++    if !is_md {
++        return Err(app_error("notMarkdown", "只能整理 Markdown 笔记（.md）"));
++    }
++    Ok(candidate.to_path_buf())
++}
++
++/// 把前端传来的 `note_path` 解析成可信的绝对路径。
++fn resolve_note_path(note_path: &str) -> Result<PathBuf, AppError> {
++    let store = default_store()?;
++    let notes_dir = store.data_dir().join("notes");
++    let root = notes_dir.canonicalize().map_err(|e| {
++        app_error(
++            "notesDirUnavailable",
++            format!("花笺笔记目录不可用：{} ({e})", notes_dir.display()),
++        )
++    })?;
++    let real = Path::new(note_path).canonicalize().map_err(|e| {
++        app_error("noteNotFound", format!("找不到笔记文件：{note_path} ({e})"))
++    })?;
++    validate_within(&root, &real)
++}
++
++/// 组装命令行：**参数只有 note_path 与固定的几个 flag**，没有任意透传。
++fn build_command(
++    cfg: &AppConfig,
++    note_path: &Path,
++    extra: &[String],
++) -> Result<Command, AppError> {
++    let script = tidy_script(&cfg.study_root);
++    if !script.is_file() {
++        return Err(app_error(
++            "scriptMissing",
++            format!("找不到整理脚本：{}", script.display()),
++        ));
++    }
++    if !Path::new(&cfg.study_python).is_file() {
++        return Err(app_error(
++            "pythonMissing",
++            format!("找不到 Python：{}", cfg.study_python),
++        ));
++    }
++    let mut cmd = Command::new(&cfg.study_python);
++    cmd.arg(&script).arg("--path").arg(note_path);
++    for arg in extra {
++        cmd.arg(arg);
++    }
++    cmd.arg("--json");
++    // 工作目录固定为 study 根：脚本内部虽会自插 BASE，固定 cwd 让相对输出可预期
++    cmd.current_dir(&cfg.study_root);
++    cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
++    #[cfg(windows)]
++    {
++        use std::os::windows::process::CommandExt;
++        cmd.creation_flags(CREATE_NO_WINDOW);
++    }
++    Ok(cmd)
++}
++
++/// 起一个 run：登记互斥 → 逐行流式 emit → 监督线程收尾。
++fn spawn_run(
++    app: AppHandle,
++    cfg: AppConfig,
++    real_path: PathBuf,
++    extra: Vec<String>,
++    key: String,
++    run_id: String,
++) -> Result<StudyRunStart, AppError> {
++    let mut cmd = build_command(&cfg, &real_path, &extra)?;
++    let mut child = cmd
++        .spawn()
++        .map_err(|e| app_error("spawnFailed", format!("无法启动整理进程：{e}")))?;
++    let stdout = child
++        .stdout
++        .take()
++        .ok_or_else(|| app_error("spawnFailed", "拿不到子进程 stdout"))?;
++    let stderr = child
++        .stderr
++        .take()
++        .ok_or_else(|| app_error("spawnFailed", "拿不到子进程 stderr"))?;
++
++    let cancel = Arc::new(AtomicBool::new(false));
++    let child_slot = Arc::new(Mutex::new(Some(child)));
++    registry().lock().unwrap().insert(
++        key.clone(),
++        RunHandle {
++            run_id: run_id.clone(),
++            cancel: cancel.clone(),
++        },
++    );
++
++    let timeout_s = cfg.study_timeout_s.max(MIN_TIMEOUT_S);
++
++    // stdout：逐行转发（每行是 tidy.py 的一条 JSONL）
++    let out_app = app.clone();
++    let reader = thread::spawn(move || {
++        for line in BufReader::new(stdout).lines().map_while(Result::ok) {
++            let _ = out_app.emit(EVENT_NAME, line);
++        }
++    });
++
++    // stderr：必须排空，否则管道填满会把子进程顶死；只留尾部用于报错
++    let err_tail = Arc::new(Mutex::new(String::new()));
++    let err_slot = err_tail.clone();
++    let err_reader = thread::spawn(move || {
++        let mut buf = String::new();
++        if BufReader::new(stderr).read_to_string(&mut buf).is_err() {
++            return;
++        }
++        let trimmed: String = buf
++            .chars()
++            .rev()
++            .take(STDERR_TAIL_LIMIT)
++            .collect::<Vec<_>>()
++            .into_iter()
++            .rev()
++            .collect();
++        *err_slot.lock().unwrap() = trimmed;
++    });
++
++    // 监督线程：负责超时/取消 kill、wait 回收、注销互斥、发 exit 事件
++    thread::spawn(move || {
++        let deadline = Instant::now() + Duration::from_secs(timeout_s);
++        let mut timed_out = false;
++        let mut cancelled = false;
++        let status = loop {
++            let mut guard = child_slot.lock().unwrap();
++            match guard.as_mut() {
++                Some(proc) => match proc.try_wait() {
++                    Ok(Some(status)) => break Some(status),
++                    Ok(None) => {}
++                    Err(_) => break None,
++                },
++                None => break None,
++            }
++            if cancel.load(Ordering::SeqCst) {
++                cancelled = true;
++                if let Some(proc) = guard.as_mut() {
++                    let _ = proc.kill();
++                }
++                break None;
++            }
++            if Instant::now() >= deadline {
++                timed_out = true;
++                if let Some(proc) = guard.as_mut() {
++                    let _ = proc.kill();
++                }
++                break None;
++            }
++            drop(guard);
++            thread::sleep(POLL_INTERVAL);
++        };
++        // kill 之后必须 wait 回收，否则留下僵尸进程
++        {
++            let mut guard = child_slot.lock().unwrap();
++            if let Some(proc) = guard.as_mut() {
++                let _ = proc.wait();
++            }
++        }
++        let _ = reader.join();
++        let _ = err_reader.join();
++        registry().lock().unwrap().remove(&key);
++
++        let code = status.and_then(|s| s.code());
++        let ok = !timed_out && !cancelled && code == Some(0);
++        let detail = err_tail.lock().unwrap().clone();
++        let payload = serde_json::json!({
++            "type": "exit",
++            "ok": ok,
++            "code": code,
++            "timedOut": timed_out,
++            "cancelled": cancelled,
++            "stderr": if ok || detail.is_empty() { serde_json::Value::Null }
++                      else { serde_json::Value::String(detail) },
++        });
++        let _ = app.emit(EVENT_NAME, payload.to_string());
++    });
++
++    Ok(StudyRunStart { run_id, reused: false })
++}
++
++/// 设置页的连通性体检：python 在不在、脚本在不在、版本多少。
++///
++/// 失败不返回 Err —— 设置页要的是「人话原因」，不是错误弹窗。
++#[tauri::command]
++pub fn study_ping() -> Result<StudyPing, AppError> {
++    let cfg = default_store()?.load_config()?;
++    let script = tidy_script(&cfg.study_root);
++    let script_exists = script.is_file();
++    let mut ping = StudyPing {
++        ok: false,
++        python_version: None,
++        python: cfg.study_python.clone(),
++        study_root: cfg.study_root.clone(),
++        script: script.to_string_lossy().to_string(),
++        script_exists,
++        error: None,
++    };
++    if !Path::new(&cfg.study_python).is_file() {
++        ping.error = Some(format!("找不到 Python：{}", cfg.study_python));
++        return Ok(ping);
++    }
++    if !script_exists {
++        ping.error = Some(format!("找不到整理脚本：{}", script.display()));
++        return Ok(ping);
++    }
++    let mut cmd = Command::new(&cfg.study_python);
++    cmd.arg("-c").arg("import sys;print(sys.version)");
++    cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
++    #[cfg(windows)]
++    {
++        use std::os::windows::process::CommandExt;
++        cmd.creation_flags(CREATE_NO_WINDOW);
++    }
++    let mut child = match cmd.spawn() {
++        Ok(child) => child,
++        Err(e) => {
++            ping.error = Some(format!("无法启动 Python：{e}"));
++            return Ok(ping);
++        }
++    };
++    let deadline = Instant::now() + PING_TIMEOUT;
++    loop {
++        match child.try_wait() {
++            Ok(Some(status)) => {
++                let mut out = String::new();
++                if let Some(mut stdout) = child.stdout.take() {
++                    let _ = stdout.read_to_string(&mut out);
++                }
++                if status.success() {
++                    ping.ok = true;
++                    ping.python_version = Some(out.trim().to_string());
++                } else {
++                    ping.error = Some(format!("Python 退出码 {:?}", status.code()));
++                }
++                break;
++            }
++            Ok(None) => {}
++            Err(e) => {
++                ping.error = Some(format!("等待 Python 失败：{e}"));
++                break;
++            }
++        }
++        if Instant::now() >= deadline {
++            let _ = child.kill();
++            let _ = child.wait();
++            ping.error = Some("检测 Python 超时".to_string());
++            break;
++        }
++        thread::sleep(POLL_INTERVAL);
++    }
++    Ok(ping)
++}
++
++/// 起一次整理。`apply=false` 即预览（不写笔记、不动掌握度）。
++#[tauri::command]
++pub fn study_tidy_start(
++    app: AppHandle,
++    note_path: String,
++    apply: bool,
++) -> Result<StudyRunStart, AppError> {
++    let cfg = default_store()?.load_config()?;
++    if !cfg.study_enabled {
++        return Err(app_error(
++            "studyDisabled",
++            "学习助手未启用：设置 → 学习助手 打开开关",
++        ));
++    }
++    let real = resolve_note_path(&note_path)?;
++    let key = real.to_string_lossy().to_string();
++
++    // 同一篇笔记只允许一个 run：重复点按钮直接复用，防狂点烧钱
++    if let Some(existing) = registry().lock().unwrap().get(&key) {
++        return Ok(StudyRunStart {
++            run_id: existing.run_id.clone(),
++            reused: true,
++        });
++    }
++
++    let mut extra: Vec<String> = Vec::new();
++    if apply {
++        extra.push("--apply".to_string());
++    }
++    let run_id = uuid::Uuid::new_v4().to_string();
++    spawn_run(app, cfg, real, extra, key, run_id)
++}
++
++/// 取消一次整理（杀掉子进程；监督线程负责回收）。
++#[tauri::command]
++pub fn study_tidy_cancel(run_id: String) -> Result<bool, AppError> {
++    let guard = registry().lock().unwrap();
++    for handle in guard.values() {
++        if handle.run_id == run_id {
++            handle.cancel.store(true, Ordering::SeqCst);
++            return Ok(true);
++        }
++    }
++    Ok(false)
++}
++
++/// 撤销：把 AI 整理区回滚到指定版本（用户区一字不动）。
++#[tauri::command]
++pub fn study_tidy_rollback(
++    app: AppHandle,
++    note_path: String,
++    version: String,
++) -> Result<StudyRunStart, AppError> {
++    let cfg = default_store()?.load_config()?;
++    if !cfg.study_enabled {
++        return Err(app_error(
++            "studyDisabled",
++            "学习助手未启用：设置 → 学习助手 打开开关",
++        ));
++    }
++    let real = resolve_note_path(&note_path)?;
++    let key = real.to_string_lossy().to_string();
++    if let Some(existing) = registry().lock().unwrap().get(&key) {
++        return Ok(StudyRunStart {
++            run_id: existing.run_id.clone(),
++            reused: true,
++        });
++    }
++    let extra = vec!["--apply".to_string(), "--rollback".to_string(), version];
++    let run_id = uuid::Uuid::new_v4().to_string();
++    spawn_run(app, cfg, real, extra, key, run_id)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use std::fs;
++
++    fn temp_root(tag: &str) -> PathBuf {
++        let dir = std::env::temp_dir().join(format!("floral-study-{tag}-{}", uuid::Uuid::new_v4()));
++        fs::create_dir_all(dir.join("notes").join("Python")).unwrap();
++        dir
++    }
++
++    #[test]
++    fn tidy_script_sits_under_study_root() {
++        let path = tidy_script(r"E:\Docs\Code\Java\book");
++        assert!(path.ends_with(Path::new("study").join("tools").join("tidy.py")));
++    }
++
++    #[test]
++    fn accepts_markdown_inside_notes_dir() {
++        let root = temp_root("inside");
++        let note = root.join("notes").join("Python").join("a.md");
++        fs::write(&note, "# hi").unwrap();
++        let notes_root = root.join("notes").canonicalize().unwrap();
++        let real = note.canonicalize().unwrap();
++        assert_eq!(validate_within(&notes_root, &real).unwrap(), real);
++    }
++
++    #[test]
++    fn rejects_path_outside_notes_dir() {
++        let root = temp_root("outside");
++        let outside = root.join("config.json");
++        fs::write(&outside, "{}").unwrap();
++        let notes_root = root.join("notes").canonicalize().unwrap();
++        let real = outside.canonicalize().unwrap();
++        let error = validate_within(&notes_root, &real).unwrap_err();
++        assert_eq!(error.code, "unsafePath");
++    }
++
++    #[test]
++    fn rejects_traversal_out_of_notes_dir() {
++        // notes/../secret.md 由 canonicalize 折叠成 <root>/secret.md → 必须被拒
++        let root = temp_root("traversal");
++        let secret = root.join("secret.md");
++        fs::write(&secret, "top secret").unwrap();
++        let notes_root = root.join("notes").canonicalize().unwrap();
++        let sneaky = root
++            .join("notes")
++            .join("..")
++            .join("secret.md")
++            .canonicalize()
++            .unwrap();
++        assert!(!sneaky.starts_with(&notes_root), "前提：穿越后已在目录外");
++        let error = validate_within(&notes_root, &sneaky).unwrap_err();
++        assert_eq!(error.code, "unsafePath");
++    }
++
++    #[test]
++    fn rejects_non_markdown_inside_notes_dir() {
++        let root = temp_root("nonmd");
++        let other = root.join("notes").join("Python").join("data.json");
++        fs::write(&other, "{}").unwrap();
++        let notes_root = root.join("notes").canonicalize().unwrap();
++        let real = other.canonicalize().unwrap();
++        let error = validate_within(&notes_root, &real).unwrap_err();
++        assert_eq!(error.code, "notMarkdown");
++    }
++
++    #[test]
++    fn accepts_uppercase_md_extension() {
++        let root = temp_root("upper");
++        let note = root.join("notes").join("Python").join("A.MD");
++        fs::write(&note, "# hi").unwrap();
++        let notes_root = root.join("notes").canonicalize().unwrap();
++        let real = note.canonicalize().unwrap();
++        assert!(validate_within(&notes_root, &real).is_ok());
++    }
++
++    #[test]
++    fn registry_starts_empty_and_is_shared() {
++        assert!(registry().lock().unwrap().is_empty());
++    }
++}
+diff --git a/src/components/MainWindow.tsx b/src/components/MainWindow.tsx
+index 91e2f09..02808b8 100644
+--- a/src/components/MainWindow.tsx
++++ b/src/components/MainWindow.tsx
+@@ -47,6 +47,7 @@ import type {
+   UpdateState,
+ } from "../features/update/types";
+ import { BackgroundLayer } from "./BackgroundLayer";
++import { NoteWall } from "./NoteWall";
+ import { POPUP_VIEWPORT_MARGIN, useViewportPopupPosition } from "./popupPosition";
+ import { SlidingButtonGroup } from "./SlidingButtonGroup";
+ import {
+@@ -379,6 +380,8 @@ export function MainWindow({
+   const [deleteConfirm, setDeleteConfirm] = useState(false);
+   const [deleteExiting, setDeleteExiting] = useState(false);
+   const [pinnedTileIds, setPinnedTileIds] = useState<Set<string>>(new Set());
++  // 便签墙：把整库便签摊开成一面墙（与「贴到桌面」的单张浮窗互补）
++  const [wallOpen, setWallOpen] = useState(false);
+   const [categories, setCategories] = useState<string[]>([]);
+   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+   const [activeCategory, setActiveCategory] = useState<string>("");
+@@ -1995,6 +1998,33 @@ export function MainWindow({
+             </span>
+           </div>
+           <div className="flex items-center">
++            <button
++              onClick={() => setWallOpen((open) => !open)}
++              className={`w-10 h-11 flex items-center justify-center transition-all cursor-pointer ${
++                wallOpen
++                  ? "text-bamboo bg-bamboo-mist/50"
++                  : "text-ink-ghost hover:text-bamboo hover:bg-bamboo-mist/50"
++              }`}
++              title={t("wall.title", { defaultValue: "便签墙" })}
++              aria-label={t("wall.title", { defaultValue: "便签墙" })}
++              aria-pressed={wallOpen}
++            >
++              <svg
++                width="14"
++                height="14"
++                viewBox="0 0 24 24"
++                fill="none"
++                stroke="currentColor"
++                strokeWidth="2"
++                strokeLinecap="round"
++                strokeLinejoin="round"
++              >
++                <rect x="3" y="3" width="7" height="9" rx="1" />
++                <rect x="14" y="3" width="7" height="5" rx="1" />
++                <rect x="14" y="12" width="7" height="9" rx="1" />
++                <rect x="3" y="16" width="7" height="5" rx="1" />
++              </svg>
++            </button>
+             <button
+               onClick={() => void handleOpenNotepad()}
+               className="w-10 h-11 flex items-center justify-center text-ink-ghost hover:text-bamboo hover:bg-bamboo-mist/50 transition-all cursor-pointer"
+@@ -3260,6 +3290,38 @@ export function MainWindow({
+           )}
+         </div>
+       )}
++
++      {wallOpen && (
++        <div
++          className="absolute inset-0 z-30 bg-cloud/95 backdrop-blur-sm flex flex-col"
++          data-note-wall-overlay="true"
++        >
++          <div className="flex items-center justify-between px-4 h-11 border-b border-paper-deep/30 shrink-0">
++            <span className="text-[13px] font-display tracking-wide text-ink-soft">
++              {t("wall.title", { defaultValue: "便签墙" })}
++            </span>
++            <button
++              onClick={() => setWallOpen(false)}
++              className="text-[12px] px-3 py-1 rounded border border-paper-deep/40 text-ink-soft hover:bg-bamboo-mist/60 hover:text-bamboo transition-colors cursor-pointer"
++            >
++              {t("common.close", { defaultValue: "关闭" })}
++            </button>
++          </div>
++          <div className="flex-1 min-h-0">
++            <NoteWall
++              notes={filteredNotes}
++              pinnedIds={pinnedTileIds}
++              tileColor={settingsConfig?.tileColor}
++              fontSize={settingsConfig?.surfaceFontSize ?? 14}
++              renderMarkdown={settingsConfig?.tileRenderMarkdown ?? false}
++              onOpenNote={(id) => {
++                setSelectedId(id);
++                setWallOpen(false);
++              }}
++            />
++          </div>
++        </div>
++      )}
+     </div>
+   );
+ }
+diff --git a/src/components/NoteWall.tsx b/src/components/NoteWall.tsx
+new file mode 100644
+index 0000000..ca7f754
+--- /dev/null
++++ b/src/components/NoteWall.tsx
+@@ -0,0 +1,251 @@
++import type { CSSProperties, MouseEvent } from "react";
++import { useEffect, useMemo, useRef, useState } from "react";
++import { useTranslation } from "react-i18next";
++import { Tile } from "./Tile";
++import type { NoteMetadata } from "../features/notes/types";
++import { getDisplayTitle } from "../features/notes/noteUtils";
++import {
++  DEFAULT_WALL_COLUMNS,
++  buildWallCards,
++  groupWallSections,
++  wallColumnsFor,
++  wallSummary,
++  type WallCard,
++} from "../features/notes/noteWall";
++
++export interface NoteWallProps {
++  notes: readonly NoteMetadata[];
++  /** undefined = 全部；"" = 未分类；其它 = 该分类 */
++  activeCategory?: string;
++  pinnedIds?: ReadonlySet<string>;
++  tileColor?: string;
++  fontSize?: number;
++  renderMarkdown?: boolean;
++  imageBaseDir?: string;
++  /** 置顶的便签是否高亮描边 */
++  highlightPinned?: boolean;
++  className?: string;
++  onOpenNote: (id: string) => void;
++  onTogglePin?: (id: string) => void;
++  onNoteContextMenu?: (id: string, event: MouseEvent<HTMLDivElement>) => void;
++}
++
++/** 用容器宽度算列数；ResizeObserver 缺失时退回默认列数。 */
++function useWallColumns(ref: React.RefObject<HTMLElement | null>): number {
++  const [columns, setColumns] = useState(DEFAULT_WALL_COLUMNS);
++
++  useEffect(() => {
++    const element = ref.current;
++    if (!element) return;
++
++    const apply = (width: number) => setColumns(wallColumnsFor(width));
++
++    if (typeof ResizeObserver === "undefined") {
++      apply(element.clientWidth);
++      return;
++    }
++
++    const observer = new ResizeObserver((entries) => {
++      for (const entry of entries) {
++        apply(entry.contentRect.width);
++      }
++    });
++    observer.observe(element);
++    apply(element.clientWidth);
++    return () => observer.disconnect();
++  }, [ref]);
++
++  return columns;
++}
++
++function WallNoteCard({
++  card,
++  fontSize,
++  renderMarkdown,
++  imageBaseDir,
++  highlightPinned,
++  onOpenNote,
++  onTogglePin,
++  onNoteContextMenu,
++}: {
++  card: WallCard;
++  fontSize: number;
++  renderMarkdown: boolean;
++  imageBaseDir?: string;
++  highlightPinned: boolean;
++  onOpenNote: (id: string) => void;
++  onTogglePin?: (id: string) => void;
++  onNoteContextMenu?: (id: string, event: MouseEvent<HTMLDivElement>) => void;
++}) {
++  const { t } = useTranslation();
++  const title = getDisplayTitle({ title: card.title, preview: card.preview }, t);
++
++  const wrapStyle: CSSProperties = {
++    breakInside: "avoid",
++    marginBottom: "18px",
++    // 轻微倾斜：由 id 稳定推导，重渲染不会抖
++    transform: card.tilt ? `rotate(${card.tilt}deg)` : undefined,
++    transition: "transform 0.18s ease",
++  };
++
++  return (
++    <div style={wrapStyle} className="break-inside-avoid">
++      <div className="relative">
++        <Tile
++          title={title}
++          content={card.preview}
++          color={card.color}
++          fontSize={fontSize}
++          renderMarkdown={renderMarkdown}
++          imageBaseDir={imageBaseDir}
++          role="button"
++          tabIndex={0}
++          aria-label={title}
++          onClick={() => onOpenNote(card.id)}
++          onContextMenu={(event) => onNoteContextMenu?.(card.id, event)}
++          onKeyDown={(event) => {
++            if (event.key === "Enter" || event.key === " ") {
++              event.preventDefault();
++              onOpenNote(card.id);
++            }
++          }}
++          className={[
++            "cursor-pointer",
++            highlightPinned && card.pinned ? "ring-2 ring-amber-400/60" : "",
++          ]
++            .filter(Boolean)
++            .join(" ")}
++          style={{ width: "100%" }}
++        >
++          <div className="absolute top-2 right-2 flex items-center gap-1">
++            {card.pinned && (
++              <span
++                className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10"
++                title={t("wall.pinned", { defaultValue: "置顶" })}
++              >
++                📌
++              </span>
++            )}
++            {onTogglePin && (
++              <button
++                type="button"
++                className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity"
++                onClick={(event) => {
++                  event.stopPropagation();
++                  onTogglePin(card.id);
++                }}
++                title={t("wall.pinned", { defaultValue: "置顶" })}
++              >
++                {card.pinned ? "取消" : "置顶"}
++              </button>
++            )}
++          </div>
++        </Tile>
++      </div>
++    </div>
++  );
++}
++
++/**
++ * 便签墙：把所有便签按卡片铺开成一面墙。
++ *
++ * - 与「贴到桌面」的浮窗（tile window）互补：那个是把单张便签钉在屏幕上，
++ *   这个是把整库便签一次性摊开看全貌。
++ * - 布局用 CSS 多列（masonry 效果），列数随容器宽度自适应。
++ * - 全部布局决策都在 `features/notes/noteWall.ts` 里，组件只负责画。
++ */
++export function NoteWall({
++  notes,
++  activeCategory,
++  pinnedIds,
++  tileColor = "#f6f3ec",
++  fontSize = 14,
++  renderMarkdown = false,
++  imageBaseDir,
++  highlightPinned = true,
++  className = "",
++  onOpenNote,
++  onTogglePin,
++  onNoteContextMenu,
++}: NoteWallProps) {
++  const { t } = useTranslation();
++  const containerRef = useRef<HTMLDivElement | null>(null);
++  const columns = useWallColumns(containerRef);
++
++  const cards = useMemo(
++    () => buildWallCards(notes, { category: activeCategory, color: tileColor, pinnedIds }),
++    [notes, activeCategory, tileColor, pinnedIds],
++  );
++
++  const summary = useMemo(() => wallSummary(cards), [cards]);
++  // 选中某个分类时不再分块；「全部」视图下按分类分块
++  const sections = useMemo(
++    () => (activeCategory === undefined ? groupWallSections(cards) : [{ category: "", cards }]),
++    [activeCategory, cards],
++  );
++
++  const columnStyle: CSSProperties = {
++    columnCount: columns,
++    columnGap: "18px",
++  };
++
++  return (
++    <div
++      className={`flex flex-col h-full min-h-0 ${className}`}
++      data-note-wall="true"
++      data-wall-columns={columns}
++    >
++      <div className="flex items-baseline justify-between gap-3 px-4 py-2 shrink-0">
++        <div className="font-display tracking-wide text-sm opacity-80">
++          {t("wall.title", { defaultValue: "便签墙" })}
++        </div>
++        <div className="text-xs opacity-50" data-wall-summary="true">
++          {t("wall.summary", {
++            defaultValue: "共 {{total}} 张便签 · {{pinned}} 张置顶 · {{categories}} 个分类",
++            total: summary.total,
++            pinned: summary.pinned,
++            categories: summary.categories,
++          })}
++        </div>
++      </div>
++
++      <div ref={containerRef} className="flex-1 min-h-0 overflow-y-auto px-4 pb-6 scrollbar-hidden">
++        {cards.length === 0 ? (
++          <div
++            className="h-full flex items-center justify-center text-sm opacity-45"
++            data-wall-empty="true"
++          >
++            {t("wall.empty", { defaultValue: "这面墙还是空的，先去写一张便签吧" })}
++          </div>
++        ) : (
++          sections.map((section) => (
++            <section key={section.category || "__uncategorised__"} data-wall-section={section.category}>
++              {activeCategory === undefined && (
++                <div className="text-xs opacity-45 mb-2 mt-1">
++                  {section.category === ""
++                    ? t("wall.uncategorised", { defaultValue: "未分类" })
++                    : section.category}
++                </div>
++              )}
++              <div style={columnStyle}>
++                {section.cards.map((card) => (
++                  <WallNoteCard
++                    key={card.id}
++                    card={card}
++                    fontSize={fontSize}
++                    renderMarkdown={renderMarkdown}
++                    imageBaseDir={imageBaseDir}
++                    highlightPinned={highlightPinned}
++                    onOpenNote={onOpenNote}
++                    onTogglePin={onTogglePin}
++                    onNoteContextMenu={onNoteContextMenu}
++                  />
++                ))}
++              </div>
++            </section>
++          ))
++        )}
++      </div>
++    </div>
++  );
++}
+diff --git a/src/features/notes/noteWall.test.ts b/src/features/notes/noteWall.test.ts
+new file mode 100644
+index 0000000..9649bb1
+--- /dev/null
++++ b/src/features/notes/noteWall.test.ts
+@@ -0,0 +1,206 @@
++import { describe, expect, test } from "vitest";
++import type { NoteMetadata } from "./types";
++import {
++  DEFAULT_WALL_COLUMNS,
++  MAX_WALL_COLUMNS,
++  MIN_CARD_WIDTH,
++  WALL_TILT_DEGREES,
++  buildWallCards,
++  groupWallSections,
++  stableHash,
++  tiltFor,
++  toWallCard,
++  wallColumnsFor,
++  wallSummary,
++} from "./noteWall";
++
++function note(overrides: Partial<NoteMetadata> & { id: string }): NoteMetadata {
++  return {
++    title: "",
++    fileName: `${overrides.id}.md`,
++    category: "",
++    createdAt: "2026-01-01T00:00:00Z",
++    updatedAt: "2026-01-01T00:00:00Z",
++    wordCount: 0,
++    preview: "",
++    ...overrides,
++  };
++}
++
++describe("stableHash / tiltFor", () => {
++  test("hash is deterministic for the same input", () => {
++    expect(stableHash("note-1")).toBe(stableHash("note-1"));
++  });
++
++  test("hash differs for different inputs", () => {
++    expect(stableHash("note-1")).not.toBe(stableHash("note-2"));
++  });
++
++  test("tilt stays within the configured range", () => {
++    for (let i = 0; i < 200; i++) {
++      const angle = tiltFor(`note-${i}`);
++      expect(angle).toBeGreaterThanOrEqual(-WALL_TILT_DEGREES);
++      expect(angle).toBeLessThanOrEqual(WALL_TILT_DEGREES);
++    }
++  });
++
++  test("tilt is stable across repeated calls (no random jitter on re-render)", () => {
++    expect(tiltFor("abc")).toBe(tiltFor("abc"));
++  });
++
++  test("tilt is rounded to two decimals", () => {
++    const angle = tiltFor("some-note-id");
++    expect(Number.isInteger(angle * 100)).toBe(true);
++  });
++
++  test("empty id or non-positive max yields zero tilt", () => {
++    expect(tiltFor("")).toBe(0);
++    expect(tiltFor("abc", 0)).toBe(0);
++    expect(tiltFor("abc", -1)).toBe(0);
++  });
++
++  test("respects a custom max", () => {
++    for (let i = 0; i < 50; i++) {
++      const angle = tiltFor(`n-${i}`, 0.5);
++      expect(Math.abs(angle)).toBeLessThanOrEqual(0.5);
++    }
++  });
++});
++
++describe("wallColumnsFor", () => {
++  test("fits as many columns as the width allows", () => {
++    expect(wallColumnsFor(MIN_CARD_WIDTH * 3)).toBe(3);
++    expect(wallColumnsFor(MIN_CARD_WIDTH * 2 + 50)).toBe(2);
++  });
++
++  test("never goes below one column", () => {
++    expect(wallColumnsFor(10)).toBe(1);
++    expect(wallColumnsFor(0)).toBe(DEFAULT_WALL_COLUMNS);
++  });
++
++  test("caps at the maximum column count", () => {
++    expect(wallColumnsFor(100_000)).toBe(MAX_WALL_COLUMNS);
++  });
++
++  test("falls back to the default for invalid widths", () => {
++    expect(wallColumnsFor(Number.NaN)).toBe(DEFAULT_WALL_COLUMNS);
++    expect(wallColumnsFor(-5)).toBe(DEFAULT_WALL_COLUMNS);
++  });
++
++  test("honours a custom minimum card width", () => {
++    expect(wallColumnsFor(600, 300)).toBe(2);
++  });
++});
++
++describe("toWallCard", () => {
++  test("carries display fields and derives tilt from the id", () => {
++    const card = toWallCard(note({ id: "n1", title: "标题", preview: "预览", wordCount: 12 }), {
++      color: "#ffeeaa",
++      pinned: true,
++    });
++    expect(card).toMatchObject({
++      id: "n1",
++      title: "标题",
++      preview: "预览",
++      wordCount: 12,
++      color: "#ffeeaa",
++      pinned: true,
++    });
++    expect(card.tilt).toBe(tiltFor("n1"));
++  });
++});
++
++describe("buildWallCards", () => {
++  const notes = [
++    note({ id: "a", updatedAt: "2026-01-01T00:00:00Z", category: "工作" }),
++    note({ id: "b", updatedAt: "2026-03-01T00:00:00Z", category: "工作" }),
++    note({ id: "c", updatedAt: "2026-02-01T00:00:00Z", category: "" }),
++  ];
++
++  test("sorts by updatedAt descending by default", () => {
++    expect(buildWallCards(notes).map((c) => c.id)).toEqual(["b", "c", "a"]);
++  });
++
++  test("pinned cards come first, then the rest keep recency order", () => {
++    const cards = buildWallCards(notes, { pinnedIds: new Set(["a"]) });
++    expect(cards.map((c) => c.id)).toEqual(["a", "b", "c"]);
++  });
++
++  test("filters by category, with empty string meaning uncategorised", () => {
++    expect(buildWallCards(notes, { category: "工作" }).map((c) => c.id)).toEqual(["b", "a"]);
++    expect(buildWallCards(notes, { category: "" }).map((c) => c.id)).toEqual(["c"]);
++  });
++
++  test("undefined category shows every note", () => {
++    expect(buildWallCards(notes, {})).toHaveLength(3);
++  });
++
++  test("applies the limit after sorting", () => {
++    expect(buildWallCards(notes, { limit: 2 }).map((c) => c.id)).toEqual(["b", "c"]);
++    expect(buildWallCards(notes, { limit: 0 })).toEqual([]);
++  });
++
++  test("is stable when updatedAt ties (falls back to id)", () => {
++    const tied = [
++      note({ id: "z", updatedAt: "2026-01-01T00:00:00Z" }),
++      note({ id: "y", updatedAt: "2026-01-01T00:00:00Z" }),
++    ];
++    expect(buildWallCards(tied).map((c) => c.id)).toEqual(["y", "z"]);
++  });
++
++  test("does not mutate the input array", () => {
++    const input = [note({ id: "a" }), note({ id: "b", updatedAt: "2026-05-01T00:00:00Z" })];
++    const snapshot = input.map((n) => n.id);
++    buildWallCards(input);
++    expect(input.map((n) => n.id)).toEqual(snapshot);
++  });
++
++  test("applies the configured colour to every card", () => {
++    expect(buildWallCards(notes, { color: "#123456" }).every((c) => c.color === "#123456")).toBe(
++      true,
++    );
++  });
++});
++
++describe("groupWallSections", () => {
++  test("groups cards by category and sorts uncategorised last", () => {
++    const cards = buildWallCards([
++      note({ id: "a", category: "工作" }),
++      note({ id: "b", category: "" }),
++      note({ id: "c", category: "学习" }),
++    ]);
++    expect(groupWallSections(cards).map((s) => s.category)).toEqual(["学习", "工作", ""]);
++  });
++
++  test("keeps every card exactly once", () => {
++    const cards = buildWallCards([
++      note({ id: "a", category: "X" }),
++      note({ id: "b", category: "X" }),
++      note({ id: "c", category: "Y" }),
++    ]);
++    const total = groupWallSections(cards).reduce((sum, s) => sum + s.cards.length, 0);
++    expect(total).toBe(3);
++  });
++
++  test("returns an empty list for no cards", () => {
++    expect(groupWallSections([])).toEqual([]);
++  });
++});
++
++describe("wallSummary", () => {
++  test("counts total, pinned, categories and words", () => {
++    const cards = buildWallCards(
++      [
++        note({ id: "a", category: "工作", wordCount: 100 }),
++        note({ id: "b", category: "工作", wordCount: 50 }),
++        note({ id: "c", category: "学习", wordCount: 25 }),
++      ],
++      { pinnedIds: new Set(["a"]) },
++    );
++    expect(wallSummary(cards)).toEqual({ total: 3, pinned: 1, categories: 2, words: 175 });
++  });
++
++  test("handles an empty wall", () => {
++    expect(wallSummary([])).toEqual({ total: 0, pinned: 0, categories: 0, words: 0 });
++  });
++});
+diff --git a/src/features/notes/noteWall.ts b/src/features/notes/noteWall.ts
+new file mode 100644
+index 0000000..c44c6c4
+--- /dev/null
++++ b/src/features/notes/noteWall.ts
+@@ -0,0 +1,166 @@
++import type { NoteMetadata } from "./types";
++
++/**
++ * 便签墙（Note Wall）的纯逻辑。
++ *
++ * 刻意与组件分离：仓库的测试是纯逻辑风格（没有 jsdom / testing-library），
++ * 所以「墙上该显示哪些便签、怎么排序、倾斜多少、分几列」这些决策全部放在这里，
++ * 可以确定性测试；组件只负责把结果画出来。
++ */
++
++export const DEFAULT_WALL_COLUMNS = 3;
++export const MAX_WALL_COLUMNS = 6;
++export const MIN_CARD_WIDTH = 200;
++export const WALL_TILT_DEGREES = 1.4;
++
++export interface WallCard {
++  id: string;
++  title: string;
++  preview: string;
++  category: string;
++  /** 便签底色（来自设置里的 tileColor） */
++  color: string;
++  /** 轻微倾斜角（度），让墙面看起来像真的贴上去的 */
++  tilt: number;
++  pinned: boolean;
++  updatedAt: string;
++  wordCount: number;
++}
++
++export interface BuildWallCardsOptions {
++  /** 只看这个分类；空串表示「未分类」，undefined 表示不过滤 */
++  category?: string;
++  color?: string;
++  pinnedIds?: ReadonlySet<string>;
++  /** 置顶的排在最前，其余按 updatedAt 降序 */
++  limit?: number;
++}
++
++/**
++ * 稳定哈希（FNV-1a 32 位）。
++ * 用它而不是 Math.random()，是为了让同一张便签每次渲染的倾斜角都一样——
++ * 否则每次重渲染整面墙都在抖，而且测试无法复现。
++ */
++export function stableHash(input: string): number {
++  let hash = 0x811c9dc5;
++  for (let i = 0; i < input.length; i++) {
++    hash ^= input.charCodeAt(i);
++    hash = Math.imul(hash, 0x01000193) >>> 0;
++  }
++  return hash >>> 0;
++}
++
++/** 由 id 推导倾斜角，落在 [-max, max] 区间内。 */
++export function tiltFor(id: string, max: number = WALL_TILT_DEGREES): number {
++  if (!id || max <= 0) return 0;
++  const unit = stableHash(id) / 0xffffffff; // [0, 1]
++  const angle = (unit * 2 - 1) * max; // [-max, max]
++  // 保留两位小数，避免浮点噪声让快照不稳定
++  return Math.round(angle * 100) / 100;
++}
++
++/**
++ * 按宽度决定列数：先按最小卡片宽度塞，再夹到 [1, MAX_WALL_COLUMNS]。
++ * 这样窄窗口不会出现挤成一团的便签。
++ */
++export function wallColumnsFor(width: number, minCardWidth: number = MIN_CARD_WIDTH): number {
++  if (!Number.isFinite(width) || width <= 0) return DEFAULT_WALL_COLUMNS;
++  const fitted = Math.floor(width / Math.max(minCardWidth, 1));
++  return Math.min(Math.max(fitted, 1), MAX_WALL_COLUMNS);
++}
++
++/** 便签墙上的一张卡：把 NoteMetadata 转成渲染所需的最小数据。 */
++export function toWallCard(
++  note: NoteMetadata,
++  options: { color: string; pinned: boolean },
++): WallCard {
++  return {
++    id: note.id,
++    title: note.title,
++    preview: note.preview,
++    category: note.category,
++    color: options.color,
++    tilt: tiltFor(note.id),
++    pinned: options.pinned,
++    updatedAt: note.updatedAt,
++    wordCount: note.wordCount,
++  };
++}
++
++/**
++ * 组装墙上的卡片列表。
++ *
++ * 排序规则：置顶优先 → updatedAt 降序（时间相同则按 id 稳定排序）。
++ * 排序必须完全确定，否则测试和快照都会飘。
++ */
++export function buildWallCards(
++  notes: readonly NoteMetadata[],
++  options: BuildWallCardsOptions = {},
++): WallCard[] {
++  const { category, color = "#f6f3ec", pinnedIds, limit } = options;
++  const pinned = pinnedIds ?? new Set<string>();
++
++  const filtered = notes.filter((note) =>
++    category === undefined ? true : note.category === category,
++  );
++
++  const cards = filtered.map((note) =>
++    toWallCard(note, { color, pinned: pinned.has(note.id) }),
++  );
++
++  cards.sort((a, b) => {
++    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
++    if (a.updatedAt !== b.updatedAt) return a.updatedAt < b.updatedAt ? 1 : -1;
++    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
++  });
++
++  return typeof limit === "number" && limit >= 0 ? cards.slice(0, limit) : cards;
++}
++
++export interface WallSection {
++  category: string;
++  cards: WallCard[];
++}
++
++/**
++ * 按分类分组（用于「全部」视图下给墙面分块）。
++ * 空分类归到 `""`，调用方自行决定怎么显示它的标题。
++ */
++export function groupWallSections(cards: readonly WallCard[]): WallSection[] {
++  const buckets = new Map<string, WallCard[]>();
++  for (const card of cards) {
++    const list = buckets.get(card.category);
++    if (list) {
++      list.push(card);
++    } else {
++      buckets.set(card.category, [card]);
++    }
++  }
++  return [...buckets.entries()]
++    .map(([category, list]) => ({ category, cards: list }))
++    .sort((a, b) => {
++      // 未分类（""）排在最后，其余按名称
++      if (a.category === b.category) return 0;
++      if (a.category === "") return 1;
++      if (b.category === "") return -1;
++      return a.category < b.category ? -1 : 1;
++    });
++}
++
++/** 墙面统计，用于标题栏一行摘要。 */
++export function wallSummary(cards: readonly WallCard[]): {
++  total: number;
++  pinned: number;
++  categories: number;
++  words: number;
++} {
++  const categories = new Set<string>();
++  let pinned = 0;
++  let words = 0;
++  for (const card of cards) {
++    categories.add(card.category);
++    if (card.pinned) pinned++;
++    words += card.wordCount;
++  }
++  return { total: cards.length, pinned, categories: categories.size, words };
++}
+diff --git a/src/locales/en-US/translation.json b/src/locales/en-US/translation.json
+index 6c00dd4..bd48477 100644
+--- a/src/locales/en-US/translation.json
++++ b/src/locales/en-US/translation.json
+@@ -441,5 +441,13 @@
+   },
+   "tile": {
+     "empty": "Empty"
++  },
++  "wall": {
++    "title": "Note wall",
++    "empty": "This wall is empty — write a note first",
++    "all": "All",
++    "pinned": "Pinned",
++    "uncategorised": "Uncategorised",
++    "summary": "{{total}} notes · {{pinned}} pinned · {{categories}} categories"
+   }
+ }
+diff --git a/src/locales/zh-CN/translation.json b/src/locales/zh-CN/translation.json
+index be175b1..964bbef 100644
+--- a/src/locales/zh-CN/translation.json
++++ b/src/locales/zh-CN/translation.json
+@@ -441,5 +441,13 @@
+   },
+   "tile": {
+     "empty": "空"
++  },
++  "wall": {
++    "title": "便签墙",
++    "empty": "这面墙还是空的，先去写一张便签吧",
++    "all": "全部",
++    "pinned": "置顶",
++    "uncategorised": "未分类",
++    "summary": "共 {{total}} 张便签 · {{pinned}} 张置顶 · {{categories}} 个分类"
+   }
+ }
+diff --git a/src/locales/zh-HK/translation.json b/src/locales/zh-HK/translation.json
+index 607fb17..9d0ef73 100644
+--- a/src/locales/zh-HK/translation.json
++++ b/src/locales/zh-HK/translation.json
+@@ -422,5 +422,13 @@
+   },
+   "tile": {
+     "empty": "空"
++  },
++  "wall": {
++    "title": "便籤牆",
++    "empty": "這面牆還是空的，先去寫一張便籤吧",
++    "all": "全部",
++    "pinned": "置頂",
++    "uncategorised": "未分類",
++    "summary": "共 {{total}} 張便籤 · {{pinned}} 張置頂 · {{categories}} 個分類"
+   }
+ }
