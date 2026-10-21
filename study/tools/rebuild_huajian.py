@@ -17,8 +17,8 @@
 3. 顺序由 `topo_courses` 决定（前置关系说了算），不靠手写名单。
 
 用法：
-    python study\\tools\\rebuild_huajian.py            # 预览
-    python study\\tools\\rebuild_huajian.py --apply    # 执行（会先归档旧笔记）
+    python study/tools\\rebuild_huajian.py            # 预览
+    python study/tools\\rebuild_huajian.py --apply    # 执行（会先归档旧笔记）
 """
 import json
 import os

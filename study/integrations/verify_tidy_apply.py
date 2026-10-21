@@ -11,7 +11,7 @@
   F. metadata.json 写进 --data-dir，且不碰真实花笺目录
   G. --rollback 能回到旧整理稿，用户区仍然不动
 
-运行：python study\\integrations\\verify_tidy_apply.py
+运行：python study/integrations\\verify_tidy_apply.py
 """
 import difflib
 import hashlib
@@ -313,7 +313,7 @@ def main():
         scaffold_path = os.path.join(category, f"{scaffold_id}_F2-网络爬虫与数据分析.md")
         with open(scaffold_path, "w", encoding="utf-8", newline="\n") as f:
             f.write("# F2 · 网络爬虫与数据分析\n\n"
-                    "（写完后运行：`python study\\tools\\interrogate.py --course west2-f2`）\n\n"
+                    "（写完后运行：`python study/tools\\interrogate.py --course west2-f2`）\n\n"
                     + USER_HEADING + "\n\n"
                     "### 1. 我学到的（用自己的话）\n\n"
                     "<!-- 不要抄资料；写你真正理解了什么 -->\n\n"

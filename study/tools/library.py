@@ -4,19 +4,19 @@
 
 用法：
     :: 把课程 JSON 里人工写的种子原子导入知识库（human-authored，直接 confirmed）
-    E:\\Develop\\python\\python.exe study\\tools\\library.py import-seed
+    python study/tools\\library.py import-seed
 
     :: 从一个真实文件抽取候选（会调用模型；引文由程序验证，未通过的进 rejects）
-    E:\\Develop\\python\\python.exe study\\tools\\library.py extract --course py-agent-03 ^
+    python study/tools\\library.py extract --course py-agent-03 ^
         --file study\\demo\\lesson3_transfer_note.md --kind note
 
     :: 查看 / 确认 / 拒绝
-    E:\\Develop\\python\\python.exe study\\tools\\library.py list --status pending
-    E:\\Develop\\python\\python.exe study\\tools\\library.py confirm a_xxxx a_yyyy
-    E:\\Develop\\python\\python.exe study\\tools\\library.py reject a_zzzz --reason "不是知识点"
+    python study/tools\\library.py list --status pending
+    python study/tools\\library.py confirm a_xxxx a_yyyy
+    python study/tools\\library.py reject a_zzzz --reason "不是知识点"
 
     :: 覆盖度（必会知识点有没有资料支撑）
-    E:\\Develop\\python\\python.exe study\\tools\\library.py cover --course py-agent-03
+    python study/tools\\library.py cover --course py-agent-03
 """
 import io
 import json

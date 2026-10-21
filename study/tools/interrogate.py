@@ -3,10 +3,10 @@
 """一键整理：在花笺笔记上跑「AI 质询 + 查缺补漏 + 达成度」。
 
 用法：
-    python study\\tools\\interrogate.py --course west2-f2              # 正常（调用模型做质询）
-    python study\\tools\\interrogate.py --course west2-f2 --offline     # 只算覆盖率与作业进度
-    python study\\tools\\interrogate.py --course west2-f2 --write-back  # 把结果回填到笔记末尾
-    python study\\tools\\interrogate.py --list                          # 列出已有的课程笔记
+    python study/tools\\interrogate.py --course west2-f2              # 正常（调用模型做质询）
+    python study/tools\\interrogate.py --course west2-f2 --offline     # 只算覆盖率与作业进度
+    python study/tools\\interrogate.py --course west2-f2 --write-back  # 把结果回填到笔记末尾
+    python study/tools\\interrogate.py --list                          # 列出已有的课程笔记
 """
 import os
 import re
@@ -116,7 +116,7 @@ def main():
         note = find_note(d["notes_dir"], course_id, system)
     if not note:
         print(f"❌ 花笺里找不到 {course_id} 的笔记。先跑："
-              f"python study\\tools\\scaffold.py apply --yes")
+              f"python study/tools\\scaffold.py apply --yes")
         return 3
 
     text = read_note(note["path"])

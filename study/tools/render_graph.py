@@ -3,9 +3,9 @@
 """渲染知识点体系图（P0+ · 体系化视图）。
 
 用法：
-    E:\\Develop\\python\\python.exe study\\tools\\render_graph.py
-    E:\\Develop\\python\\python.exe study\\tools\\render_graph.py --course py-agent-03 --soft
-    E:\\Develop\\python\\python.exe study\\tools\\render_graph.py --out study\\state\\graph.md
+    python study/tools\\render_graph.py
+    python study/tools\\render_graph.py --course py-agent-03 --soft
+    python study/tools\\render_graph.py --out study/state/graph.md
 """
 import io
 import os

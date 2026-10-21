@@ -19,7 +19,9 @@ except Exception:  # noqa: BLE001
     pass
 
 AGENT = r"E:\Agents\python-tutor"
-STUDY = r"E:\Docs\Code\Java\book\study"
+STUDY = os.environ.get("AI_STUDY_ROOT") or os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..")
+)
 
 # 顺序要紧：STUDY 下有 `study/tutor/` 包，会抢走 `import tutor`。
 # 先插 STUDY 再插 AGENT，让 AGENT 排在 sys.path[0]。

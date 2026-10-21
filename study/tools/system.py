@@ -3,11 +3,11 @@
 """知识体系 CLI（自上而下流程）。
 
 用法：
-    python study\\tools\\system.py check                 # 体系完整性校验
-    python study\\tools\\system.py summary               # 体系概览
-    python study\\tools\\system.py split --dry-run        # 看会派生哪些文件
-    python study\\tools\\system.py split                 # 写 route.json + curriculum/*.json
-    python study\\tools\\system.py show west2-f2         # 看某门课的拆分结果
+    python study/tools\\system.py check                 # 体系完整性校验
+    python study/tools\\system.py summary               # 体系概览
+    python study/tools\\system.py split --dry-run        # 看会派生哪些文件
+    python study/tools\\system.py split                 # 写 route.json + curriculum/*.json
+    python study/tools\\system.py show west2-f2         # 看某门课的拆分结果
 """
 import io
 import os

@@ -11,8 +11,8 @@
     这样才能区分"背过"与"懂了"。每题 3 个判定点，便于结构化判分。
 
 用法：
-    python study\\system\\add_self_check.py            # 预览
-    python study\\system\\add_self_check.py --write     # 写回体系
+    python study/system\\add_self_check.py            # 预览
+    python study/system\\add_self_check.py --write     # 写回体系
 """
 import io
 import json

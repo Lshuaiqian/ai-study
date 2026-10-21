@@ -6,12 +6,12 @@
 写操作（new / import）需要显式加 --yes。
 
 用法：
-    python study\\tools\\huajian.py info
-    python study\\tools\\huajian.py list
-    python study\\tools\\huajian.py reconcile
-    python study\\tools\\huajian.py read 30d7efc2
-    python study\\tools\\huajian.py new --title "第3课笔记" --category 学习 --content-file notes.md --yes
-    python study\\tools\\huajian.py import --course py-agent-03 --category 学习 --yes
+    python study/tools\\huajian.py info
+    python study/tools\\huajian.py list
+    python study/tools\\huajian.py reconcile
+    python study/tools\\huajian.py read 30d7efc2
+    python study/tools\\huajian.py new --title "第3课笔记" --category 学习 --content-file notes.md --yes
+    python study/tools\\huajian.py import --course py-agent-03 --category 学习 --yes
 """
 import io
 import os

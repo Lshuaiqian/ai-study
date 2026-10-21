@@ -14,14 +14,14 @@
 **预览零副作用**：不加 `--apply` 时既不写笔记，也不改掌握度、不塞回炉队列。
 
 用法：
-    python study\\tools\\tidy.py --course west2-f2                # 预览（不写）
-    python study\\tools\\tidy.py --course west2-f2 --apply        # 写入（三区替换）
-    python study\\tools\\tidy.py --course west2-f2 --soft --apply  # 只排版，不改语义，不调模型
-    python study\\tools\\tidy.py --course west2-f2 --versions      # 看历史版本
-    python study\\tools\\tidy.py --course west2-f2 --rollback 20260916-143200
+    python study/tools\\tidy.py --course west2-f2                # 预览（不写）
+    python study/tools\\tidy.py --course west2-f2 --apply        # 写入（三区替换）
+    python study/tools\\tidy.py --course west2-f2 --soft --apply  # 只排版，不改语义，不调模型
+    python study/tools\\tidy.py --course west2-f2 --versions      # 看历史版本
+    python study/tools\\tidy.py --course west2-f2 --rollback 20260916-143200
 
 给 GUI（花笺「一键整理」按钮）用的机器接口：
-    python study\\tools\\tidy.py --path "<笔记绝对路径>" --apply --json
+    python study/tools\\tidy.py --path "<笔记绝对路径>" --apply --json
 
 `--json` 时 **stdout 是 JSONL**（一行一个对象：stage / report / done / error），
 人类可读日志改走 stderr。GUI 只读 JSON、不 grep 中文。`--path` 与 `--course`

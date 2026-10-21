@@ -7,7 +7,7 @@
     → 四维掌握度门禁 → 未过则 L1/L2/L3 或逃生阀 → 通过则下一课
 
 用法：
-    E:\\Develop\\python\\python.exe study\\p0_demo.py [--no-run]
+    python study/p0_demo.py [--no-run]
 """
 import io
 import os

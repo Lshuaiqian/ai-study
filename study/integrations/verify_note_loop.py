@@ -11,7 +11,7 @@
   F. 覆盖率不被 AI 自己写的整理稿抬高（AI 不能给自己打分）
   G. metadata 只写 --data-dir，真实花笺目录零改动
 
-运行：python study\\integrations\\verify_note_loop.py
+运行：python study/integrations\\verify_note_loop.py
 """
 import hashlib
 import io

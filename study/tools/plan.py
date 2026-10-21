@@ -3,9 +3,9 @@
 """Planner 视图：今日任务 + 自省周报。
 
 用法：
-    E:\\Develop\\python\\python.exe study\\tools\\plan.py
-    E:\\Develop\\python\\python.exe study\\tools\\plan.py --today 2026-09-20
-    E:\\Develop\\python\\python.exe study\\tools\\plan.py --week-start 2026-09-14
+    python study/tools\\plan.py
+    python study/tools\\plan.py --today 2026-09-20
+    python study/tools\\plan.py --week-start 2026-09-14
 """
 import io
 import os

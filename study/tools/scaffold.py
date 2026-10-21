@@ -15,9 +15,9 @@
     下面是「我的笔记」空段。这样一键整理（interrogate.py）能直接拿上半部分查缺补漏。
 
 用法
-    python study\\tools\\scaffold.py plan                        # 只打印将要建什么
-    python study\\tools\\scaffold.py apply --yes                 # 单层分类（当前花笺即可用）
-    python study\\tools\\scaffold.py apply --multilevel --yes     # 多层分类（需花笺打过多层补丁）
+    python study/tools\\scaffold.py plan                        # 只打印将要建什么
+    python study/tools\\scaffold.py apply --yes                 # 单层分类（当前花笺即可用）
+    python study/tools\\scaffold.py apply --multilevel --yes     # 多层分类（需花笺打过多层补丁）
 """
 import os
 import sys
@@ -158,7 +158,7 @@ def course_note(system, course, placement=None):
     L.append("")
     L.append("## ✍️ 我的笔记")
     L.append("")
-    L.append(f"（写完后运行：`python study\\tools\\interrogate.py --course {course['course_id']}`）")
+    L.append(f"（写完后运行：`python study/tools\\interrogate.py --course {course['course_id']}`）")
     L.append("")
     for sec, hint in (
         ("1. 我学到的（用自己的话）", "不要抄资料；写你真正理解了什么"),
@@ -255,7 +255,7 @@ def route_note(system, placement=None):
 
     L.append("## 进度")
     L.append("")
-    L.append("<!-- 由 study 工具回填：python study\\tools\\plan.py -->")
+    L.append("<!-- 由 study 工具回填：python study/tools\\plan.py -->")
     L.append("")
     for cid in order:
         r = by_course.get(cid)

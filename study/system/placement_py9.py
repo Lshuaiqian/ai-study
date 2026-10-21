@@ -10,8 +10,8 @@
 不要在这里另写一份映射——两份映射一定会漂移。
 
 用法：
-    python study\\system\\placement_py9.py            # 预览
-    python study\\system\\placement_py9.py --write    # 写 study/system/placement-py9.json
+    python study/system\\placement_py9.py            # 预览
+    python study/system\\placement_py9.py --write    # 写 study/system/placement-py9.json
 """
 import json
 import os

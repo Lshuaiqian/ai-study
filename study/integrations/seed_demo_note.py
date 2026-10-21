@@ -5,7 +5,7 @@
 ⚠️ 这是演示数据，不是你写的。看完可以把「✍️ 我的笔记」下面的内容清掉。
 
 用法：
-    python study\\integrations\\seed_demo_note.py --course west2-f0 --yes
+    python study/integrations\\seed_demo_note.py --course west2-f0 --yes
 """
 import os
 import sys
@@ -91,7 +91,7 @@ def main():
         note["id"] or "", note["title"], os.path.basename(note["path"]),
         note["category"], new_text))
     print(f"✅ 已把示例笔记写入 {note['title']}（{len(SAMPLE[course_id])} 字）")
-    print("   下一步：python study\\tools\\interrogate.py --course " + course_id)
+    print("   下一步：python study/tools\\interrogate.py --course " + course_id)
     return 0
 
 

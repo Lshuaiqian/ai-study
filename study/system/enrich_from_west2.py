@@ -7,8 +7,8 @@
     直接从 refs/learn-AI 的原始 Markdown 里按标题抽，才是原话。
 
 用法：
-    python study\\system\\enrich_from_west2.py            # 预览
-    python study\\system\\enrich_from_west2.py --write    # 写回体系文件
+    python study/system\\enrich_from_west2.py            # 预览
+    python study/system\\enrich_from_west2.py --write    # 写回体系文件
 """
 import io
 import json

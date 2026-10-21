@@ -11,9 +11,9 @@
      导致覆盖率恒 0 或恒 1（keywords 是确定性覆盖判定的唯一依据）。
 
 用法：
-    python study\\system\\merge_py9.py              # 预览（不写盘）
-    python study\\system\\merge_py9.py --write      # 写 study/curriculum/*.json（先备份）
-    python study\\system\\merge_py9.py --check      # 只做校验，不产出
+    python study/system\\merge_py9.py              # 预览（不写盘）
+    python study/system\\merge_py9.py --write      # 写 study/curriculum/*.json（先备份）
+    python study/system\\merge_py9.py --check      # 只做校验，不产出
 """
 import json
 import os

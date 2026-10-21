@@ -16,9 +16,9 @@
     self_check→  self_check（只取问题，判定点留给 study 判分用）
 
 用法
-    python study\\system\\export_tutor_lessons.py                 # 预览
-    python study\\system\\export_tutor_lessons.py --write         # 写入 E:\\Agents\\python-tutor\\lessons.json
-    python study\\system\\export_tutor_lessons.py --write --out X  # 写到别处
+    python study/system\\export_tutor_lessons.py                 # 预览
+    python study/system\\export_tutor_lessons.py --write         # 写入 E:\\Agents\\python-tutor\\lessons.json
+    python study/system\\export_tutor_lessons.py --write --out X  # 写到别处
 """
 import io
 import json

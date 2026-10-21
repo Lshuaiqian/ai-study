@@ -1,0 +1,5 @@
+# AI 辅助学习系统 · 依赖声明
+# 安装：pip install -r requirements.txt
+# 说明：核心功能仅依赖 Python 标准库；requests 用于联网验证/爬虫 demo
+
+requests>=2.31

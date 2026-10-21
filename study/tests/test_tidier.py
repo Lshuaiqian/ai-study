@@ -304,7 +304,7 @@ class TestSaveVersion(unittest.TestCase):
 class TestUserSubstance(unittest.TestCase):
     """脚手架模板有 200 来字，按字数判断会把"还没写"当成"有内容"。"""
 
-    SCAFFOLD = """（写完后运行：`python study\\tools\\interrogate.py --course west2-f2`）
+    SCAFFOLD = """（写完后运行：`python study/tools\\interrogate.py --course west2-f2`）
 
 ### 1. 我学到的（用自己的话）
 

@@ -6,7 +6,7 @@ west2 Task 2 要求两条解析路线都会：BeautifulSoup（可安装增强）
 这个脚本把两条都跑一遍，免得你在写作业时才发现环境缺东西。
 
 用法：
-    python study\\integrations\\verify_f2_env.py
+    python study/integrations\\verify_f2_env.py
 """
 import io
 import shutil
